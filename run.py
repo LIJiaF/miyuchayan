@@ -21,19 +21,18 @@ class WxHandler(RequestHandler):
             print('nonce: ', nonce)
             print('echostr: ', echostr)
 
-            wxList = [token, timestamp, nonce]
-            wxList.sort()
-            sha1 = hashlib.sha1()
-            map(sha1.update, wxList)
-            hashcode = sha1.hexdigest()
+            tmp = [token, timestamp, nonce]
+            tmp.sort()
+            tmp = "".join(tmp)
+            hashcode = hashlib.sha1(tmp.encode('utf8')).hexdigest()
 
             if hashcode == signature:
                 print('success')
-                return echostr
+                self.write(echostr)
             else:
-                return ""
+                self.write('')
         except Exception as err:
-            return err
+            self.write(err)
 
 
 def make_app():
