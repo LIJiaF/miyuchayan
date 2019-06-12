@@ -16,6 +16,11 @@ class WxHandler(RequestHandler):
             echostr = self.get_argument('echostr')
             token = "LiJiaF"
 
+            print('signature: ', signature)
+            print('timestamp: ', timestamp)
+            print('nonce: ', nonce)
+            print('echostr: ', echostr)
+
             wxList = [token, timestamp, nonce]
             wxList.sort()
             sha1 = hashlib.sha1()
@@ -23,6 +28,7 @@ class WxHandler(RequestHandler):
             hashcode = sha1.hexdigest()
 
             if hashcode == signature:
+                print('success')
                 return echostr
             else:
                 return ""
