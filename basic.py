@@ -33,5 +33,7 @@ class Basic(object):
             self._accessToken = redis.get('access_token')
 
 
-basic = Basic()
-basic.get_access_token()
+if __name__ == '__main__':
+    basic = Basic()
+    basic.get_access_token()
+    print('access token 获取成功')
