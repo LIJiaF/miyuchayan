@@ -11,6 +11,7 @@ define("host", default="8888", help="端口")
 
 
 class WxHandler(RequestHandler):
+    # 微信公众号接入验证
     def get(self):
         try:
             signature = self.get_argument('signature')
@@ -37,18 +38,26 @@ class WxHandler(RequestHandler):
         except Exception as err:
             self.write(err)
 
+    # 收发消息处理
     def post(self):
         try:
             webData = self.request.body
             recMsg = receive.parse_xml(webData)
-            if isinstance(recMsg, receive.Msg) and recMsg.MsgType == 'text':
+            if isinstance(recMsg, receive.Msg):
                 toUser = recMsg.FromUserName
                 fromUser = recMsg.ToUserName
-                content = "test"
-                replyMsg = reply.TextMsg(toUser, fromUser, content)
-                self.write(replyMsg.send())
-            else:
-                self.write('success')
+                # 文本信息处理
+                if recMsg.MsgType == 'text':
+                    content = "test"
+                    replyMsg = reply.TextMsg(toUser, fromUser, content)
+                    self.write(replyMsg.send())
+                # 图片信息处理
+                elif recMsg.MsgType == 'image':
+                    mediaId = recMsg.MediaId
+                    replyMsg = reply.ImageMsg(toUser, fromUser, mediaId)
+                    self.write(replyMsg.send())
+                else:
+                    self.write(reply.Msg().send())
         except Exception as err:
             return err
 
