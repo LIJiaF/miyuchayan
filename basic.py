@@ -1,32 +1,37 @@
-import urllib
-import time
 import json
+from urllib import request
+from redis import StrictRedis
+
+APPID = "wx4ad79b44d68db8da"
+APPSECRET = "75b8b1f237c468b41124033ba7a05c4a"
+
+redisConfig = {
+    'host': 'localhost',
+    'port': 6379,
+    'db': 0,
+    'password': ''
+}
+
+redis = StrictRedis(**redisConfig)
 
 
-class Basic:
+class Basic(object):
     def __init__(self):
-        self.__accessToken = ''
-        self.__leftTime = 0
-
-    def __real_get_access_token(self):
-        appId = "xxxxx"
-        appSecret = "xxxxx"
-        postUrl = ("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
-            appId, appSecret))
-        urlResp = urllib.urlopen(postUrl)
-        urlResp = json.loads(urlResp.read())
-        self.__accessToken = urlResp['access_token']
-        self.__leftTime = urlResp['expires_in']
+        self._accessToken = ''
 
     def get_access_token(self):
-        if self.__leftTime < 10:
-            self.__real_get_access_token()
-        return self.__accessToken
+        if not redis.exists('access_token'):
+            postUrl = ("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
+                APPID, APPSECRET))
+            urlResp = request.urlopen(postUrl)
+            urlResp = json.loads(urlResp.read())
 
-    def run(self):
-        while (True):
-            if self.__leftTime > 10:
-                time.sleep(2)
-                self.__leftTime -= 2
-            else:
-                self.__real_get_access_token()
+            redis.set('access_token', urlResp['access_token'])
+            redis.expire('access_token', 7000)
+            self._accessToken = urlResp['access_token']
+        else:
+            self._accessToken = redis.get('access_token')
+
+
+basic = Basic()
+basic.get_access_token()
