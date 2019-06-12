@@ -39,7 +39,7 @@ class WxHandler(RequestHandler):
 
     def post(self):
         try:
-            webData = self.request
+            webData = self.request.body
             recMsg = receive.parse_xml(webData)
             if isinstance(recMsg, receive.Msg) and recMsg.MsgType == 'text':
                 toUser = recMsg.FromUserName

@@ -11,11 +11,11 @@ class Msg(object):
 
 class TextMsg(Msg):
     def __init__(self, toUserName, fromUserName, content):
-        self.__dict = dict()
-        self.__dict['ToUserName'] = toUserName
-        self.__dict['FromUserName'] = fromUserName
-        self.__dict['CreateTime'] = int(time.time())
-        self.__dict['Content'] = content
+        self._dict = dict()
+        self._dict['ToUserName'] = toUserName
+        self._dict['FromUserName'] = fromUserName
+        self._dict['CreateTime'] = int(time.time())
+        self._dict['Content'] = content
 
     def send(self):
         XmlForm = """
@@ -27,16 +27,16 @@ class TextMsg(Msg):
         <Content><![CDATA[{Content}]]></Content>
         </xml>
         """
-        return XmlForm.format(**self.__dict)
+        return XmlForm.format(**self._dict)
 
 
 class ImageMsg(Msg):
     def __init__(self, toUserName, fromUserName, mediaId):
-        self.__dict = dict()
-        self.__dict['ToUserName'] = toUserName
-        self.__dict['FromUserName'] = fromUserName
-        self.__dict['CreateTime'] = int(time.time())
-        self.__dict['MediaId'] = mediaId
+        self._dict = dict()
+        self._dict['ToUserName'] = toUserName
+        self._dict['FromUserName'] = fromUserName
+        self._dict['CreateTime'] = int(time.time())
+        self._dict['MediaId'] = mediaId
 
     def send(self):
         XmlForm = """
@@ -50,4 +50,4 @@ class ImageMsg(Msg):
         </Image>
         </xml>
         """
-        return XmlForm.format(**self.__dict)
+        return XmlForm.format(**self._dict)
