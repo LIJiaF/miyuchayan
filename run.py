@@ -58,10 +58,11 @@ class WxHandler(RequestHandler):
                     replyMsg = reply.ImageMsg(toUser, fromUser, mediaId)
                     self.write(replyMsg.send())
                 elif recMsg.MsgType == 'event':
-                    if recMsg.Event == 'CLICK':
-                        content = 'event'
-                        replyMsg = reply.TextMsg(toUser, fromUser, content)
-                        self.write(replyMsg.send())
+                    print(recMsg.Event)
+                    print(recMsg.EventKey)
+                    content = 'event'
+                    replyMsg = reply.TextMsg(toUser, fromUser, content)
+                    self.write(replyMsg.send())
                 else:
                     self.write(reply.Msg().send())
         except Exception as err:
