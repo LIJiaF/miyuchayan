@@ -24,13 +24,15 @@ class Basic(object):
             postUrl = ("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
                 APPID, APPSECRET))
             urlResp = request.urlopen(postUrl)
-            urlResp = json.loads(urlResp.read())
+            urlResp = json.loads(urlResp.read().decode('utf-8'))
 
             redis.set('access_token', urlResp['access_token'])
             redis.expire('access_token', 7000)
             self._accessToken = urlResp['access_token']
         else:
-            self._accessToken = redis.get('access_token')
+            self._accessToken = redis.get('access_token').decode('utf-8')
+
+        return self._accessToken
 
 
 if __name__ == '__main__':

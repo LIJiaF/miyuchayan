@@ -11,6 +11,10 @@ def parse_xml(web_data):
         return TextMsg(xmlData)
     elif msg_type == 'image':
         return ImageMsg(xmlData)
+    elif msg_type == 'event':
+        event = xmlData.find('Event').text
+        if event == 'CLICK':
+            return ClickMsg(xmlData)
 
 
 class Msg(object):
@@ -33,3 +37,10 @@ class ImageMsg(Msg):
         super(ImageMsg, self).__init__(xmlData)
         self.PicUrl = xmlData.find('PicUrl').text
         self.MediaId = xmlData.find('MediaId').text
+
+
+class ClickMsg(Msg):
+    def __init__(self, xmlData):
+        super(ClickMsg, self).__init__(xmlData)
+        self.Event = xmlData.find('Event').text
+        self.EventKey = xmlData.find('EventKey').text
