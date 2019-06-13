@@ -13,7 +13,9 @@ def parse_xml(web_data):
         return ImageMsg(xmlData)
     elif msg_type == 'event':
         event = xmlData.find('Event').text
-        if event == 'CLICK':
+        if event == 'subscribe':
+            return Subscribe(xmlData)
+        elif event == 'CLICK':
             return ClickMsg(xmlData)
 
 
@@ -25,6 +27,7 @@ class Msg(object):
         self.MsgType = xmlData.find('MsgType').text
 
 
+# 处理文本信息
 class TextMsg(Msg):
     def __init__(self, xmlData):
         super(TextMsg, self).__init__(xmlData)
@@ -32,6 +35,7 @@ class TextMsg(Msg):
         self.MsgId = xmlData.find('MsgId').text
 
 
+# 处理图片信息
 class ImageMsg(Msg):
     def __init__(self, xmlData):
         super(ImageMsg, self).__init__(xmlData)
@@ -40,6 +44,14 @@ class ImageMsg(Msg):
         self.MsgId = xmlData.find('MsgId').text
 
 
+# 处理关注事件信息
+class Subscribe(Msg):
+    def __init__(self, xmlData):
+        super(Subscribe, self).__init__(xmlData)
+        self.Event = xmlData.find('Event').text
+
+
+# 处理点击事件信息
 class ClickMsg(Msg):
     def __init__(self, xmlData):
         super(ClickMsg, self).__init__(xmlData)

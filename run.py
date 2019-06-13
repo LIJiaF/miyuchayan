@@ -58,7 +58,13 @@ class WxHandler(RequestHandler):
                     replyMsg = reply.ImageMsg(toUser, fromUser, mediaId)
                     self.write(replyMsg.send())
                 elif recMsg.MsgType == 'event':
-                    if recMsg.Event == 'CLICK':
+                    # 关注公众号事件
+                    if recMsg.Event == 'subscribe':
+                        content = '欢迎您'
+                        replyMsg = reply.TextMsg(toUser, fromUser, content)
+                        self.write(replyMsg.send())
+                    # 菜单点击事件
+                    elif recMsg.Event == 'CLICK':
                         content = recMsg.EventKey
                         replyMsg = reply.TextMsg(toUser, fromUser, content)
                         self.write(replyMsg.send())

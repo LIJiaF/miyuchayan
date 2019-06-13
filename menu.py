@@ -12,6 +12,7 @@ class Menu(object):
         postData = postData.encode('utf-8')
         urlResp = request.urlopen(url=postUrl, data=postData)
         print(urlResp.read())
+        print('菜单添加成功')
 
     def query(self, accessToken):
         postUrl = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=%s" % accessToken
@@ -38,46 +39,18 @@ if __name__ == '__main__':
         [
             {
                 "type": "click",
-                "name": "哈哈",
-                "key":  "mpGuide"
+                "name": "精彩回顾",
+                "key":  "history"
             },
             {
-                "name": "公众平台",
-                "sub_button":
-                [
-                    {
-                        "type": "view",
-                        "name": "更新公告",
-                        "url": "http://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1418702138&token=&lang=zh_CN"
-                    },
-                    {
-                        "type": "view",
-                        "name": "接口权限说明",
-                        "url": "http://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1418702138&token=&lang=zh_CN"
-                    },
-                    {
-                        "type": "view",
-                        "name": "返回码说明",
-                        "url": "http://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1433747234&token=&lang=zh_CN"
-                    }
-                ]
+                "type": "view",
+                "name": "粉丝福利",
+                "url": "http://www.baidu.com"
             },
             {
-                "name": "扫码", 
-                "sub_button": [
-                    {
-                        "type": "scancode_waitmsg", 
-                        "name": "扫码带提示", 
-                        "key": "rselfmenu_0_0", 
-                        "sub_button": [ ]
-                    }, 
-                    {
-                        "type": "scancode_push", 
-                        "name": "扫码推事件", 
-                        "key": "rselfmenu_0_1", 
-                        "sub_button": [ ]
-                    }
-                ]
+                "type": "click",
+                "name": "个人中心", 
+                "key": "personal"
             }
           ]
     }
