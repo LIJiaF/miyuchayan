@@ -65,9 +65,18 @@ class WxHandler(RequestHandler):
                         self.write(replyMsg.send())
                     # 菜单点击事件
                     elif recMsg.Event == 'CLICK':
-                        content = recMsg.EventKey
-                        replyMsg = reply.TextMsg(toUser, fromUser, content)
-                        self.write(replyMsg.send())
+                        eventKey = recMsg.EventKey
+                        if eventKey == 'history':
+                            content = eventKey
+                            replyMsg = reply.TextMsg(toUser, fromUser, content)
+                            self.write(replyMsg.send())
+                        elif eventKey == 'personal':
+                            title = '测试图文消息'
+                            description = '测试图文消息'
+                            picUrl = 'https://www.baidu.com/img/bd_logo1.png?where=super'
+                            url = 'https://www.baidu.com/'
+                            replyMsg = reply.ArticleMsg(toUser, fromUser, title, description, picUrl, url)
+                            self.write(replyMsg.send())
                 else:
                     self.write(reply.Msg().send())
         except Exception as err:
