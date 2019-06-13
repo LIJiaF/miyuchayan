@@ -42,6 +42,7 @@ class WxHandler(RequestHandler):
     def post(self):
         try:
             webData = self.request.body
+            print(webData)
             recMsg = receive.parse_xml(webData)
             if isinstance(recMsg, receive.Msg):
                 toUser = recMsg.FromUserName
@@ -58,7 +59,7 @@ class WxHandler(RequestHandler):
                     self.write(replyMsg.send())
                 elif recMsg.MsgType == 'event':
                     if recMsg.Event == 'CLICK':
-                        content = recMsg.EventKey
+                        content = 'event'
                         replyMsg = reply.TextMsg(toUser, fromUser, content)
                         self.write(replyMsg.send())
                 else:

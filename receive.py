@@ -6,6 +6,7 @@ def parse_xml(web_data):
         return None
 
     xmlData = ET.fromstring(web_data)
+    print(xmlData)
     msg_type = xmlData.find('MsgType').text
     if msg_type == 'text':
         return TextMsg(xmlData)
@@ -43,4 +44,3 @@ class ClickMsg(Msg):
     def __init__(self, xmlData):
         super(ClickMsg, self).__init__(xmlData)
         self.Event = xmlData.find('Event').text
-        self.EventKey = xmlData.find('EventKey').text
