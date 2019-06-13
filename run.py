@@ -1,4 +1,6 @@
 import hashlib
+import os
+import requests
 
 from tornado.web import RequestHandler, Application
 from tornado.ioloop import IOLoop
@@ -6,6 +8,7 @@ from tornado.options import define, options, parse_command_line
 
 import receive
 import reply
+from basic import Basic
 
 define("host", default="8888", help="端口")
 
@@ -83,10 +86,30 @@ class WxHandler(RequestHandler):
             return err
 
 
+class UploadHandler(RequestHandler):
+    def get(self):
+        accessToken = Basic().get_access_token()
+        return self.render('index.html', accessToken=accessToken)
+
+    def post(self):
+        files = self.request.files.get('img', None)
+        if files:
+            accessToken = Basic().get_access_token()
+            postUrl = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=%s" % accessToken
+            postData = {'media': files[0]}
+            urlResp = requests.post(url=postUrl, data=postData)
+            print(urlResp.text)
+
+
 def make_app():
+    config = {
+        'template_path': os.path.join(os.path.dirname(__file__), 'template')
+    }
+
     return Application([
         (r"/wx", WxHandler),
-    ])
+        (r"/upload", UploadHandler),
+    ], **config)
 
 
 if __name__ == "__main__":
