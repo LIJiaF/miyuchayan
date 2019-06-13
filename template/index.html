@@ -8,9 +8,8 @@
     <title>图片上传</title>
 </head>
 <body>
-<form method="post" action="https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token={{accessToken}}"
-      enctype="multipart/form-data">
-    <input type="file" name="img">
+<form method="post" action="/upload" enctype="multipart/form-data">
+    <input type="file" name="img" multiple="multiple">
     <input type="submit" value="上传">
 </form>
 </body>
