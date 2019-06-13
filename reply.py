@@ -71,8 +71,14 @@ class ArticleMsg(Msg):
         <FromUserName><![CDATA[{FromUserName}]]></FromUserName>
         <CreateTime>{CreateTime}</CreateTime>
         <MsgType><![CDATA[news]]></MsgType>
-        <ArticleCount>1</ArticleCount>
+        <ArticleCount>2</ArticleCount>
         <Articles>
+        <item>
+        <Title><![CDATA[{Title}]]></Title>
+        <Description><![CDATA[{Description}]]></Description>
+        <PicUrl><![CDATA[{PicUrl}]]></PicUrl>
+        <Url><![CDATA[{Url}]]></Url>
+        </item>
         <item>
         <Title><![CDATA[{Title}]]></Title>
         <Description><![CDATA[{Description}]]></Description>
