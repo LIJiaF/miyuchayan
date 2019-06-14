@@ -8,6 +8,7 @@
         * {
             margin: 0;
             padding: 0;
+            outline: none;
             font-family: "Microsoft YaHei UI";
         }
 
@@ -27,6 +28,7 @@
             height: 60px;
             float: left;
             border-radius: 10px;
+            background: url("{{info['image']}}") no-repeat center center;
         }
 
         .user_info {
@@ -45,28 +47,30 @@
             font-size: 12px;
         }
 
-        .more {
+        .btn {
             display: block;
             position: absolute;
             right: 10px;
             top: 27px;
             cursor: pointer;
-        }
-
-        .more img {
-            width: 28px;
-            cursor: pointer;
+            background: #6495ED;
+            border: none;
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 11px;
+            outline: none;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
 <div class="info">
-    <img class="photo" src="{{info['image']}}">
+    <span class="photo"></span>
     <div class="user_info">
         <p class="name">{{info['name']}}</p>
         <p class="address">{{info['province']}} / {{info['city']}}</p>
     </div>
-    <a class="more" href="#"><img src="{{static_url('more.png')}}"></a>
+    <span class="btn">领5积分</span>
 </div>
 </body>
 </html>

@@ -150,6 +150,7 @@ class PersonalHandler(RequestHandler):
             'city': info_data.get('city') or '保密',
             'image': info_data.get('headimgurl')
         }
+        print(info)
 
         return self.render('personal.html', info=info)
 
