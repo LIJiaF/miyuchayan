@@ -95,6 +95,11 @@ class WxHandler(RequestHandler):
             return err
 
 
+class DiscountHandler(RequestHandler):
+    def get(self):
+        return self.write('this is discount view')
+
+
 class UploadHandler(RequestHandler):
     def get(self):
         accessToken = Basic().get_access_token()
@@ -141,8 +146,8 @@ def make_app():
     return Application([
         (r"/", IndexHandler),
         (r"/wx", WxHandler),
+        (r"/discount/", DiscountHandler),
         (r"/upload", UploadHandler),
-        (r"/upload/", UploadHandler),
     ], **config)
 
 

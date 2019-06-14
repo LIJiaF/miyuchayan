@@ -32,8 +32,8 @@ class Menu(object):
 
 
 if __name__ == '__main__':
-    redirect_uri = request.quote('http://120.76.56.231/upload')
-    callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4ad79b44d68db8da&redirect_uri=%s&response_type=code&scope=snsapi_base&state=123#wechat_redirect" % redirect_uri
+    redirect_uri = request.quote('http://120.76.56.231/discount')
+    callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4ad79b44d68db8da&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" % redirect_uri
 
     myMenu = Menu()
     postJson = """
