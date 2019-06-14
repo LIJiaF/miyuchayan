@@ -28,7 +28,8 @@
             height: 60px;
             float: left;
             border-radius: 10px;
-            background: url("{{info['image']}}") no-repeat center center;
+            background: url("{{info['image']}}") center center;
+            background-size: contain;
         }
 
         .user_info {
@@ -52,14 +53,34 @@
             position: absolute;
             right: 10px;
             top: 27px;
-            cursor: pointer;
-            background: #6495ED;
             border: none;
             color: #fff;
             padding: 6px 10px;
             border-radius: 11px;
-            outline: none;
             font-size: 12px;
+            outline: none;
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+        .draft {
+            background: #6495ED;
+        }
+
+        .active {
+            display: none;
+            background: #cccccc;
+        }
+
+        .score_banner, .discount_banner {
+            margin-top: 10px;
+            padding: 15px;
+            background: #ffffff;
+        }
+
+        .score, .discount {
+            float: right;
+            color: #6495ED;
         }
     </style>
 </head>
@@ -70,7 +91,11 @@
         <p class="name">{{info['name']}}</p>
         <p class="address">{{info['province']}} / {{info['city']}}</p>
     </div>
-    <span class="btn">领5积分</span>
+    <span class="btn draft">领5积分</span>
+    <span class="btn active">领取成功</span>
 </div>
+<p class="score_banner">当前积分<span class="score">100</span></p>
+<p class="discount_banner">当前优惠券<span class="discount">5</span></p>
+
 </body>
 </html>
