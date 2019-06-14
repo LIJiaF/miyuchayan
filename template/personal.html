@@ -68,10 +68,10 @@
 <body>
 <h1 class="title">个人中心</h1>
 <div class="info">
-    <img class="photo" src="{{info.image}}">
+    <img class="photo" src="{{info['image']}}">
     <div class="user_info">
-        <p class="name">{{info.name}}</p>
-        <p class="address">{{info.province}}/{{city}}</p>
+        <p class="name">{{info['name']}}</p>
+        <p class="address">{{info['province']}}/{{info['city']}}</p>
     </div>
     <a class="more" href="#"><img src="{{static_url('more.png')}}"></a>
 </div>

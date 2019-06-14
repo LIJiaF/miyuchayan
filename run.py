@@ -138,6 +138,7 @@ class DiscountHandler(RequestHandler):
             print('errcode: ', token_data['errcode'])
             print('errmsg: ', token_data['errmsg'])
             return self.write('获取用户信息失败')
+
         info = {
             'name': info_data.get('nickname'),
             'province': info_data.get('nickname'),
