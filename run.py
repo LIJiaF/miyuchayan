@@ -17,6 +17,11 @@ from redisConn import redis
 define("host", default="8888", help="端口")
 
 
+class IndexHandler(RequestHandler):
+    def get(self):
+        return self.write('this is index view')
+
+
 class WxHandler(RequestHandler):
     # 微信公众号接入验证
     def get(self):
@@ -117,7 +122,7 @@ class UploadHandler(RequestHandler):
 
                     accessToken = Basic().get_access_token()
                     cmd = 'curl -F media=@upload/%s "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=%s"' % (
-                    sName, accessToken)
+                        sName, accessToken)
                     wxName = json.loads(os.popen(cmd).read())['url']
                     fName = file['filename']
 
@@ -134,8 +139,10 @@ def make_app():
     }
 
     return Application([
+        (r"/", IndexHandler),
         (r"/wx", WxHandler),
         (r"/upload", UploadHandler),
+        (r"/upload/", UploadHandler),
     ], **config)
 
 
