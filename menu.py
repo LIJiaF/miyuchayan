@@ -1,3 +1,4 @@
+import json
 from urllib import request
 
 from basic import Basic
@@ -11,8 +12,13 @@ class Menu(object):
         postUrl = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s" % accessToken
         postData = postData.encode('utf-8')
         urlResp = request.urlopen(url=postUrl, data=postData)
-        print(urlResp.read())
-        print('菜单添加成功')
+        resData = json.loads(urlResp.read().decode('utf-8'))
+        if not resData['errcode']:
+            print('菜单添加成功')
+        else:
+            print('菜单添加失败')
+            print('errcode: ', resData['errcode'])
+            print('errmsg: ', resData['errmsg'])
 
     def query(self, accessToken):
         postUrl = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=%s" % accessToken

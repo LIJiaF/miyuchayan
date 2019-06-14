@@ -146,6 +146,7 @@ def make_app():
     return Application([
         (r"/", IndexHandler),
         (r"/wx", WxHandler),
+        (r"/discount", DiscountHandler),
         (r"/discount/", DiscountHandler),
         (r"/upload", UploadHandler),
     ], **config)
