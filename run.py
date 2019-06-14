@@ -4,6 +4,7 @@ import math
 import random
 import json
 from datetime import datetime
+from urllib import request
 
 from tornado.web import RequestHandler, Application
 from tornado.ioloop import IOLoop
@@ -97,6 +98,45 @@ class WxHandler(RequestHandler):
 
 class DiscountHandler(RequestHandler):
     def get(self):
+        appid = 'wx4ad79b44d68db8da'
+        secret = '75b8b1f237c468b41124033ba7a05c4a'
+
+        # 根据code获取access_token和openid
+        code = self.get_argument('code', None)
+        print('code: ', code)
+        get_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code' % (appid, secret, code)
+        token_data = json.loads(request.urlopen(url=get_token_url).read())
+        if token_data.get('errcode'):
+            print('errcode: ', token_data['errcode'])
+            print('errmsg: ', token_data['errmsg'])
+            return self.write('获取access_token失败')
+
+        access_token = token_data.get('access_token', None)
+        refresh_token = token_data.get('refresh_token', None)
+        openid = token_data.get('openid', None)
+        print('access_token: ', access_token)
+        print('refresh_token: ', refresh_token)
+        print('openid: ', openid)
+
+        # 检验access_token是否有效
+        check_token_url = 'https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s' % (access_token, openid)
+        chekc_token_data = json.loads(request.urlopen(url=check_token_url).read())
+        if chekc_token_data.get('errcode'):
+            refresh_token_url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s' % (appid, refresh_token)
+            refresh_data = json.loads(request.urlopen(url=refresh_token_url).read())
+            if not refresh_data.get('errcode'):
+                access_token = refresh_data.get('access_token', None)
+                openid = refresh_data.get('openid', None)
+
+        # 根据access_token和openid获取用户信息
+        get_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN' % (access_token, openid)
+        info_data = json.loads(request.urlopen(url=get_info_url).read())
+        if info_data.get('errcode'):
+            print('errcode: ', token_data['errcode'])
+            print('errmsg: ', token_data['errmsg'])
+            return self.write('获取用户信息失败')
+        print('info: ', info_data)
+
         return self.write('this is discount view')
 
 
