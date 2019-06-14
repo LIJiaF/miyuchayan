@@ -38,8 +38,10 @@ class Menu(object):
 
 
 if __name__ == '__main__':
-    redirect_uri = request.quote('http://120.76.56.231/discount')
-    callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4ad79b44d68db8da&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" % redirect_uri
+    discount_url = request.quote('http://120.76.56.231/discount')
+    discount_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4ad79b44d68db8da&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" % discount_url
+    personal_url = request.quote('http://120.76.56.231/personal')
+    personal_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4ad79b44d68db8da&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" % personal_url
 
     myMenu = Menu()
     postJson = """
@@ -57,12 +59,12 @@ if __name__ == '__main__':
                 "url": "%s"
             },
             {
-                "type": "click",
+                "type": "view",
                 "name": "个人中心", 
-                "key": "personal"
+                "url": "%s"
             }
           ]
     }
-    """ % callable_url
+    """ % (discount_callable_url, personal_callable_url)
     accessToken = Basic().get_access_token()
     myMenu.create(postJson, accessToken)

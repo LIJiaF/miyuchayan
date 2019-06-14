@@ -98,6 +98,11 @@ class WxHandler(RequestHandler):
 
 class DiscountHandler(RequestHandler):
     def get(self):
+        return self.render('discount.html')
+
+
+class PersonalHandler(RequestHandler):
+    def get(self):
         appid = 'wx4ad79b44d68db8da'
         secret = '75b8b1f237c468b41124033ba7a05c4a'
 
@@ -140,10 +145,11 @@ class DiscountHandler(RequestHandler):
             return self.write('获取用户信息失败')
 
         info = {
-            'name': info_data.get('nickname'),
-            'province': info_data.get('province'),
-            'city': info_data.get('city'),
-            'image': info_data.get('headimgurl')
+            'name': info_data.get('nickname') or '密语君',
+            'province': info_data.get('province') or '保密',
+            'city': info_data.get('city') or '保密',
+            # 'image': info_data.get('headimgurl') or '../photo.jpg'
+            'image': '../photo.jpg'
         }
 
         return self.render('personal.html', info=info)
@@ -198,6 +204,8 @@ def make_app():
         (r"/wx", WxHandler),
         (r"/discount", DiscountHandler),
         (r"/discount/", DiscountHandler),
+        (r"/personal", PersonalHandler),
+        (r"/personal/", PersonalHandler),
         (r"/upload", UploadHandler),
     ], **config)
 
