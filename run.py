@@ -104,7 +104,8 @@ class DiscountHandler(RequestHandler):
         # 根据code获取access_token和openid
         code = self.get_argument('code', None)
         print('code: ', code)
-        get_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code' % (appid, secret, code)
+        get_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code' % (
+            appid, secret, code)
         token_data = json.loads(request.urlopen(url=get_token_url).read())
         if token_data.get('errcode'):
             print('errcode: ', token_data['errcode'])
@@ -122,28 +123,35 @@ class DiscountHandler(RequestHandler):
         check_token_url = 'https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s' % (access_token, openid)
         chekc_token_data = json.loads(request.urlopen(url=check_token_url).read())
         if chekc_token_data.get('errcode'):
-            refresh_token_url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s' % (appid, refresh_token)
+            refresh_token_url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s' % (
+                appid, refresh_token)
             refresh_data = json.loads(request.urlopen(url=refresh_token_url).read())
             if not refresh_data.get('errcode'):
                 access_token = refresh_data.get('access_token', None)
                 openid = refresh_data.get('openid', None)
 
         # 根据access_token和openid获取用户信息
-        get_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN' % (access_token, openid)
+        get_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN' % (
+            access_token, openid)
         info_data = json.loads(request.urlopen(url=get_info_url).read())
         if info_data.get('errcode'):
             print('errcode: ', token_data['errcode'])
             print('errmsg: ', token_data['errmsg'])
             return self.write('获取用户信息失败')
-        print('info: ', info_data)
+        info = {
+            'name': info_data.get('nickname'),
+            'province': info_data.get('nickname'),
+            'city': info_data.get('city'),
+            'image': info_data.get('headimgurl')
+        }
 
-        return self.write('this is discount view')
+        return self.render('personal.html', info=info)
 
 
 class UploadHandler(RequestHandler):
     def get(self):
         accessToken = Basic().get_access_token()
-        return self.render('index.html', accessToken=accessToken)
+        return self.render('upload.html', accessToken=accessToken)
 
     def post(self):
         files = self.request.files.get('img', None)
@@ -180,6 +188,7 @@ class UploadHandler(RequestHandler):
 
 def make_app():
     config = {
+        'static_path': os.path.join(os.path.dirname(__file__), 'static'),
         'template_path': os.path.join(os.path.dirname(__file__), 'template')
     }
 
