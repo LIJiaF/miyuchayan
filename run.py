@@ -141,7 +141,7 @@ class DiscountHandler(RequestHandler):
 
         info = {
             'name': info_data.get('nickname'),
-            'province': info_data.get('nickname'),
+            'province': info_data.get('province'),
             'city': info_data.get('city'),
             'image': info_data.get('headimgurl')
         }
