@@ -148,8 +148,7 @@ class PersonalHandler(RequestHandler):
             'name': info_data.get('nickname') or '密语君',
             'province': info_data.get('province') or '保密',
             'city': info_data.get('city') or '保密',
-            # 'image': info_data.get('headimgurl') or '../photo.jpg'
-            'image': '../photo.jpg'
+            'image': info_data.get('headimgurl')
         }
 
         return self.render('personal.html', info=info)
