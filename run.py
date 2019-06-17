@@ -15,6 +15,7 @@ import reply
 from basic import Basic
 from redisConn import redis
 from wxConfig import APPID, APPSECRET
+from postgresqlConn import Postgres
 
 define("host", default="8888", help="端口")
 
@@ -92,6 +93,12 @@ class WxHandler(RequestHandler):
 
 class DiscountHandler(RequestHandler):
     def get(self):
+        conn = Postgres()
+        sql = """
+            
+        """
+        conn.execute(sql)
+
         return self.render('discount.html')
 
 
@@ -142,8 +149,6 @@ class PersonalHandler(RequestHandler):
             'image': info_data.get('headimgurl')
         }
         print(info)
-
-
 
         return self.render('personal.html', info=info)
 
