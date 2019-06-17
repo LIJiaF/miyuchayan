@@ -29,8 +29,8 @@
             height: 60px;
             float: left;
             border-radius: 10px;
-            background: url("{{info['image']}}") center center;
-            /*background: url("http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132") center center;*/
+            /*background: url("{{info['image']}}") center center;*/
+            background: url("http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132") center center;
             background-size: contain;
         }
 
@@ -157,12 +157,36 @@
             background: aliceblue;
         }
 
-        .left{
+        .left {
             left: -6px;
         }
 
-        .right{
+        .right {
             right: -6px;
+        }
+
+        .code {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border: 1px solid #cccccc;
+            border-radius: 3px;
+            background: #fff;
+        }
+
+        .close {
+            position: absolute;
+            right: -16px;
+            top: -16px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            background-image: url(../static/close.png);
+            background-size: 30px;
         }
     </style>
 </head>
@@ -170,10 +194,10 @@
 <div class="info">
     <span class="photo"></span>
     <div class="user_info">
-        <p class="name">{{info['name']}}</p>
-        <!--<p class="name">李家富</p>-->
-        <p class="address">{{info['province']}} / {{info['city']}}</p>
-        <!--<p class="address">广东 / 广州</p>-->
+        <!--<p class="name">{{info['name']}}</p>-->
+        <p class="name">李家富</p>
+        <!--<p class="address">{{info['province']}} / {{info['city']}}</p>-->
+        <p class="address">广东 / 广州</p>
     </div>
     <span class="btn draft">领5积分</span>
     <span class="btn active">领取成功</span>
@@ -185,7 +209,7 @@
         <div class="discount">
             <p>&yen;<span class="money">5</span></p>
             <h1>满减券<span class="time">有效期至：2019.6.20</span></h1>
-            <button>立即使用</button>
+            <button onclick="showCode('123456')">立即使用</button>
         </div>
         <p class="rule">使用规则：满20元可用</p>
         <span class="circle left"></span>
@@ -195,12 +219,41 @@
         <div class="discount">
             <p>折<span class="money">6</span></p>
             <h1>折扣券<span class="time">有效期至：2019.6.20</span></h1>
-            <button>立即使用</button>
+            <button onclick="showCode('987654')">立即使用</button>
         </div>
         <p class="rule">使用规则：满20元可用</p>
         <span class="circle left"></span>
         <span class="circle right"></span>
     </li>
 </ul>
+<div class="code" id="code">
+    <input type="hidden" value="0" id="flag">
+    <img id="img" src=""/>
+    <span class="close" onclick="hideCode()"></span>
+</div>
+<script>
+    function showCode (code) {
+        let codeEle = document.getElementById('code');
+        let imgEle = document.getElementById('img');
+        let flagEle = document.getElementById('flag');
+        let src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=333333&el=l&w=200&m=10&text=' + code;
+        if (flagEle.value == '0') {
+            imgEle.setAttribute('src', src);
+            codeEle.style.display = 'block';
+            flagEle.value = '1';
+        } else {
+            console.log('请先关闭当前二维码框');
+        }
+    }
+
+    function hideCode () {
+        let codeEle = document.getElementById('code');
+        let imgEle = document.getElementById('img');
+        let flagEle = document.getElementById('flag');
+        codeEle.style.display = 'none';
+        imgEle.setAttribute('src', '');
+        flagEle.value = '0';
+    }
+</script>
 </body>
 </html>
