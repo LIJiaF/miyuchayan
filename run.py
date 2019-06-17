@@ -35,11 +35,6 @@ class WxHandler(RequestHandler):
             echostr = self.get_argument('echostr')
             token = "LiJiaF"
 
-            print('signature: ', signature)
-            print('timestamp: ', timestamp)
-            print('nonce: ', nonce)
-            print('echostr: ', echostr)
-
             tmp = [token, timestamp, nonce]
             tmp.sort()
             tmp = "".join(tmp)
@@ -118,9 +113,6 @@ class PersonalHandler(RequestHandler):
         access_token = token_data.get('access_token', None)
         refresh_token = token_data.get('refresh_token', None)
         openid = token_data.get('openid', None)
-        print('access_token: ', access_token)
-        print('refresh_token: ', refresh_token)
-        print('openid: ', openid)
 
         # 检验access_token是否有效
         check_token_url = 'https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s' % (access_token, openid)
@@ -200,10 +192,8 @@ def make_app():
     return Application([
         (r"/", IndexHandler),
         (r"/wx", WxHandler),
-        (r"/discount", DiscountHandler),
-        (r"/discount/", DiscountHandler),
-        (r"/personal", PersonalHandler),
-        (r"/personal/", PersonalHandler),
+        (r"/discount/*", DiscountHandler),
+        (r"/personal/*", PersonalHandler),
         (r"/upload", UploadHandler),
     ], **config)
 
