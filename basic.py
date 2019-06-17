@@ -2,9 +2,7 @@ import json
 from urllib import request
 
 from redisConn import redis
-
-APPID = "wx4ad79b44d68db8da"
-APPSECRET = "75b8b1f237c468b41124033ba7a05c4a"
+from wxConfig import APPID, APPSECRET
 
 
 class Basic(object):

@@ -14,6 +14,7 @@ import receive
 import reply
 from basic import Basic
 from redisConn import redis
+from wxConfig import APPID, APPSECRET
 
 define("host", default="8888", help="端口")
 
@@ -83,13 +84,6 @@ class WxHandler(RequestHandler):
                             content = eventKey
                             replyMsg = reply.TextMsg(toUser, fromUser, content)
                             self.write(replyMsg.send())
-                        elif eventKey == 'personal':
-                            title = '测试图文消息'
-                            description = '测试图文消息'
-                            picUrl = 'https://www.baidu.com/img/bd_logo1.png?where=super'
-                            url = 'https://www.baidu.com/'
-                            replyMsg = reply.ArticleMsg(toUser, fromUser, title, description, picUrl, url)
-                            self.write(replyMsg.send())
                 else:
                     self.write(reply.Msg().send())
         except Exception as err:
@@ -103,19 +97,16 @@ class DiscountHandler(RequestHandler):
 
 class PersonalHandler(RequestHandler):
     def get(self):
-        appid = 'wx4ad79b44d68db8da'
-        secret = '75b8b1f237c468b41124033ba7a05c4a'
-
-        # 根据code获取access_token和openid
+        # 根据code获取网页access_token和openid
         code = self.get_argument('code', None)
         print('code: ', code)
         get_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code' % (
-            appid, secret, code)
+            APPID, APPSECRET, code)
         token_data = json.loads(request.urlopen(url=get_token_url).read())
         if token_data.get('errcode'):
             print('errcode: ', token_data['errcode'])
             print('errmsg: ', token_data['errmsg'])
-            return self.write('获取access_token失败')
+            return self.write('获取网页access_token失败，请在微信端打开')
 
         access_token = token_data.get('access_token', None)
         refresh_token = token_data.get('refresh_token', None)
@@ -129,7 +120,7 @@ class PersonalHandler(RequestHandler):
         chekc_token_data = json.loads(request.urlopen(url=check_token_url).read())
         if chekc_token_data.get('errcode'):
             refresh_token_url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s' % (
-                appid, refresh_token)
+                APPID, refresh_token)
             refresh_data = json.loads(request.urlopen(url=refresh_token_url).read())
             if not refresh_data.get('errcode'):
                 access_token = refresh_data.get('access_token', None)
@@ -151,6 +142,8 @@ class PersonalHandler(RequestHandler):
             'image': info_data.get('headimgurl')
         }
         print(info)
+
+
 
         return self.render('personal.html', info=info)
 
