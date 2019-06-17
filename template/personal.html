@@ -9,7 +9,8 @@
             margin: 0;
             padding: 0;
             outline: none;
-            font-family: "Microsoft YaHei UI";
+            font-family: Arial;
+            list-style: none;
         }
 
         body {
@@ -29,6 +30,7 @@
             float: left;
             border-radius: 10px;
             background: url("{{info['image']}}") center center;
+            /*background: url("http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132") center center;*/
             background-size: contain;
         }
 
@@ -78,9 +80,71 @@
             background: #ffffff;
         }
 
-        .score, .discount {
+        .score_count, .discount_count {
             float: right;
             color: #6495ED;
+        }
+
+        .discount_list {
+            margin: 10px auto;
+            width: 80%;
+        }
+
+        .discount_list li {
+            background: #ffffff;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .discount {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .discount p {
+            flex-grow: 1;
+            color: #6495ED;
+        }
+
+        .discount .money {
+            font-size: 40px;
+            padding-left: 5px;
+        }
+
+        .discount h1 {
+            flex-grow: 3;
+            font-size: 19px;
+            font-weight: normal;
+            text-align: center;
+        }
+
+        .discount .time {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .discount button {
+            flex-grow: 1;
+            border: none;
+            color: #fff;
+            padding: 6px 0;
+            border-radius: 11px;
+            font-size: 12px;
+            outline: none;
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            background: #6495ED;
+        }
+
+        .rule {
+            padding: 8px 10px;
+            background: #eeeeee;
+            color: #999999;
+            font-size: 12px;
+            border-radius: 0 0 5px 5px;
         }
     </style>
 </head>
@@ -89,13 +153,32 @@
     <span class="photo"></span>
     <div class="user_info">
         <p class="name">{{info['name']}}</p>
+        <!--<p class="name">李家富</p>-->
         <p class="address">{{info['province']}} / {{info['city']}}</p>
+        <p class="address">广东 / 广州</p>
     </div>
     <span class="btn draft">领5积分</span>
     <span class="btn active">领取成功</span>
 </div>
-<p class="score_banner">当前积分<span class="score">100</span></p>
-<p class="discount_banner">当前优惠券<span class="discount">5</span></p>
-
+<p class="score_banner">当前积分<span class="score_count">100</span></p>
+<p class="discount_banner">当前优惠券<span class="discount_count">5</span></p>
+<ul class="discount_list">
+    <li>
+        <div class="discount">
+            <p>&yen;<span class="money">5</span></p>
+            <h1>满减券<span class="time">有效期至：2019.6.20</span></h1>
+            <button>立即使用</button>
+        </div>
+        <p class="rule">使用规则：满20元可用</p>
+    </li>
+    <li>
+        <div class="discount">
+            <p>折<span class="money">6</span></p>
+            <h1>折扣券<span class="time">有效期至：2019.6.20</span></h1>
+            <button>立即使用</button>
+        </div>
+        <p class="rule">使用规则：满20元可用</p>
+    </li>
+</ul>
 </body>
 </html>
