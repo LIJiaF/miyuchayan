@@ -113,6 +113,9 @@ class PersonalHandler(RequestHandler):
         access_token = token_data.get('access_token', None)
         refresh_token = token_data.get('refresh_token', None)
         openid = token_data.get('openid', None)
+        print(access_token)
+        print(refresh_token)
+        print(openid)
 
         # 检验access_token是否有效
         check_token_url = 'https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s' % (access_token, openid)
@@ -134,11 +137,32 @@ class PersonalHandler(RequestHandler):
             print('errmsg: ', token_data['errmsg'])
             return self.write('获取用户信息失败')
 
+        conn = Postgres()
+        data = conn.select('select id from wx_user where openid = %s' % openid)
+        print(data)
+        if not data:
+            sql = """
+                insert into wx_user
+                (openid, username, image_url, province, city)
+                values 
+                ('%s', '%s', '%s', '%s', '%s')
+            """ % (openid, info_data.get('nickname'), info_data.get('headimgurl'), info_data.get('province'),
+                   info_data.get('city'))
+            conn.execute(sql)
+
+        sql = """
+            select openid, username, image_url, province, city, score, discount 
+            from wx_user 
+            where openid = %s
+        """ % openid
+        data = conn.select(sql)
         info = {
-            'name': info_data.get('nickname') or '密语君',
-            'province': info_data.get('province') or '保密',
-            'city': info_data.get('city') or '保密',
-            'image': info_data.get('headimgurl')
+            'name': data.get('username') or '密语君',
+            'province': data.get('province') or '保密',
+            'city': data.get('city') or '保密',
+            'image': data.get('headimgurl'),
+            'score': data.get('score'),
+            'discount': data.get('discount')
         }
         print(info)
 
