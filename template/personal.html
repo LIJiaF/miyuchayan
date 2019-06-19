@@ -198,7 +198,7 @@
         <p class="address">{{info['province']}} / {{info['city']}}</p>
     </div>
     {% if not info['is_receive'] %}
-    <span class="btn draft" onclick="receive">领5积分</span>
+    <span class="btn draft" onclick="receive()">领5积分</span>
     {% else %}}
     <span class="btn active">领取成功</span>
     {% end %}
@@ -258,14 +258,18 @@
 
     function receive() {
         let ele = document.getElementById('openid');
+        alert(ele);
         let value = ele.value;
+        alert(value);
         fetch('http://127.0.0.1:8888/personal', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({openid: value})
         }).then(function (res) {
-            console.log(res)
-        })
+            alert(res)
+        }).catch(function (err) {
+            alert(err);
+        });
     }
 </script>
 </body>
