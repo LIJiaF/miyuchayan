@@ -22,24 +22,20 @@ class Postgres(object):
         cur = conn.cursor()
         cur.execute(sql)
         columns = [col[0] for col in cur.description]
-        row = [str(row) for row in cur.fetchone()]
-        result = dict(zip(columns, row))
-
+        row = cur.fetchone()
         self.close(cur, conn)
 
-        return result
+        return row or dict(zip(columns, row))
 
     def fetchall(self, sql):
         conn = self.get_connect()
         cur = conn.cursor()
         cur.execute(sql)
         columns = [col[0] for col in cur.description]
-        rows = [[str(item) for item in row] for row in cur.fetchall()]
-        result = [dict(zip(columns, row)) for row in rows]
-
+        rows = cur.fetchall()
         self.close(cur, conn)
 
-        return result
+        return rows or [dict(zip(columns, row)) for row in rows]
 
     def execute(self, sql):
         conn = self.get_connect()
