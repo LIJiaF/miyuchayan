@@ -1,5 +1,7 @@
 import psycopg2
 
+from log_print import logger
+
 
 class Postgres(object):
     def __init__(self):
@@ -46,7 +48,7 @@ class Postgres(object):
             cur.execute(sql)
             conn.commit()
         except Exception:
-            print('sql执行失败: ', sql)
+            logger.error('sql执行失败: %s' % sql)
         finally:
             self.close(cur, conn)
 

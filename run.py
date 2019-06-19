@@ -3,6 +3,7 @@ import os
 import math
 import random
 import json
+
 from datetime import datetime
 from urllib import request
 
@@ -16,6 +17,7 @@ from basic import Basic
 from redisConn import redis
 from wxConfig import APPID, APPSECRET
 from postgresqlConn import Postgres
+from log_print import logger
 
 define("host", default="8888", help="端口")
 
@@ -48,9 +50,10 @@ class WxHandler(RequestHandler):
             hashcode = hashlib.sha1(tmp.encode('utf8')).hexdigest()
 
             if hashcode == signature:
-                print('微信公众号接入成功')
+                logger.info('微信公众号接入成功')
                 self.write(echostr)
             else:
+                logger.error('微信公众号接入失败')
                 self.write('')
         except Exception as err:
             self.write(err)
@@ -59,7 +62,7 @@ class WxHandler(RequestHandler):
     def post(self):
         try:
             webData = self.request.body
-            print(webData)
+            logger.info('接收信息: %s' % webData)
             recMsg = receive.parse_xml(webData)
             if isinstance(recMsg, receive.Msg):
                 toUser = recMsg.FromUserName
@@ -108,21 +111,21 @@ class PersonalHandler(RequestHandler):
     def get(self):
         # 根据code获取网页access_token和openid
         code = self.get_argument('code', None)
-        print('code: ', code)
+        logger.info('code: %s' % code)
         get_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code' % (
             APPID, APPSECRET, code)
         token_data = json.loads(request.urlopen(url=get_token_url).read())
         if token_data.get('errcode'):
-            print('errcode: ', token_data['errcode'])
-            print('errmsg: ', token_data['errmsg'])
+            logger.error('errcode: %s' % token_data['errcode'])
+            logger.error('errmsg: %s' % token_data['errmsg'])
             return self.write('获取网页access_token失败，请在微信端打开')
 
         access_token = token_data.get('access_token', None)
         refresh_token = token_data.get('refresh_token', None)
         openid = token_data.get('openid', None)
-        print(access_token)
-        print(refresh_token)
-        print(openid)
+        logger.info('access_token: %s', access_token)
+        logger.info('refresh_token: %s', refresh_token)
+        logger.info('openid: %s', openid)
 
         # 检验access_token是否有效
         check_token_url = 'https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s' % (access_token, openid)
@@ -140,13 +143,13 @@ class PersonalHandler(RequestHandler):
             access_token, openid)
         info_data = json.loads(request.urlopen(url=get_info_url).read())
         if info_data.get('errcode'):
-            print('errcode: ', token_data['errcode'])
-            print('errmsg: ', token_data['errmsg'])
+            logger.error('errcode: %s' % token_data['errcode'])
+            logger.error('errmsg: %s' % token_data['errmsg'])
             return self.write('获取用户信息失败')
 
         conn = Postgres()
         data = conn.fetchone("select id from wx_user where openid = '%s'" % openid)
-        print(data)
+        logger.info('查看数据库是否存在该用户信息: %s' % data)
         if not data:
             sql = """
                 insert into wx_user (openid, username, image_url, province, city)
@@ -161,7 +164,7 @@ class PersonalHandler(RequestHandler):
             where openid = '%s'
         """ % openid
         data = conn.fetchone(sql)
-        print(data)
+        logger.info('获取用户信息: %s' % data)
         info = {
             'openid': data['openid'],
             'username': data['username'] or '密语君',
@@ -172,7 +175,7 @@ class PersonalHandler(RequestHandler):
             'discount': data['discount'],
             'is_receive': data['date'] >= datetime.strftime(datetime.now(), '%Y-%m-%d')
         }
-        print(info)
+        logger.info('用户信息: %s' % info)
 
         return self.render('personal.html', info=info)
 
