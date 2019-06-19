@@ -186,14 +186,15 @@ class PersonalHandler(RequestHandler):
             'code': 0
         }
         if openid:
+            now = datetime.strftime(datetime.now(), '%Y-%m-%d')
             conn = Postgres()
-            conn.fetchone("update wx_user set score = score + 5 where openid = %s" % openid)
+            conn.execute("update wx_user set score = score + 5, date = '%s' where openid = '%s'" % (now, openid))
             res['msg'] = '积分领取成功'
             return self.finish(res)
 
         res['code'] = -1
         res['msg'] = '积分领取失败'
-        return res
+        return self.finish(res)
 
 
 class UploadHandler(RequestHandler):
