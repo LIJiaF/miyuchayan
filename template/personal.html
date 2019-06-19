@@ -194,16 +194,17 @@
 <div class="info">
     <span class="photo"></span>
     <div class="user_info">
-        <!--<p class="name">{{info['username']}}</p>-->
-        <p class="name">李家富</p>
-        <!--<p class="address">{{info['province']}} / {{info['city']}}</p>-->
-        <p class="address">广东 / 广州</p>
+        <p class="name">{{info['username']}}</p>
+        <p class="address">{{info['province']}} / {{info['city']}}</p>
     </div>
+    {% if not info['is_receive'] %}
     <span class="btn draft">领5积分</span>
+    {% else %}}
     <span class="btn active">领取成功</span>
+    {% endif %}
 </div>
-<p class="score_banner">当前积分<span class="score_count">100</span></p>
-<p class="discount_banner">当前优惠券<span class="discount_count">5</span></p>
+<p class="score_banner">当前积分<span class="score_count">{{info['score']}}</span></p>
+<p class="discount_banner">当前优惠券<span class="discount_count">{{info['discount']}}</span></p>
 <ul class="discount_list">
     <li>
         <div class="discount">
@@ -232,7 +233,7 @@
     <span class="close" onclick="hideCode()"></span>
 </div>
 <script>
-    function showCode (code) {
+    function showCode(code) {
         let codeEle = document.getElementById('code');
         let imgEle = document.getElementById('img');
         let flagEle = document.getElementById('flag');
@@ -246,7 +247,7 @@
         }
     }
 
-    function hideCode () {
+    function hideCode() {
         let codeEle = document.getElementById('code');
         let imgEle = document.getElementById('img');
         let flagEle = document.getElementById('flag');

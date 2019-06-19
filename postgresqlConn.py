@@ -15,15 +15,29 @@ class Postgres(object):
 
         return conn
 
-    def select(self, sql):
+    def fetchone(self, sql):
         conn = self.get_connect()
         cur = conn.cursor()
         cur.execute(sql)
-        rows = cur.fetchall()
+        columns = [col[0] for col in cur.description]
+        row = [str(row) for row in cur.fetchone()]
+        result = dict(zip(columns, row))
 
         self.close(cur, conn)
 
-        return rows
+        return result
+
+    def fetchall(self, sql):
+        conn = self.get_connect()
+        cur = conn.cursor()
+        cur.execute(sql)
+        columns = [col[0] for col in cur.description]
+        rows = [[str(item) for item in row] for row in cur.fetchall()]
+        result = [dict(zip(columns, row)) for row in rows]
+
+        self.close(cur, conn)
+
+        return result
 
     def execute(self, sql):
         conn = self.get_connect()

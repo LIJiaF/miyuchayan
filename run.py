@@ -22,7 +22,14 @@ define("host", default="8888", help="端口")
 
 class IndexHandler(RequestHandler):
     def get(self):
-        return self.write('this is index view')
+        conn = Postgres()
+        sql = """
+            select openid, username, image_url, province, city, score, discount, date
+            from wx_user 
+            where openid = '%s'
+        """ % 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
+        data = conn.fetchone(sql)
+        return self.write(data)
 
 
 class WxHandler(RequestHandler):
@@ -138,7 +145,7 @@ class PersonalHandler(RequestHandler):
             return self.write('获取用户信息失败')
 
         conn = Postgres()
-        data = conn.select("select id from wx_user where openid = '%s'" % openid)
+        data = conn.fetchone("select id from wx_user where openid = '%s'" % openid)
         print(data)
         if not data:
             sql = """
@@ -153,16 +160,17 @@ class PersonalHandler(RequestHandler):
             from wx_user 
             where openid = '%s'
         """ % openid
-        data = conn.select(sql)
+        data = conn.fetchone(sql)
+        print(data)
         info = {
-            'openid': data.get('openid'),
-            'username': data.get('username') or '密语君',
-            'province': data.get('province') or '保密',
-            'city': data.get('city') or '保密',
-            'image': data.get('headimgurl'),
-            'score': data.get('score'),
-            'discount': data.get('discount'),
-            'is_receive': data.get('date') >= datetime.strftime(datetime.now(), '%Y-%m-%d')
+            'openid': data['openid'],
+            'username': data['username'] or '密语君',
+            'province': data['province'] or '保密',
+            'city': data['city'] or '保密',
+            'image': data['headimgurl'],
+            'score': data['score'],
+            'discount': data['discount'],
+            'is_receive': data['date'] >= datetime.strftime(datetime.now(), '%Y-%m-%d')
         }
         print(info)
 
