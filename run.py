@@ -14,24 +14,25 @@ from tornado.options import define, options, parse_command_line
 import receive
 import reply
 from basic import Basic
-from redisConn import redis
 from wxConfig import APPID, APPSECRET
-from postgresqlConn import Postgres
-from log_print import logger
+from common.redisConn import redis
+from common.postgresqlConn import Postgres
+from common.log_print import logger
+from common.wrapper_func import wrapper_allow_origin_func
 
 define("host", default="8888", help="端口")
 
 
 class IndexHandler(RequestHandler):
     def get(self):
-        conn = Postgres()
-        sql = """
-            select openid, username, image_url, province, city, score, discount, date
-            from wx_user 
-            where openid = '%s'
-        """ % 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
-        data = conn.fetchone(sql)
-        return self.write(data)
+        # conn = Postgres()
+        # sql = """
+        #     select openid, username, image_url, province, city, score, discount, date
+        #     from wx_user
+        #     where openid = '%s'
+        # """ % 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
+        # data = conn.fetchone(sql)
+        return self.write('this is index view')
 
 
 class WxHandler(RequestHandler):
@@ -178,9 +179,21 @@ class PersonalHandler(RequestHandler):
 
         return self.render('personal.html', info=info)
 
+    @wrapper_allow_origin_func
     def post(self):
         openid = self.get_argument('openid', None)
-        print(openid)
+        res = {
+            'code': 0
+        }
+        if openid:
+            conn = Postgres()
+            conn.fetchone("update wx_user set score = score + 5 where openid = %s" % openid)
+            res['msg'] = '积分领取成功'
+            return self.finish(res)
+
+        res['code'] = -1
+        res['msg'] = '积分领取失败'
+        return res
 
 
 class UploadHandler(RequestHandler):

@@ -1,8 +1,8 @@
 import json
 from urllib import request
 
-from redisConn import redis
 from wxConfig import APPID, APPSECRET
+from common.redisConn import redis
 
 
 class Basic(object):

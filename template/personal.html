@@ -194,6 +194,7 @@
     <span class="photo"></span>
     <div class="user_info">
         <input type="hidden" value="{{info['openid']}}" id="openid">
+        <!--<input type="hidden" value="oBGCb1GE38DXO03ebeY0MtnfJKmc" id="openid">-->
         <p class="name">{{info['username']}}</p>
         <p class="address">{{info['province']}} / {{info['city']}}</p>
     </div>
@@ -258,17 +259,20 @@
 
     function receive() {
         let ele = document.getElementById('openid');
-        alert(ele);
         let value = ele.value;
-        alert(value);
-        fetch('http://127.0.0.1:8888/personal', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+        console.log(value);
+        fetch('http://localhost:8888/personal', {
+            method: 'post',
             body: JSON.stringify({openid: value})
         }).then(function (res) {
-            alert(res)
+            console.log(res);
+            // if (res.ok) {
+            //     res.json().then(function (obj) {
+            //         console.log(obj);
+            //     })
+            // }
         }).catch(function (err) {
-            alert(err);
+            console.log(err);
         });
     }
 </script>

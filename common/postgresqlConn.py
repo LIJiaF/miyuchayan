@@ -1,6 +1,6 @@
 import psycopg2
 
-from log_print import logger
+from .log_print import logger
 
 
 class Postgres(object):
