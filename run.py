@@ -138,7 +138,7 @@ class PersonalHandler(RequestHandler):
             return self.write('获取用户信息失败')
 
         conn = Postgres()
-        data = conn.select('select id from wx_user where openid = %s' % openid)
+        data = conn.select("select id from wx_user where openid = '%s'" % openid)
         print(data)
         if not data:
             sql = """
@@ -146,12 +146,13 @@ class PersonalHandler(RequestHandler):
                 values ('%s', '%s', '%s', '%s', '%s')
             """ % (openid, info_data.get('nickname'), info_data.get('headimgurl'), info_data.get('province'),
                    info_data.get('city'))
+            print(sql)
             conn.execute(sql)
 
         sql = """
             select openid, username, image_url, province, city, score, discount, date
             from wx_user 
-            where openid = %s
+            where openid = '%s'
         """ % openid
         data = conn.select(sql)
         info = {
