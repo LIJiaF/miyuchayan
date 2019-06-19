@@ -170,7 +170,7 @@ class PersonalHandler(RequestHandler):
             'username': data['username'] or '密语君',
             'province': data['province'] or '保密',
             'city': data['city'] or '保密',
-            'image': data['headimgurl'],
+            'image_url': data['image_url'],
             'score': data['score'],
             'discount': data['discount'],
             'is_receive': data['date'] >= datetime.strftime(datetime.now(), '%Y-%m-%d')
