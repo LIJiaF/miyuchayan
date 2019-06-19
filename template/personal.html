@@ -69,7 +69,6 @@
         }
 
         .active {
-            display: none;
             background: #cccccc;
         }
 
@@ -200,7 +199,7 @@
     </div>
     {% if not info['is_receive'] %}
     <span class="btn draft" onclick="receive()">领5积分</span>
-    {% else %}}
+    {% else %}
     <span class="btn active">领取成功</span>
     {% end %}
 </div>
