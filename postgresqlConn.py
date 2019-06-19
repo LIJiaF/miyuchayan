@@ -3,10 +3,10 @@ import psycopg2
 
 class Postgres(object):
     def __init__(self):
-        self.database = 'wx'
+        self.database = 'postgres'
         self.user = 'postgres'
         self.password = 'root'
-        self.host = 'localhost'
+        self.host = '120.76.56.231'
         self.port = 5432
 
     def get_connect(self):

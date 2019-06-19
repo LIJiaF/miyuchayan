@@ -44,7 +44,8 @@ CREATE TABLE "public"."wx_user" (
   "province" varchar(10) COLLATE "pg_catalog"."default",
   "city" varchar(10) COLLATE "pg_catalog"."default",
   "score" int2 DEFAULT 0,
-  "discount" int2 DEFAULT 0
+  "discount" int2 DEFAULT 0,
+  "date" varchar(20) COLLATE "pg_catalog"."default"
 )
 ;
 
