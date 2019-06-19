@@ -25,7 +25,7 @@ class Postgres(object):
         row = cur.fetchone()
         self.close(cur, conn)
 
-        return row or dict(zip(columns, row))
+        return dict(zip(columns, row)) if row else row
 
     def fetchall(self, sql):
         conn = self.get_connect()
@@ -35,7 +35,7 @@ class Postgres(object):
         rows = cur.fetchall()
         self.close(cur, conn)
 
-        return rows or [dict(zip(columns, row)) for row in rows]
+        return [dict(zip(columns, row)) for row in rows] if rows else rows
 
     def execute(self, sql):
         conn = self.get_connect()
