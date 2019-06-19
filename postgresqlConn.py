@@ -41,10 +41,11 @@ class Postgres(object):
         conn = self.get_connect()
         cur = conn.cursor()
         try:
+            logger.error('执行sql语句: %s' % sql)
             cur.execute(sql)
             conn.commit()
         except Exception:
-            logger.error('sql执行失败: %s' % sql)
+            logger.error('执行sql语句失败: %s' % sql)
         finally:
             self.close(cur, conn)
 

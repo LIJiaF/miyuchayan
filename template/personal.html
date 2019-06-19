@@ -193,11 +193,12 @@
 <div class="info">
     <span class="photo"></span>
     <div class="user_info">
+        <input type="hidden" value="{{info['openid']}}" id="openid">
         <p class="name">{{info['username']}}</p>
         <p class="address">{{info['province']}} / {{info['city']}}</p>
     </div>
     {% if not info['is_receive'] %}
-    <span class="btn draft">领5积分</span>
+    <span class="btn draft" onclick="receive">领5积分</span>
     {% else %}}
     <span class="btn active">领取成功</span>
     {% end %}
@@ -253,6 +254,18 @@
         codeEle.style.display = 'none';
         imgEle.setAttribute('src', '');
         flagEle.value = '0';
+    }
+
+    function receive() {
+        let ele = document.getElementById('openid');
+        let value = ele.value;
+        fetch('http://127.0.0.1:8888/personal', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({openid: value})
+        }).then(function (res) {
+            console.log(res)
+        })
     }
 </script>
 </body>

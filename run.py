@@ -164,7 +164,6 @@ class PersonalHandler(RequestHandler):
             where openid = '%s'
         """ % openid
         data = conn.fetchone(sql)
-        logger.info('获取用户信息: %s' % data)
         info = {
             'openid': data['openid'],
             'username': data['username'] or '密语君',
@@ -178,6 +177,10 @@ class PersonalHandler(RequestHandler):
         logger.info('用户信息: %s' % info)
 
         return self.render('personal.html', info=info)
+
+    def post(self):
+        openid = self.get_argument('openid', None)
+        print(openid)
 
 
 class UploadHandler(RequestHandler):
