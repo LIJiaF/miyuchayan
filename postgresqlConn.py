@@ -32,7 +32,7 @@ class Postgres(object):
             cur.execute(sql)
             conn.commit()
         except Exception:
-            print('sql执行失败')
+            print('sql执行失败: ', sql)
         finally:
             self.close(cur, conn)
 

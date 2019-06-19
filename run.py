@@ -146,7 +146,6 @@ class PersonalHandler(RequestHandler):
                 values ('%s', '%s', '%s', '%s', '%s')
             """ % (openid, info_data.get('nickname'), info_data.get('headimgurl'), info_data.get('province'),
                    info_data.get('city'))
-            print(sql)
             conn.execute(sql)
 
         sql = """

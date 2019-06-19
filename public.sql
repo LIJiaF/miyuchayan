@@ -4,24 +4,46 @@
  Source Server         : wx
  Source Server Type    : PostgreSQL
  Source Server Version : 100008
- Source Host           : localhost:5432
- Source Catalog        : wx
+ Source Host           : 120.76.56.231:5432
+ Source Catalog        : postgres
  Source Schema         : public
 
  Target Server Type    : PostgreSQL
  Target Server Version : 100008
  File Encoding         : 65001
 
- Date: 17/06/2019 22:41:48
+ Date: 19/06/2019 18:19:45
 */
 
+
+-- ----------------------------
+-- Sequence structure for wx_discount_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."wx_discount_id_seq";
+CREATE SEQUENCE "public"."wx_discount_id_seq" 
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1;
+
+-- ----------------------------
+-- Sequence structure for wx_user_id_seq
+-- ----------------------------
+DROP SEQUENCE IF EXISTS "public"."wx_user_id_seq";
+CREATE SEQUENCE "public"."wx_user_id_seq" 
+INCREMENT 1
+MINVALUE  1
+MAXVALUE 9223372036854775807
+START 1
+CACHE 1;
 
 -- ----------------------------
 -- Table structure for wx_discount
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."wx_discount";
 CREATE TABLE "public"."wx_discount" (
-  "id" int4 NOT NULL,
+  "id" int4 NOT NULL DEFAULT nextval('wx_discount_id_seq'::regclass),
   "code" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "type" varchar(10) COLLATE "pg_catalog"."default" NOT NULL,
   "discount" int2 NOT NULL,
@@ -37,7 +59,7 @@ CREATE TABLE "public"."wx_discount" (
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."wx_user";
 CREATE TABLE "public"."wx_user" (
-  "id" int4 NOT NULL,
+  "id" int4 NOT NULL DEFAULT nextval('wx_user_id_seq'::regclass),
   "openid" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "username" varchar(80) COLLATE "pg_catalog"."default" NOT NULL,
   "image_url" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
@@ -48,6 +70,12 @@ CREATE TABLE "public"."wx_user" (
   "date" varchar(20) COLLATE "pg_catalog"."default"
 )
 ;
+
+-- ----------------------------
+-- Alter sequences owned by
+-- ----------------------------
+SELECT setval('"public"."wx_discount_id_seq"', 2, false);
+SELECT setval('"public"."wx_user_id_seq"', 2, false);
 
 -- ----------------------------
 -- Primary Key structure for table wx_discount
