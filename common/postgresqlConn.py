@@ -41,7 +41,7 @@ class Postgres(object):
         conn = self.get_connect()
         cur = conn.cursor()
         try:
-            logger.error('执行sql语句: %s' % sql)
+            logger.info('执行sql语句: %s' % sql)
             cur.execute(sql)
             conn.commit()
         except Exception:
