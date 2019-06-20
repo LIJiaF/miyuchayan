@@ -261,7 +261,7 @@
     function receive () {
         let ele = document.getElementById('openid');
         let value = ele.value;
-        fetch('http://localhost:8888/personal', {
+        fetch('/personal', {
             method: 'post',
             headers: {
                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"

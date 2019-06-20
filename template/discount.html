@@ -142,7 +142,7 @@
 <script>
     function receive(id) {
         let openid = document.getElementById('openid').value;
-        fetch('http://localhost:8888/discount', {
+        fetch('/discount', {
             method: 'post',
             headers: {
                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
