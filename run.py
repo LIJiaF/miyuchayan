@@ -256,6 +256,7 @@ class PersonalHandler(RequestHandler):
         res = {
             'code': 0
         }
+        print(openid)
         if openid:
             now = datetime.strftime(datetime.now(), '%Y-%m-%d')
             conn = Postgres()
