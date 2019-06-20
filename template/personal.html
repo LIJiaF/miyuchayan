@@ -193,7 +193,6 @@
     <span class="photo"></span>
     <div class="user_info">
         <input type="hidden" value="{{info['openid']}}" id="openid">
-        <!--<input type="hidden" value="oBGCb1GE38DXO03ebeY0MtnfJKmc" id="openid">-->
         <p class="name">{{info['username']}}</p>
         <p class="address">{{info['province']}} / {{info['city']}}</p>
     </div>
@@ -201,33 +200,34 @@
     <span class="btn draft" onclick="receive()">领5积分</span>
     <span class="btn active" style="display:none;" id="active">领取成功</span>
     {% else %}
-    <span class="btn active" style="display:none;">领取成功</span>
+    <span class="btn active">领取成功</span>
     {% end %}
 </div>
 <p class="score_banner">当前积分<span class="score_count" id="score_count">{{info['score']}}</span></p>
-<!--<p class="score_banner">当前积分<span class="score_count" id="score_count">25</span></p>-->
 <p class="discount_banner">当前优惠券<span class="discount_count">{{info['discount']}}</span></p>
 <ul class="discount_list">
+    {% for d in info['discount_list'] %}
     <li>
         <div class="discount">
-            <p>&yen;<span class="money">5</span></p>
-            <h1>满减券<span class="time">有效期至：2019.6.20</span></h1>
+            <p>
+                {% if d['type'] == 'money' %}
+                <span class="type">&yen;</span>
+                <span class="money">{{d['discount']}}</span>
+                {% elif d['type'] == 'discount' %}
+                <span class="type">折</span>
+                <span class="money">{{d['discount']}}</span>
+                {% else %}
+                <span style="font-size: 21px">{{d['discount']}}</span>
+                {% end %}
+            </p>
+            <h1>{{d['name']}}<span class="time">有效期至：{{d['end_time']}}</span></h1>
             <button onclick="showCode('123456')">立即使用</button>
         </div>
         <p class="rule">使用规则：满20元可用</p>
         <span class="circle left"></span>
         <span class="circle right"></span>
     </li>
-    <li>
-        <div class="discount">
-            <p>折<span class="money">6</span></p>
-            <h1>折扣券<span class="time">有效期至：2019.6.20</span></h1>
-            <button onclick="showCode('987654')">立即使用</button>
-        </div>
-        <p class="rule">使用规则：满20元可用</p>
-        <span class="circle left"></span>
-        <span class="circle right"></span>
-    </li>
+    {% end %}
 </ul>
 <div class="code" id="code">
     <input type="hidden" value="0" id="flag">
@@ -261,7 +261,6 @@
     function receive () {
         let ele = document.getElementById('openid');
         let value = ele.value;
-        alert(value);
         fetch('http://localhost:8888/personal', {
             method: 'post',
             headers: {
@@ -280,7 +279,6 @@
                 })
             }
         }).catch(function (err) {
-            alert(err);
             console.log(err);
         });
     }

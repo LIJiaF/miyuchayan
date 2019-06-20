@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <script src="http://cdn.bootcss.com/jquery/1.12.3/jquery.min.js"></script>
+    <script src="{{static_url('js/layer.js')}}"></script>
     <title>粉丝福利</title>
     <style>
         * {
@@ -63,7 +65,7 @@
             color: #6495ED;
         }
 
-        .discount .time {
+        .discount .count {
             display: block;
             font-size: 12px;
             color: #999;
@@ -126,7 +128,8 @@
                 <span style="font-size: 21px">{{d['discount']}}</span>
                 {% end %}
             </p>
-            <h1>{{d['name']}}<span class="score">{{d['score']}}积分</span><span class="time">剩余数量：{{d['count']}}</span>
+            <h1>{{d['name']}}<span class="score">{{d['score']}}积分</span><span class="count">剩余数量：<span
+                    id="count{{d['id']}}">{{d['count']}}</span></span>
             </h1>
             <button onclick="receive({{d['id']}})">立即领取</button>
         </div>
@@ -137,10 +140,8 @@
     {% end %}
 </ul>
 <script>
-    function receive (id) {
+    function receive(id) {
         let openid = document.getElementById('openid').value;
-        console.log(openid);
-        console.log(id);
         fetch('http://localhost:8888/discount', {
             method: 'post',
             headers: {
@@ -151,7 +152,11 @@
             if (res.ok) {
                 res.json().then(function (obj) {
                     if (!obj.code) {
-                        console.log(obj);
+                        let countEle = document.getElementById('count' + id);
+                        countEle.innerText = (parseInt(countEle.innerText) - 1).toString();
+                        layer.msg(obj.msg, {icon: 6});
+                    }else {
+                        layer.msg(obj.msg, {icon: 5});
                     }
                 })
             }

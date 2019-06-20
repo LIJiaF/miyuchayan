@@ -130,12 +130,14 @@ class DiscountHandler(RequestHandler):
                 logger.info('access_token: %s', access_token)
                 logger.info('openid: %s', openid)
 
+        openid = 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
+
         conn = Postgres()
         sql = """
             select wd.id,name,type,discount,score,count,rule
             from wx_discount as wd
             inner join wx_discount_type as wdt on wd.type_id = wdt.id
-            where state = true
+            where state = true and count > 0
         """
         data = conn.fetchall(sql)
 
@@ -155,17 +157,48 @@ class DiscountHandler(RequestHandler):
             res['msg'] = '领取失败'
             return self.finish(res)
 
-        end_time = datetime.strftime(datetime.now() + timedelta(days=7), '%Y-%m-%d')
         conn = Postgres()
-        sql = """
-            insert into wx_user_dicount_rel (openid, discount_id, end_time)
-            values ('%s', %d, '%s')
-        """ % (openid, discount_id, end_time)
-        conn.execute(sql)
+        count = conn.fetchall("select * from wx_user_discount_rel where openid = '%s' and state = false" % openid)
+        if len(count) >= 5:
+            res['code'] = -1
+            res['msg'] = '您还有%d张优惠券未使用，请使用后再领取！' % len(count)
+            return self.finish(res)
 
-        res['msg'] = '领取成功'
+        discount = conn.fetchone("select count from wx_discount where id = %d" % int(discount_id))
+        if discount['count'] <= 0:
+            res['code'] = -1
+            res['msg'] = '对不起，该优惠券已经被领完了！'
+            return self.finish(res)
 
-        return self.finish(res)
+        user_score = conn.fetchone("select score from wx_user where openid = '%s'" % openid)
+        discount_score = conn.fetchone("select score from wx_discount where id = %d" % int(discount_id))
+        if not user_score or user_score['score'] < discount_score['score']:
+            res['code'] = -1
+            res['msg'] = '对不起，您的积分不够哦！'
+            return self.finish(res)
+
+        try:
+            end_time = datetime.strftime(datetime.now() + timedelta(days=7), '%Y-%m-%d')
+            sql = """
+                insert into wx_user_discount_rel (openid, discount_id, end_time)
+                values ('%s', %d, '%s');
+            """ % (openid, int(discount_id), end_time)
+            sql += """
+                update wx_discount set count = count - 1
+                where id = %d;
+            """ % int(discount_id)
+            sql += """
+                update wx_user set score = score - %d
+                where openid = '%s';
+            """ % (discount_score['score'], openid)
+            conn.execute(sql)
+
+            res['msg'] = '领取成功'
+            return self.finish(res)
+        except Exception:
+            res['code'] = -1
+            res['msg'] = '领取失败'
+            return self.finish(res)
 
 
 class PersonalHandler(RequestHandler):
@@ -223,28 +256,41 @@ class PersonalHandler(RequestHandler):
             conn.execute(sql)
         else:
             sql = """
-                update wx_user 
+                update wx_user
                 set username = '%s', image_url = '%s', province = '%s', city = '%s'
                 where openid = '%s'
             """ % (info_data.get('nickname'), info_data.get('headimgurl'), info_data.get('province'),
                    info_data.get('city'), openid)
             conn.execute(sql)
 
-        sql = """
-            select openid, username, image_url, province, city, score, discount, date
+        # openid = 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
+
+        user_sql = """
+            select openid, username, image_url, province, city, score, date
             from wx_user 
             where openid = '%s'
         """ % openid
-        data = conn.fetchone(sql)
+        user_data = conn.fetchone(user_sql)
+
+        discount_sql = """
+            select wd.id,discount,name,end_time,type,rule
+            from wx_user_discount_rel as wud
+            left join wx_discount as wd on wd.id = wud.discount_id
+            inner join wx_discount_type as wdt on wdt.id = wd.type_id
+            where openid = '%s' and wud.state = false
+        """ % openid
+        discount_data = conn.fetchall(discount_sql)
+
         info = {
-            'openid': data['openid'],
-            'username': data['username'] or '密语君',
-            'province': data['province'] or '保密',
-            'city': data['city'] or '保密',
-            'image_url': data['image_url'],
-            'score': data['score'],
-            'discount': data['discount'],
-            'is_receive': data['date'] >= datetime.strftime(datetime.now(), '%Y-%m-%d')
+            'openid': user_data['openid'],
+            'username': user_data['username'] or '密语君',
+            'province': user_data['province'] or '保密',
+            'city': user_data['city'] or '保密',
+            'image_url': user_data['image_url'],
+            'score': user_data['score'],
+            'discount': len(discount_data),
+            'discount_list': discount_data,
+            'is_receive': user_data['date'] >= datetime.strftime(datetime.now(), '%Y-%m-%d')
         }
         logger.info('用户信息: %s' % info)
 
