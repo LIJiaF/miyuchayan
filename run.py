@@ -278,6 +278,7 @@ class PersonalHandler(RequestHandler):
             left join wx_discount as wd on wd.id = wud.discount_id
             inner join wx_discount_type as wdt on wdt.id = wd.type_id
             where openid = '%s' and wud.state = false
+            order by id desc
         """ % openid
         discount_data = conn.fetchall(discount_sql)
 
