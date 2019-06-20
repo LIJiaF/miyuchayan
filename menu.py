@@ -2,6 +2,7 @@ import json
 from urllib import request
 
 from basic import Basic
+from wxConfig import APPID
 
 
 class Menu(object):
@@ -39,9 +40,9 @@ class Menu(object):
 
 if __name__ == '__main__':
     discount_url = request.quote('http://120.76.56.231/discount')
-    discount_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4ad79b44d68db8da&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" % discount_url
+    discount_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base#wechat_redirect" % (APPID, discount_url)
     personal_url = request.quote('http://120.76.56.231/personal')
-    personal_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4ad79b44d68db8da&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect" % personal_url
+    personal_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo#wechat_redirect" % (APPID, personal_url)
 
     myMenu = Menu()
     postJson = """

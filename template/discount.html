@@ -40,6 +40,11 @@
             color: #6495ED;
         }
 
+        .discount .type {
+            display: inline-block;
+            width: 16px;
+        }
+
         .discount .money {
             font-size: 40px;
             padding-left: 5px;
@@ -53,7 +58,7 @@
         }
 
         .discount .score {
-            margin-left: 19px;
+            margin-left: 10px;
             font-size: 12px;
             color: #6495ED;
         }
@@ -106,26 +111,54 @@
 </head>
 <body>
 <ul class="discount_list">
+    <input type="hidden" value="{{openid}}" id="openid">
+    {% for d in data %}
     <li>
         <div class="discount">
-            <p>&yen;<span class="money">5</span></p>
-            <h1>满减券<span class="score">88积分</span><span class="time">有效期至：2019.6.20</span></h1>
-            <button>立即领取</button>
+            <p>
+                {% if d['type'] == 'money' %}
+                <span class="type">&yen;</span>
+                <span class="money">{{d['discount']}}</span>
+                {% elif d['type'] == 'discount' %}
+                <span class="type">折</span>
+                <span class="money">{{d['discount']}}</span>
+                {% else %}
+                <span style="font-size: 21px">{{d['discount']}}</span>
+                {% end %}
+            </p>
+            <h1>{{d['name']}}<span class="score">{{d['score']}}积分</span><span class="time">剩余数量：{{d['count']}}</span>
+            </h1>
+            <button onclick="receive({{d['id']}})">立即领取</button>
         </div>
-        <p class="rule">使用规则：满20元可用</p>
+        <p class="rule">使用规则：{{d['rule']}}</p>
         <span class="circle left"></span>
         <span class="circle right"></span>
     </li>
-    <li>
-        <div class="discount">
-            <p>折<span class="money">6</span></p>
-            <h1>折扣券<span class="score">10积分</span><span class="time">有效期至：2019.6.20</span></h1>
-            <button>立即领取</button>
-        </div>
-        <p class="rule">使用规则：满20元可用</p>
-        <span class="circle left"></span>
-        <span class="circle right"></span>
-    </li>
+    {% end %}
 </ul>
+<script>
+    function receive (id) {
+        let openid = document.getElementById('openid').value;
+        console.log(openid);
+        console.log(id);
+        fetch('http://localhost:8888/discount', {
+            method: 'post',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            body: 'discount_id=' + id + '&openid=' + openid
+        }).then(function (res) {
+            if (res.ok) {
+                res.json().then(function (obj) {
+                    if (!obj.code) {
+                        console.log(obj);
+                    }
+                })
+            }
+        }).catch(function (err) {
+            console.log(err);
+        });
+    }
+</script>
 </body>
 </html>

@@ -199,11 +199,13 @@
     </div>
     {% if not info['is_receive'] %}
     <span class="btn draft" onclick="receive()">领5积分</span>
+    <span class="btn active" style="display:none;" id="active">领取成功</span>
     {% else %}
-    <span class="btn active">领取成功</span>
+    <span class="btn active" style="display:none;">领取成功</span>
     {% end %}
 </div>
-<p class="score_banner">当前积分<span class="score_count">{{info['score']}}</span></p>
+<p class="score_banner">当前积分<span class="score_count" id="score_count">{{info['score']}}</span></p>
+<!--<p class="score_banner">当前积分<span class="score_count" id="score_count">25</span></p>-->
 <p class="discount_banner">当前优惠券<span class="discount_count">{{info['discount']}}</span></p>
 <ul class="discount_list">
     <li>
@@ -233,7 +235,7 @@
     <span class="close" onclick="hideCode()"></span>
 </div>
 <script>
-    function showCode(code) {
+    function showCode (code) {
         let codeEle = document.getElementById('code');
         let imgEle = document.getElementById('img');
         let flagEle = document.getElementById('flag');
@@ -247,7 +249,7 @@
         }
     }
 
-    function hideCode() {
+    function hideCode () {
         let codeEle = document.getElementById('code');
         let imgEle = document.getElementById('img');
         let flagEle = document.getElementById('flag');
@@ -256,7 +258,7 @@
         flagEle.value = '0';
     }
 
-    function receive() {
+    function receive () {
         let ele = document.getElementById('openid');
         let value = ele.value;
         fetch('http://localhost:8888/personal', {
@@ -269,7 +271,10 @@
             if (res.ok) {
                 res.json().then(function (obj) {
                     if (!obj.code) {
-                        location.reload()
+                        let activeEle = document.getElementById('active');
+                        let scoreEle = document.getElementById('score_count');
+                        activeEle.style.display = 'block';
+                        scoreEle.innerText = (parseInt(scoreEle.innerText) + 5).toString();
                     }
                 })
             }

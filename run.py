@@ -4,7 +4,7 @@ import math
 import random
 import json
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib import request
 
 from tornado.web import RequestHandler, Application
@@ -99,13 +99,73 @@ class WxHandler(RequestHandler):
 
 class DiscountHandler(RequestHandler):
     def get(self):
+        code = self.get_argument('code', None)
+        logger.info('code: %s' % code)
+        get_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code' % (
+            APPID, APPSECRET, code)
+        token_data = json.loads(request.urlopen(url=get_token_url).read())
+        if token_data.get('errcode'):
+            logger.error('errcode: %s' % token_data['errcode'])
+            logger.error('errmsg: %s' % token_data['errmsg'])
+            return self.write('获取网页access_token失败，请在微信端打开')
+
+        access_token = token_data.get('access_token', None)
+        refresh_token = token_data.get('refresh_token', None)
+        openid = token_data.get('openid', None)
+        logger.info('access_token: %s', access_token)
+        logger.info('refresh_token: %s', refresh_token)
+        logger.info('openid: %s', openid)
+
+        # 检验access_token是否有效
+        check_token_url = 'https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s' % (access_token, openid)
+        chekc_token_data = json.loads(request.urlopen(url=check_token_url).read())
+        if chekc_token_data.get('errcode'):
+            refresh_token_url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s' % (
+                APPID, refresh_token)
+            refresh_data = json.loads(request.urlopen(url=refresh_token_url).read())
+            if not refresh_data.get('errcode'):
+                logger.info('重新获取access_token、openid')
+                access_token = refresh_data.get('access_token', None)
+                openid = refresh_data.get('openid', None)
+                logger.info('access_token: %s', access_token)
+                logger.info('openid: %s', openid)
+
         conn = Postgres()
         sql = """
-            
+            select wd.id,name,type,discount,score,count,rule
+            from wx_discount as wd
+            inner join wx_discount_type as wdt on wd.type_id = wdt.id
+            where state = true
         """
+        data = conn.fetchall(sql)
+
+        return self.render('discount.html', data=data, openid=openid)
+
+    @wrapper_allow_origin_func
+    def post(self):
+        discount_id = self.get_argument('discount_id', None)
+        openid = self.get_argument('openid', None)
+
+        res = {
+            'code': 0
+        }
+
+        if not discount_id or not openid:
+            res['code'] = -1
+            res['msg'] = '领取失败'
+            return self.finish(res)
+
+        end_time = datetime.strftime(datetime.now() + timedelta(days=7), '%Y-%m-%d')
+        conn = Postgres()
+        sql = """
+            insert into wx_user_dicount_rel (openid, discount_id, end_time)
+            values ('%s', %d, '%s')
+        """ % (openid, discount_id, end_time)
         conn.execute(sql)
 
-        return self.render('discount.html')
+        res['msg'] = '领取成功'
+
+        return self.finish(res)
 
 
 class PersonalHandler(RequestHandler):
@@ -136,8 +196,11 @@ class PersonalHandler(RequestHandler):
                 APPID, refresh_token)
             refresh_data = json.loads(request.urlopen(url=refresh_token_url).read())
             if not refresh_data.get('errcode'):
+                logger.info('重新获取access_token、openid')
                 access_token = refresh_data.get('access_token', None)
                 openid = refresh_data.get('openid', None)
+                logger.info('access_token: %s', access_token)
+                logger.info('openid: %s', openid)
 
         # 根据access_token和openid获取用户信息
         get_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN' % (
@@ -157,6 +220,14 @@ class PersonalHandler(RequestHandler):
                 values ('%s', '%s', '%s', '%s', '%s')
             """ % (openid, info_data.get('nickname'), info_data.get('headimgurl'), info_data.get('province'),
                    info_data.get('city'))
+            conn.execute(sql)
+        else:
+            sql = """
+                update wx_user 
+                set username = '%s', image_url = '%s', province = '%s', city = '%s'
+                where openid = '%s'
+            """ % (info_data.get('nickname'), info_data.get('headimgurl'), info_data.get('province'),
+                   info_data.get('city'), openid)
             conn.execute(sql)
 
         sql = """
@@ -188,6 +259,11 @@ class PersonalHandler(RequestHandler):
         if openid:
             now = datetime.strftime(datetime.now(), '%Y-%m-%d')
             conn = Postgres()
+            data = conn.fetchone("select date from wx_user where openid = '%s'" % openid)
+            if data['date'] and data['date'] == now:
+                res['code'] = -1
+                res['msg'] = '积分领取失败'
+                return self.finish(res)
             conn.execute("update wx_user set score = score + 5, date = '%s' where openid = '%s'" % (now, openid))
             res['msg'] = '积分领取成功'
             return self.finish(res)
