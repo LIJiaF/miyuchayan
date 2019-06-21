@@ -88,7 +88,7 @@ class WxHandler(RequestHandler):
                     elif recMsg.Event == 'CLICK':
                         eventKey = recMsg.EventKey
                         if eventKey == 'history':
-                            content = eventKey
+                            content = '对不起，该功能暂未对外开放！'
                             replyMsg = reply.TextMsg(toUser, fromUser, content)
                             self.write(replyMsg.send())
                 else:

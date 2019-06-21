@@ -221,7 +221,7 @@
                 {% end %}
             </p>
             <h1>{{d['name']}}<span class="time">有效期至：{{d['end_time']}}</span></h1>
-            <button onclick="showCode('123456')">立即使用</button>
+            <button onclick="showCode({{d['id']}})">立即使用</button>
         </div>
         <p class="rule">使用规则：{{d['rule']}}</p>
         <span class="circle left"></span>
@@ -235,11 +235,13 @@
     <span class="close" onclick="hideCode()"></span>
 </div>
 <script>
-    function showCode (code) {
+    function showCode (discount_id) {
         let codeEle = document.getElementById('code');
         let imgEle = document.getElementById('img');
         let flagEle = document.getElementById('flag');
-        let src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=333333&el=l&w=200&m=10&text=' + code;
+        let openid = document.getElementById('openid').value;
+        let code = 'openid=' + openid + '&discount_id=' + discount_id;
+        let src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=333333&el=l&w=200&m=10&text=' + btoa(code);
         if (flagEle.value == '0') {
             imgEle.setAttribute('src', src);
             codeEle.style.display = 'block';
