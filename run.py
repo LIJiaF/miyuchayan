@@ -130,7 +130,7 @@ class DiscountHandler(RequestHandler):
                 logger.info('access_token: %s', access_token)
                 logger.info('openid: %s', openid)
 
-        openid = 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
+        # openid = 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
 
         conn = Postgres()
         sql = """
@@ -158,10 +158,11 @@ class DiscountHandler(RequestHandler):
             return self.finish(res)
 
         conn = Postgres()
-        count = conn.fetchall("select * from wx_user_discount_rel where openid = '%s' and state = false" % openid)
-        if len(count) >= 5:
+        sql = "select * from wx_user_discount_rel where discount_id = %d and state = false" % int(discount_id)
+        count = conn.fetchall(sql)
+        if len(count) >= 2:
             res['code'] = -1
-            res['msg'] = '您还有%d张优惠券未使用，请使用后再领取！' % len(count)
+            res['msg'] = '每种类型优惠券只能领取两张，请使用后再领取！'
             return self.finish(res)
 
         discount = conn.fetchone("select count from wx_discount where id = %d" % int(discount_id))
@@ -250,9 +251,14 @@ class PersonalHandler(RequestHandler):
         if not data:
             sql = """
                 insert into wx_user (openid, username, image_url, province, city)
-                values ('%s', '%s', '%s', '%s', '%s')
+                values ('%s', '%s', '%s', '%s', '%s');
             """ % (openid, info_data.get('nickname'), info_data.get('headimgurl'), info_data.get('province'),
                    info_data.get('city'))
+            end_time = datetime.strftime(datetime.now() + timedelta(days=7), '%Y-%m-%d')
+            sql += """
+                insert into wx_user_discount_rel (openid, discount_id, end_time)
+                values ('%s', %d, '%s');
+            """ % (openid, 3, end_time)
             conn.execute(sql)
         else:
             sql = """
@@ -263,6 +269,7 @@ class PersonalHandler(RequestHandler):
                    info_data.get('city'), openid)
             conn.execute(sql)
 
+        # conn = Postgres()
         # openid = 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
 
         user_sql = """

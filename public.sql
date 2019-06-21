@@ -12,7 +12,7 @@
  Target Server Version : 100008
  File Encoding         : 65001
 
- Date: 20/06/2019 23:31:41
+ Date: 21/06/2019 21:45:03
 */
 
 
@@ -78,10 +78,10 @@ CREATE TABLE "public"."wx_discount" (
 -- ----------------------------
 -- Records of wx_discount
 -- ----------------------------
-INSERT INTO "public"."wx_discount" VALUES (1, 1, '5', 88, 89, '满20可用', 't');
-INSERT INTO "public"."wx_discount" VALUES (2, 2, '6', 8, 89, '任意消费可用', 't');
-INSERT INTO "public"."wx_discount" VALUES (4, 3, '鸡排', 0, 10, '任意消费，可免费兑换鸡排一份', 't');
-INSERT INTO "public"."wx_discount" VALUES (3, 3, '奶茶', 0, 10, '任意消费，可免费兑换一杯中杯奶茶', 't');
+
+INSERT INTO "public"."wx_discount" VALUES (1, 3, '奶茶', 88, 100, '任意消费，可免费兑换一杯中杯奶茶', 'f');
+INSERT INTO "public"."wx_discount" VALUES (2, 1, '5', 15, 100, '满15可用', 't');
+INSERT INTO "public"."wx_discount" VALUES (3, 2, '6', 15, 100, '任意消费可用', 't');
 
 -- ----------------------------
 -- Table structure for wx_discount_type
@@ -118,11 +118,6 @@ CREATE TABLE "public"."wx_user" (
 ;
 
 -- ----------------------------
--- Records of wx_user
--- ----------------------------
-INSERT INTO "public"."wx_user" VALUES (4, 'oBGCb1GE38DXO03ebeY0MtnfJKmc', '李家富', 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132', '广东', '广州', 31, '2019-06-20');
-
--- ----------------------------
 -- Table structure for wx_user_discount_rel
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."wx_user_discount_rel";
@@ -140,7 +135,7 @@ CREATE TABLE "public"."wx_user_discount_rel" (
 -- ----------------------------
 SELECT setval('"public"."wx_discount_id_seq"', 5, true);
 SELECT setval('"public"."wx_discount_type_id_seq"', 4, true);
-SELECT setval('"public"."wx_user_discount_rel_id_seq"', 2, true);
+SELECT setval('"public"."wx_user_discount_rel_id_seq"', 9, true);
 SELECT setval('"public"."wx_user_id_seq"', 5, true);
 
 -- ----------------------------
@@ -152,8 +147,3 @@ ALTER TABLE "public"."wx_discount" ADD CONSTRAINT "wx_discount_pkey" PRIMARY KEY
 -- Primary Key structure for table wx_user
 -- ----------------------------
 ALTER TABLE "public"."wx_user" ADD CONSTRAINT "wx_user_pkey" PRIMARY KEY ("id");
-
--- ----------------------------
--- Primary Key structure for table wx_user_discount_rel
--- ----------------------------
-ALTER TABLE "public"."wx_user_discount_rel" ADD CONSTRAINT "wx_user_discount_rel_pkey" PRIMARY KEY ("id");
