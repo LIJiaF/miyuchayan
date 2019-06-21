@@ -5,7 +5,7 @@ from .log_print import logger
 
 class Postgres(object):
     def __init__(self):
-        self.database = 'postgres'
+        self.database = 'wx'
         self.user = 'postgres'
         self.password = 'root'
         self.host = '120.76.56.231'
