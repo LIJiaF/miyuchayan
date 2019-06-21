@@ -258,7 +258,7 @@ class PersonalHandler(RequestHandler):
             sql += """
                 insert into wx_user_discount_rel (openid, discount_id, end_time)
                 values ('%s', %d, '%s');
-            """ % (openid, 3, end_time)
+            """ % (openid, 1, end_time)
             conn.execute(sql)
         else:
             sql = """
