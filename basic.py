@@ -24,6 +24,7 @@ class Basic(object):
                 logger.error('access_token获取成功')
             else:
                 logger.error('access_token获取失败')
+                logger.error('errmsg: %s' % urlResp['errmsg'])
         else:
             self._accessToken = redis.get('token:access_token').decode('utf-8')
             logger.error('access_token获取成功')
