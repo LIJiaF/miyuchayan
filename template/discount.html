@@ -142,27 +142,48 @@
 <script>
     function receive(id) {
         let openid = document.getElementById('openid').value;
-        fetch('/discount', {
+        $.ajax({
+            url: '/discount',
             method: 'post',
-            headers: {
-                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            data: {
+                openid: openid,
+                discount_id: id
             },
-            body: 'discount_id=' + id + '&openid=' + openid
-        }).then(function (res) {
-            if (res.ok) {
-                res.json().then(function (obj) {
-                    if (!obj.code) {
-                        let countEle = document.getElementById('count' + id);
-                        countEle.innerText = (parseInt(countEle.innerText) - 1).toString();
-                        layer.msg(obj.msg, {icon: 6});
-                    }else {
-                        layer.msg(obj.msg, {icon: 5});
-                    }
-                })
+            success: function (res) {
+                if (!res.code) {
+                    let countEle = document.getElementById('count' + id);
+                    countEle.innerText = (parseInt(countEle.innerText) - 1).toString();
+                    layer.msg(res.msg, {icon: 6});
+                } else {
+                    layer.msg(res.msg, {icon: 5});
+                }
+            },
+            error: function (err) {
+                console.log(err);
             }
-        }).catch(function (err) {
-            console.log(err);
         });
+
+        // fetch('/discount', {
+        //     method: 'post',
+        //     headers: {
+        //         "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        //     },
+        //     body: 'discount_id=' + id + '&openid=' +
+        // }).then(function (res) {
+        //     if (res.ok) {
+        //         res.json().then(function (obj) {
+        //             if (!obj.code) {
+        //                 let countEle = document.getElementById('count' + id);
+        //                 countEle.innerText = (parseInt(countEle.innerText) - 1).toString();
+        //                 layer.msg(obj.msg, {icon: 6});
+        //             } else {
+        //                 layer.msg(obj.msg, {icon: 5});
+        //             }
+        //         })
+        //     }
+        // }).catch(function (err) {
+        //     console.log(err);
+        // });
     }
 </script>
 </body>
