@@ -263,6 +263,7 @@
     function receive () {
         let ele = document.getElementById('openid');
         let value = ele.value;
+        alert(value);
         fetch('/personal', {
             method: 'post',
             headers: {
@@ -281,6 +282,7 @@
                 })
             }
         }).catch(function (err) {
+            alert(err);
             console.log(err);
         });
     }
