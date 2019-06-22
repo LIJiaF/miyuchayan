@@ -158,7 +158,13 @@ class DiscountHandler(RequestHandler):
             return self.finish(res)
 
         conn = Postgres()
-        sql = "select * from wx_user_discount_rel where discount_id = %d and state = false" % int(discount_id)
+        sql = """
+            select * 
+            from wx_user_discount_rel 
+            where discount_id = %d
+            and openid = '%s'
+            and state = false
+        """ % (int(discount_id), openid)
         count = conn.fetchall(sql)
         if len(count) >= 2:
             res['code'] = -1
