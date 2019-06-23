@@ -5,14 +5,14 @@
  Source Server Type    : PostgreSQL
  Source Server Version : 100008
  Source Host           : 120.76.56.231:5432
- Source Catalog        : postgres
+ Source Catalog        : wx
  Source Schema         : public
 
  Target Server Type    : PostgreSQL
  Target Server Version : 100008
  File Encoding         : 65001
 
- Date: 21/06/2019 21:45:03
+ Date: 23/06/2019 12:57:33
 */
 
 
@@ -78,10 +78,9 @@ CREATE TABLE "public"."wx_discount" (
 -- ----------------------------
 -- Records of wx_discount
 -- ----------------------------
-
 INSERT INTO "public"."wx_discount" VALUES (1, 3, '奶茶', 88, 100, '任意消费，可免费兑换一杯中杯奶茶', 'f');
-INSERT INTO "public"."wx_discount" VALUES (2, 1, '5', 15, 100, '满15可用', 't');
-INSERT INTO "public"."wx_discount" VALUES (3, 2, '6', 15, 100, '任意消费可用', 't');
+INSERT INTO "public"."wx_discount" VALUES (3, 2, '6', 15, 98, '任意消费可用', 't');
+INSERT INTO "public"."wx_discount" VALUES (2, 1, '5', 15, 98, '满15可用', 't');
 
 -- ----------------------------
 -- Table structure for wx_discount_type
@@ -113,6 +112,8 @@ CREATE TABLE "public"."wx_user" (
   "province" varchar(10) COLLATE "pg_catalog"."default",
   "city" varchar(10) COLLATE "pg_catalog"."default",
   "score" int2 DEFAULT 0,
+  "experience" int4 DEFAULT 0,
+  "is_admin" bool DEFAULT false,
   "date" varchar(20) COLLATE "pg_catalog"."default" DEFAULT 0
 )
 ;
@@ -133,10 +134,10 @@ CREATE TABLE "public"."wx_user_discount_rel" (
 -- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-SELECT setval('"public"."wx_discount_id_seq"', 5, true);
-SELECT setval('"public"."wx_discount_type_id_seq"', 4, true);
-SELECT setval('"public"."wx_user_discount_rel_id_seq"', 9, true);
-SELECT setval('"public"."wx_user_id_seq"', 5, true);
+SELECT setval('"public"."wx_discount_id_seq"', 6, true);
+SELECT setval('"public"."wx_discount_type_id_seq"', 5, true);
+SELECT setval('"public"."wx_user_discount_rel_id_seq"', 18, true);
+SELECT setval('"public"."wx_user_id_seq"', 10, true);
 
 -- ----------------------------
 -- Primary Key structure for table wx_discount
