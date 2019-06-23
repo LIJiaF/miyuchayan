@@ -87,14 +87,17 @@ class PersonalHandler(RequestHandler):
         """ % openid
         user_data = conn.fetchone(user_sql)
 
+        now = datetime.strftime(datetime.now(), '%Y-%m-%d')
         discount_sql = """
             select wd.id,discount,name,end_time,type,rule
             from wx_user_discount_rel as wud
             left join wx_discount as wd on wd.id = wud.discount_id
             inner join wx_discount_type as wdt on wdt.id = wd.type_id
-            where openid = '%s' and wud.state = false
+            where openid = '%s' 
+            and end_time >= '%s'
+            and wud.state = false
             order by id desc
-        """ % openid
+        """ % (openid, now)
         discount_data = conn.fetchall(discount_sql)
 
         info = {

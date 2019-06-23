@@ -49,7 +49,8 @@ class DiscountHandler(RequestHandler):
             select wd.id,name,type,discount,score,count,rule
             from wx_discount as wd
             inner join wx_discount_type as wdt on wd.type_id = wdt.id
-            where state = true and count > 0
+            where state = true
+            order by id
         """
         data = conn.fetchall(sql)
 
@@ -78,9 +79,9 @@ class DiscountHandler(RequestHandler):
             and state = false
         """ % (int(discount_id), openid)
         count = conn.fetchall(sql)
-        if len(count) >= 2:
+        if len(count):
             res['code'] = -1
-            res['msg'] = '每种类型优惠券只能领取两张，请使用后再领取！'
+            res['msg'] = '每种类型优惠券只能领取一张，请使用后再领取！'
             return self.finish(res)
 
         discount = conn.fetchone("select count from wx_discount where id = %d" % int(discount_id))

@@ -85,6 +85,10 @@
             background: #6495ED;
         }
 
+        .discount button.active {
+            background: #cccccc;
+        }
+
         .rule {
             padding: 8px 10px;
             background: #eeeeee;
@@ -131,7 +135,11 @@
             <h1>{{d['name']}}<span class="score">{{d['score']}}积分</span><span class="count">剩余数量：<span
                     id="count{{d['id']}}">{{d['count']}}</span></span>
             </h1>
+            {% if d['count'] > 0 %}
             <button onclick="receive({{d['id']}})">立即领取</button>
+            {% else %}
+            <button class="active">明日再来</button>
+            {% end %}
         </div>
         <p class="rule">使用规则：{{d['rule']}}</p>
         <span class="circle left"></span>

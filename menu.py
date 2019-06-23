@@ -40,9 +40,11 @@ class Menu(object):
 
 if __name__ == '__main__':
     discount_url = request.quote('http://120.76.56.231/discount')
-    discount_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base#wechat_redirect" % (APPID, discount_url)
+    discount_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base#wechat_redirect" % (
+        APPID, discount_url)
     personal_url = request.quote('http://120.76.56.231/personal')
-    personal_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo#wechat_redirect" % (APPID, personal_url)
+    personal_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo#wechat_redirect" % (
+        APPID, personal_url)
 
     myMenu = Menu()
     postJson = """
@@ -50,9 +52,19 @@ if __name__ == '__main__':
         "button":
         [
             {
-                "type": "click",
-                "name": "精彩回顾",
-                "key":  "history"
+                "name": "菜单",
+                "sub_button": [
+                    {
+                       "type": "media_id", 
+                       "name": "点餐菜单", 
+                       "media_id": "MEDIA_ID1"
+                    },
+                    {
+                       "type":"click",
+                       "name":"积分说明",
+                       "key":"score_rule"
+                    }
+                ]
             },
             {
                 "type": "view",
