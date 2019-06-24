@@ -57,7 +57,7 @@ if __name__ == '__main__':
                     {
                        "type": "media_id", 
                        "name": "点餐菜单", 
-                       "media_id": "MEDIA_ID1"
+                       "media_id": "Mo4ToVMbYzHzBELi7khfkleaHBspvt9GJK8AadReRZw"
                     },
                     {
                        "type":"click",
@@ -79,5 +79,6 @@ if __name__ == '__main__':
           ]
     }
     """ % (discount_callable_url, personal_callable_url)
+
     accessToken = Basic().get_access_token()
     myMenu.create(postJson, accessToken)
