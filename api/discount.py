@@ -9,6 +9,7 @@ from common.postgresqlConn import Postgres
 from common.log_print import logger
 from common.wrapper_func import wrapper_allow_origin_func
 
+
 class DiscountHandler(RequestHandler):
     def get(self):
         code = self.get_argument('code', None)

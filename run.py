@@ -74,9 +74,10 @@ class WxHandler(RequestHandler):
                             replyMsg = reply.TextMsg(toUser, fromUser, content)
                             self.write(replyMsg.send())
                         elif eventKey == 'score_rule':
-                            content = """积分规则：
+                            content = """积分说明：
 1. 每天登陆可领取5积分
-2. 每使用一张优惠券可增加20积分"""
+2. 每使用一张优惠券可增加20积分
+3. 积分可以兑换优惠券"""
                             replyMsg = reply.TextMsg(toUser, fromUser, content)
                             self.write(replyMsg.send())
                 else:
