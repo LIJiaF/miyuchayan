@@ -63,12 +63,9 @@ class WxHandler(RequestHandler):
                 elif recMsg.MsgType == 'event':
                     # 关注公众号事件
                     if recMsg.Event == 'subscribe':
-                        sub_content = '您好，欢迎关注密语君^_^'
-                        oth_content = '更多优惠尽在粉丝福利页面'
-                        subReplyMsg = reply.TextMsg(toUser, fromUser, sub_content)
-                        othReplyMsg = reply.TextMsg(toUser, fromUser, oth_content)
-                        content = subReplyMsg.send() + othReplyMsg.send()
-                        self.write(content)
+                        content = '您好，欢迎关注密语君^_^'
+                        replyMsg = reply.TextMsg(toUser, fromUser, content)
+                        self.write(replyMsg.send())
                     # 菜单点击事件
                     elif recMsg.Event == 'CLICK':
                         eventKey = recMsg.EventKey
@@ -79,8 +76,7 @@ class WxHandler(RequestHandler):
                         elif eventKey == 'score_rule':
                             content = """积分规则：
 1. 每天登陆可领取5积分
-2. 每使用一张优惠券可增加20积分
-                            """
+2. 每使用一张优惠券可增加20积分"""
                             replyMsg = reply.TextMsg(toUser, fromUser, content)
                             self.write(replyMsg.send())
                 else:
