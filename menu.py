@@ -57,7 +57,12 @@ if __name__ == '__main__':
                     {
                        "type": "media_id", 
                        "name": "点餐菜单", 
-                       "media_id": "Mo4ToVMbYzHzBELi7khfkleaHBspvt9GJK8AadReRZw"
+                       "media_id": "vLiI6FaZqR1dHxvILzSRlgBLG1KL_Il4_wmMG9DErQg"
+                    },
+                    {
+                       "type": "click", 
+                       "name": "外卖电话", 
+                       "key": "phone"
                     },
                     {
                        "type":"click",

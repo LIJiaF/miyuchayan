@@ -1,4 +1,5 @@
 import json
+import os
 from urllib import request
 
 from wxConfig import APPID, APPSECRET
@@ -34,6 +35,15 @@ class Basic(object):
             logger.info('access_token获取成功')
 
         return self._accessToken
+
+    # 上传永久素材
+    def upload_permanently_media(self, type='image'):
+        accessToken = Basic().get_access_token()
+        media = os.path.join(os.path.dirname(__file__), 'menu.jpg')
+        description = '{"title": "menu", "introduction": "菜单"}'.encode('utf-8')
+        cmd = 'curl "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=%s&type=%s" -F media=@%s -F description=%s' % (
+            accessToken, type, media, description)
+        print(os.popen(cmd).read())
 
     # 获取素材列表
     def get_media_list(self, type='image', offset=0, count=10):
@@ -75,5 +85,6 @@ class Basic(object):
 if __name__ == '__main__':
     basic = Basic()
     # basic.get_access_token()
+    basic.upload_permanently_media()
     # basic.get_media_count()
-    basic.get_media_list()
+    # basic.get_media_list()
