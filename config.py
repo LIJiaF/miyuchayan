@@ -9,6 +9,6 @@ postgresConfig = {
     'database': 'wx',
     'user': 'postgres',
     'password': 'root',
-    'host': '172.17.63.211',
+    'host': '120.76.56.231',
     'port': 5432
 }
