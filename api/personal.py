@@ -81,7 +81,7 @@ class PersonalHandler(RequestHandler):
         # openid = 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
 
         user_sql = """
-            select openid, username, image_url, province, city, score, date
+            select openid, username, image_url, province, city, score, experience, is_admin, date
             from wx_user 
             where openid = '%s'
         """ % openid
@@ -107,6 +107,8 @@ class PersonalHandler(RequestHandler):
             'city': user_data['city'] or '保密',
             'image_url': user_data['image_url'],
             'score': user_data['score'],
+            'experience': user_data['experience'],
+            'is_admin': user_data['is_admin'],
             'discount': len(discount_data),
             'discount_list': discount_data,
             'is_receive': user_data['date'] >= datetime.strftime(datetime.now(), '%Y-%m-%d')
