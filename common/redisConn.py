@@ -1,10 +1,5 @@
 from redis import StrictRedis
 
-redisConfig = {
-    'host': 'localhost',
-    'port': 6379,
-    'db': 0,
-    'password': ''
-}
+from config import redisConfig
 
 redis = StrictRedis(**redisConfig)

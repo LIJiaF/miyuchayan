@@ -1,19 +1,15 @@
 import psycopg2
 
 from .log_print import logger
+from config import postgresConfig
 
 
 class Postgres(object):
     def __init__(self):
-        self.database = 'wx'
-        self.user = 'postgres'
-        self.password = 'root'
-        self.host = '120.76.56.231'
-        self.port = 5432
+        self.config = postgresConfig
 
     def get_connect(self):
-        conn = psycopg2.connect(database=self.database, user=self.user, password=self.password, host=self.host,
-                                port=self.port)
+        conn = psycopg2.connect(**self.config)
 
         return conn
 
