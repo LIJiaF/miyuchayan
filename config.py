@@ -6,7 +6,7 @@ redisConfig = {
 }
 
 postgresConfig = {
-    'database': 'wx',
+    'database': 'postgres',
     'user': 'postgres',
     'password': 'root',
     'host': '120.76.56.231',
