@@ -4,26 +4,53 @@
       :data="tableData"
       style="width: 100%">
       <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
+        align="center"
+        fixed="left"
+        label="头像">
+        <template slot-scope="scope">
+          <el-image
+          style="width: 60px; height: 60px"
+          :src="scope.row.image_url"
+          fit="contain">
+            <div slot="placeholder" class="load_image">
+              <i class="el-icon-loading"></i>
+            </div>
+          </el-image>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
+        fixed="left"
+        label="微信号">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px">{{ scope.row.username }}</span>
+        </template>
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        align="center"
+        prop="city"
+        label="城市">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="score"
+        label="积分">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="experience"
+        label="经验">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="管理员">
+        <el-button type="primary" icon="el-icon-check" size="mini" circle></el-button>
       </el-table-column>
       <el-table-column
         fixed="right"
-        label="操作"
-        width="100">
+        label="操作">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
+          <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
+          <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -35,21 +62,12 @@
     data () {
       return {
         tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
+          username: '李家富',
+          image_url: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132',
+          city: '广州',
+          score: 20,
+          experience: 20,
+          is_admin: true
         }]
       }
     }
@@ -59,5 +77,10 @@
 <style scoped>
   .main {
     padding: 12px;
+  }
+
+  .load_image{
+    font-size:20px;
+    line-height: 60px;
   }
 </style>
