@@ -1,3 +1,6 @@
+DISCOUNT_ID = "http://120.76.56.231/discount"
+PERSONAL_ID = "http://120.76.56.231/personal"
+
 # test
 APPID = "wx4ad79b44d68db8da"
 APPSECRET = "75b8b1f237c468b41124033ba7a05c4a"

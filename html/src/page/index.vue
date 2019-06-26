@@ -19,19 +19,26 @@
         <el-menu
           default-active="1"
           class="el-menu-vertical-demo">
-          <router-link to="/user">
-            <el-menu-item index="1">
+          <el-submenu index="1">
+            <template slot="title">
               <i class="el-icon-user"></i>
-              <span slot="title">用户管理</span>
-            </el-menu-item>
-          </router-link>
+              <span>用户管理</span>
+            </template>
+            <router-link to="/user">
+              <el-menu-item index="1-1">用户列表</el-menu-item>
+            </router-link>
+          </el-submenu>
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-postcard"></i>
               <span>优惠券管理</span>
             </template>
-            <el-menu-item index="2-1">优惠券管理</el-menu-item>
-            <el-menu-item index="2-2">优惠券类型</el-menu-item>
+            <router-link to="/discount">
+              <el-menu-item index="2-1">优惠券列表</el-menu-item>
+            </router-link>
+            <router-link to="/discount/type">
+              <el-menu-item index="2-2">优惠券类型</el-menu-item>
+            </router-link>
           </el-submenu>
         </el-menu>
       </div>

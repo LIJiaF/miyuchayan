@@ -9,9 +9,9 @@
         label="头像">
         <template slot-scope="scope">
           <el-image
-          style="width: 60px; height: 60px"
-          :src="scope.row.image_url"
-          fit="contain">
+            style="width: 60px; height: 60px"
+            :src="scope.row.image_url"
+            fit="contain">
             <div slot="placeholder" class="load_image">
               <i class="el-icon-loading"></i>
             </div>
@@ -43,7 +43,21 @@
       <el-table-column
         align="center"
         label="管理员">
-        <el-button type="primary" icon="el-icon-check" size="mini" circle></el-button>
+        <template slot-scope="scope">
+          <el-button
+            v-if="scope.row.is_admin == true"
+            type="primary"
+            icon="el-icon-check"
+            size="mini"
+            circle>
+          </el-button>
+          <el-button
+            v-if="scope.row.is_admin == false"
+            icon="el-icon-close"
+            size="mini"
+            circle>
+          </el-button>
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -68,6 +82,13 @@
           score: 20,
           experience: 20,
           is_admin: true
+        }, {
+          username: '李家富',
+          image_url: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132',
+          city: '广州',
+          score: 20,
+          experience: 20,
+          is_admin: false
         }]
       }
     }
@@ -79,8 +100,8 @@
     padding: 12px;
   }
 
-  .load_image{
-    font-size:20px;
+  .load_image {
+    font-size: 20px;
     line-height: 60px;
   }
 </style>
