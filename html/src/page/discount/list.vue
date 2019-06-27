@@ -50,12 +50,12 @@
       </el-table-column>
       <el-table-column
         fixed="right"
-        min-width="130"
+        min-width="140"
         label="操作">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">预览</el-button>
-          <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-          <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
+          <el-button @click="handleClick(scope.row)" type="text">预览</el-button>
+          <el-button @click="handleClick(scope.row)" type="text">修改</el-button>
+          <el-button @click="handleClick(scope.row)" type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

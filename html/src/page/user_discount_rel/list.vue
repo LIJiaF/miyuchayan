@@ -50,17 +50,22 @@
             </el-table-column>
             <el-table-column
               fixed="right"
-              min-width="90"
+              min-width="95"
               label="操作">
               <template slot-scope="scope">
-                <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-                <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
+                <el-button @click="handleClick(scope.row)" type="text">修改</el-button>
+                <el-button @click="handleClick(scope.row)" type="text">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
         </template>
       </el-table-column>
       <el-table-column
+        prop="username"
+        label="微信号">
+      </el-table-column>
+      <el-table-column
+        align="center"
         label="头像">
         <template slot-scope="scope">
           <el-image
@@ -72,11 +77,6 @@
             </div>
           </el-image>
         </template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        prop="username"
-        label="微信号">
       </el-table-column>
     </el-table>
   </div>

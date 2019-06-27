@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <el-table
-      :data="tableData"
+      :data="table_data"
       style="width: 100%">
       <el-table-column
         align="center"
@@ -31,40 +31,69 @@
       </el-table-column>
       <el-table-column
         align="center"
-        prop="score"
         label="积分">
+        <template slot-scope="scope">
+          <el-input v-if="cur_index == scope.row.id" v-model="scope.row.score" placeholder="积分"></el-input>
+          <span v-else>{{ scope.row.score }}</span>
+        </template>
       </el-table-column>
       <el-table-column
         align="center"
-        prop="experience"
         label="经验">
+        <template slot-scope="scope">
+          <el-input v-if="cur_index == scope.row.id" v-model="scope.row.experience" placeholder="经验"></el-input>
+          <span v-else>{{ scope.row.experience }}</span>
+        </template>
       </el-table-column>
       <el-table-column
         align="center"
         label="管理员">
         <template slot-scope="scope">
-          <el-button
-            v-if="scope.row.is_admin == true"
-            type="primary"
-            icon="el-icon-check"
-            size="mini"
-            circle>
-          </el-button>
-          <el-button
-            v-if="scope.row.is_admin == false"
-            icon="el-icon-close"
-            size="mini"
-            circle>
-          </el-button>
+          <div v-if="cur_index == scope.row.id">
+            <el-switch v-model="scope.row.is_admin"></el-switch>
+          </div>
+          <div v-else>
+            <el-button
+              v-if="scope.row.is_admin"
+              type="primary"
+              icon="el-icon-check"
+              size="mini"
+              circle>
+            </el-button>
+            <el-button
+              v-if="!scope.row.is_admin"
+              icon="el-icon-close"
+              size="mini"
+              circle>
+            </el-button>
+          </div>
         </template>
       </el-table-column>
       <el-table-column
         fixed="right"
-        min-width="90"
+        min-width="95"
         label="操作">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>
-          <el-button @click="handleClick(scope.row)" type="text" size="small">删除</el-button>
+          <div v-if="cur_index == scope.row.id">
+            <el-button            
+              @click="handleSave(scope.row)"
+              type="text" size="small">保存
+            </el-button>
+            <el-button 
+              @click="handleCancel(scope.row)" 
+              type="text" size="small">取消
+            </el-button>
+          </div>
+          <div v-else>
+            <el-button
+              @click="handleEdit(scope.row)" 
+              type="text">修改
+            </el-button>
+            <el-button
+              @click="handleDelete(scope.row)" 
+              type="text">删除
+            </el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -75,7 +104,12 @@
   export default {
     data () {
       return {
-        tableData: [{
+        cur_index: -1,
+        last_score: 0,
+        last_experience: 0,
+        last_is_admin: false,
+        table_data: [{
+          id: 1,
           username: '李家富',
           image_url: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132',
           city: '广州',
@@ -83,6 +117,7 @@
           experience: 20,
           is_admin: true
         }, {
+          id: 2,
           username: '李家富',
           image_url: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132',
           city: '广州',
@@ -90,6 +125,50 @@
           experience: 20,
           is_admin: false
         }]
+      }
+    },
+    methods: {
+      handleSave (row) {
+        this.cur_index = -1;
+        this.$message({
+          message: '保存成功',
+          type: 'success',
+          showClose: true
+        });
+      },
+      handleCancel (row) {
+        this.table_data.map((data) => {
+          if(data.id == row.id){
+            data.score = this.last_score;
+            data.experience = this.last_experience;
+            data.is_admin = this.last_is_admin;
+          }
+        });
+        this.cur_index = -1;
+      },
+      handleEdit (row) {
+        this.last_score = row.score;
+        this.last_experience = row.experience;
+        this.last_is_admin = row.is_admin;
+        this.cur_index = row.id;
+      },
+      handleDelete (row) {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       }
     }
   }
