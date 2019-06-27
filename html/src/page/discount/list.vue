@@ -6,6 +6,7 @@
       <el-table-column
         align="center"
         prop="type_id"
+        min-width="100"
         label="优惠券类型">
       </el-table-column>
       <el-table-column
@@ -49,6 +50,7 @@
       </el-table-column>
       <el-table-column
         fixed="right"
+        min-width="130"
         label="操作">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="text" size="small">预览</el-button>

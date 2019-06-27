@@ -19,11 +19,10 @@
         </template>
       </el-table-column>
       <el-table-column
+        align="center"
         fixed="left"
+        prop="username"
         label="微信号">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.username }}</span>
-        </template>
       </el-table-column>
       <el-table-column
         align="center"
@@ -61,6 +60,7 @@
       </el-table-column>
       <el-table-column
         fixed="right"
+        min-width="90"
         label="操作">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>

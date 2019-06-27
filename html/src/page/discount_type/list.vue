@@ -15,6 +15,7 @@
       </el-table-column>
       <el-table-column
         fixed="right"
+        min-width="90"
         label="操作">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="text" size="small">修改</el-button>

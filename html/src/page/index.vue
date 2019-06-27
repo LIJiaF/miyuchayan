@@ -40,6 +40,15 @@
               <el-menu-item index="2-2">优惠券类型</el-menu-item>
             </router-link>
           </el-submenu>
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-star-off"></i>
+              <span>用户优惠券管理</span>
+            </template>
+            <router-link to="/user/discount/rel">
+              <el-menu-item index="3-1">用户优惠券列表</el-menu-item>
+            </router-link>
+          </el-submenu>
         </el-menu>
       </div>
       <!--内容-->
@@ -65,6 +74,7 @@
   }
 
   .header {
+    min-width: 525px;
     background: #6495ED;
     overflow: hidden;
   }
