@@ -92,16 +92,23 @@ class WxHandler(RequestHandler):
 
 class signatureHandler(RequestHandler):
     def get(self):
-        res = {
-            'jsapi_ticket': Basic().get_jsapi_ticket(),
-            'noncestr': 'Wm3WZYTPz0wzccnW',
-            'timestamp': str(int(time.time())),
-            'url': self.request.protocol + '://' + self.request.host + self.request.path
-        }
+        jsapi_ticket = Basic().get_jsapi_ticket()
+        noncestr = 'Wm3WZYTPz0wzccnW'
+        timestamp = str(int(time.time()))
+        url = self.request.protocol + '://' + self.request.host + self.request.path
+        logger.info('jsapi_ticket：', jsapi_ticket)
+        logger.info('noncestr：', noncestr)
+        logger.info('timestamp：', timestamp)
+        logger.info('url：', url)
 
-        urlString = 'jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s' % (
-            res['jsapi_ticket'], res['noncestr'], res['timestamp'], res['url'])
-        res['signature'] = hashlib.sha1(urlString.encode('utf8')).hexdigest()
+        urlString = 'jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s' % (jsapi_ticket, noncestr, timestamp, url)
+        signature = hashlib.sha1(urlString.encode('utf8')).hexdigest()
+
+        res = {
+            'timestamp': timestamp,
+            'noncestr': noncestr,
+            'signature': signature
+        }
 
         return self.finish(res)
 
