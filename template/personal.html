@@ -79,6 +79,9 @@
                     signature: res.signature,
                     jsApiList: ['checkJsApi', 'scanQRCode']
                 });
+                wx.error(function (res) {
+                    console.log('error:', res);
+                });
             },
             error: function (err) {
                 console.log(err);
