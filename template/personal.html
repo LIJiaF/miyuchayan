@@ -66,13 +66,23 @@
 </div>
 <script>
     $(function () {
-        wx.config({
-            debug: true,
-            appId: 'wx832fa4d94a890b92',
-            timestamp: 1561709418,
-            nonceStr: '2004766299',
-            signature: '65a02b7976c1d2a481ae80b1755a12d35cdcd15e',
-            jsApiList: ['checkJsApi', 'scanQRCode']
+        $.ajax({
+            url: '/signature',
+            method: 'get',
+            success: function (res) {
+                console.log(res);
+                // wx.config({
+                //     debug: true,
+                //     appId: 'wx832fa4d94a890b92',
+                //     timestamp: 1561709418,
+                //     nonceStr: '2004766299',
+                //     signature: '65a02b7976c1d2a481ae80b1755a12d35cdcd15e',
+                //     jsApiList: ['checkJsApi', 'scanQRCode']
+                // });
+            },
+            error: function (err) {
+                console.log(err);
+            }
         });
     });
 
@@ -131,7 +141,7 @@
             needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
             scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
             success: function (res) {
-                var result = res.resultStr;
+                let result = res.resultStr;
                 layer.msg(result, {icon: 6});
             }
         });
