@@ -69,6 +69,7 @@ class WxHandler(RequestHandler):
                     # 菜单点击事件
                     elif recMsg.Event == 'CLICK':
                         eventKey = recMsg.EventKey
+                        print('点击事件：', eventKey)
                         if eventKey == 'phone':
                             content = '139 2829 0304'
                             replyMsg = reply.TextMsg(toUser, fromUser, content)
