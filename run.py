@@ -1,7 +1,7 @@
 import hashlib
 import os
 
-from tornado.web import RequestHandler, Application
+from tornado.web import RequestHandler, Application, StaticFileHandler
 from tornado.ioloop import IOLoop
 from tornado.options import define, options, parse_command_line
 
@@ -63,7 +63,7 @@ class WxHandler(RequestHandler):
                 elif recMsg.MsgType == 'event':
                     # 关注公众号事件
                     if recMsg.Event == 'subscribe':
-                        content = '您好，欢迎关注密语君^_^'
+                        content = '您好，欢迎关注密语君^_^\n更多优惠请留意粉丝福利！'
                         replyMsg = reply.TextMsg(toUser, fromUser, content)
                         self.write(replyMsg.send())
                     # 菜单点击事件
@@ -98,6 +98,8 @@ def make_app():
         (r"/discount/*", DiscountHandler),
         (r"/personal/*", PersonalHandler),
         (r"/upload", UploadHandler),
+        (r"/(.*)", StaticFileHandler,
+         {"path": config['static_path'], "default_filename": "MP_verify_VUv3rv3xeIyo7z8I.txt"})
     ], **config)
 
 
