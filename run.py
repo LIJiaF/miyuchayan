@@ -93,13 +93,15 @@ class WxHandler(RequestHandler):
 class signatureHandler(RequestHandler):
     def get(self):
         res = {
-            'appid': 'wx832fa4d94a890b92',
             'jsapi_ticket': Basic().get_jsapi_ticket(),
             'noncestr': 'Wm3WZYTPz0wzccnW',
             'timestamp': str(int(time.time())),
             'url': self.request.protocol + '://' + self.request.host + self.request.path
         }
-        res['signature'] = hashlib.sha1(urlencode(res).encode('utf8')).hexdigest()
+
+        urlString = 'jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s' % (
+            res['jsapi_ticket'], res['noncestr'], res['timestamp'], res['url'])
+        res['signature'] = hashlib.sha1(urlString.encode('utf8')).hexdigest()
 
         return self.finish(res)
 
