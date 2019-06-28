@@ -44,10 +44,10 @@ if __name__ == '__main__':
     media = basic.get_media_list()
 
     discount_url = request.quote(DISCOUNT_ID)
-    discount_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base#wechat_redirect" % (
+    discount_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect" % (
         APPID, discount_url)
     personal_url = request.quote(PERSONAL_ID)
-    personal_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo#wechat_redirect" % (
+    personal_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123&connect_redirect=1#wechat_redirect" % (
         APPID, personal_url)
 
     postJson = """
