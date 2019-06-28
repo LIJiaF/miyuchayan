@@ -16,7 +16,7 @@ class DiscountHandler(RequestHandler):
         logger.info('code: %s' % code)
         get_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code' % (
             APPID, APPSECRET, code)
-        token_data = json.loads(request.urlopen(url=get_token_url).read())
+        token_data = json.loads(request.urlopen(url=get_token_url).read().decode('utf-8'))
         if token_data.get('errcode'):
             logger.error('errcode: %s' % token_data['errcode'])
             logger.error('errmsg: %s' % token_data['errmsg'])

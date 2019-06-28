@@ -62,6 +62,7 @@ class Basic(object):
         if not urlResp.get('errcode'):
             logger.info('media_list获取成功')
             logger.info('media_list: %s' % urlResp)
+            return urlResp
         else:
             logger.error('media_list获取失败')
             logger.error('errcode: %s' % urlResp['errcode'])
@@ -85,6 +86,6 @@ class Basic(object):
 if __name__ == '__main__':
     basic = Basic()
     # basic.get_access_token()
-    basic.upload_permanently_media()
+    # basic.upload_permanently_media()
     # basic.get_media_count()
-    # basic.get_media_list()
+    basic.get_media_list()
