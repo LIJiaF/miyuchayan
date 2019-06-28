@@ -70,9 +70,10 @@
             url: '/signature',
             method: 'get',
             success: function (res) {
+                console.log(res);
                 wx.config({
                     debug: true,
-                    appId: res.appid,
+                    appId: 'wx832fa4d94a890b92',
                     timestamp: res.timestamp,
                     nonceStr: res.noncestr,
                     signature: res.signature,
