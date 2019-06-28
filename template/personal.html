@@ -70,15 +70,14 @@
             url: '/signature',
             method: 'get',
             success: function (res) {
-                console.log(res);
-                // wx.config({
-                //     debug: true,
-                //     appId: 'wx832fa4d94a890b92',
-                //     timestamp: 1561709418,
-                //     nonceStr: '2004766299',
-                //     signature: '65a02b7976c1d2a481ae80b1755a12d35cdcd15e',
-                //     jsApiList: ['checkJsApi', 'scanQRCode']
-                // });
+                wx.config({
+                    debug: true,
+                    appId: res.appid,
+                    timestamp: res.timestamp,
+                    nonceStr: res.noncestr,
+                    signature: res.signature,
+                    jsApiList: ['checkJsApi', 'scanQRCode']
+                });
             },
             error: function (err) {
                 console.log(err);

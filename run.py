@@ -93,6 +93,7 @@ class WxHandler(RequestHandler):
 class signatureHandler(RequestHandler):
     def get(self):
         res = {
+            'appid': 'wx832fa4d94a890b92',
             'jsapi_ticket': Basic().get_jsapi_ticket(),
             'noncestr': 'Wm3WZYTPz0wzccnW',
             'timestamp': str(int(time.time())),
