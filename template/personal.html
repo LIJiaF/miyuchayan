@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <script src="http://cdn.bootcss.com/jquery/1.12.3/jquery.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
     <script src="{{static_url('js/layer.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{static_url('css/personal.css')}}">
     <style>
@@ -64,6 +65,17 @@
     <span class="close" onclick="hideCode()"></span>
 </div>
 <script>
+    $(function () {
+        wx.config({
+            debug: true,
+            appId: 'wx832fa4d94a890b92',
+            timestamp: 1561709418,
+            nonceStr: '2004766299',
+            signature: '65a02b7976c1d2a481ae80b1755a12d35cdcd15e',
+            jsApiList: ['checkJsApi', 'scanQRCode']
+        });
+    });
+
     function showCode (discount_id) {
         let codeEle = document.getElementById('code');
         let imgEle = document.getElementById('img');
@@ -115,7 +127,14 @@
     }
 
     function scan () {
-        layer.msg('扫一扫', {icon: 6});
+        wx.scanQRCode({
+            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+            success: function (res) {
+                var result = res.resultStr;
+                layer.msg(result, {icon: 6});
+            }
+        });
     }
 </script>
 </body>
