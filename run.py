@@ -1,5 +1,7 @@
 import hashlib
 import os
+import time
+from urllib.parse import urlencode
 
 from tornado.web import RequestHandler, Application, StaticFileHandler
 from tornado.ioloop import IOLoop
@@ -7,6 +9,7 @@ from tornado.options import define, options, parse_command_line
 
 from wx import receive, reply
 from api import *
+from basic import Basic
 from common.log_print import logger
 
 define("host", default="8888", help="端口")
@@ -87,6 +90,19 @@ class WxHandler(RequestHandler):
             return err
 
 
+class signatureHandler(RequestHandler):
+    def get(self):
+        res = {
+            'jsapi_ticket': Basic().get_jsapi_ticket(),
+            'noncestr': 'Wm3WZYTPz0wzccnW',
+            'timestamp': str(int(time.time())),
+            'url': self.request.protocol + '://' + self.request.host + self.request.path
+        }
+        res['signature'] = hashlib.sha1(urlencode(res).encode('utf8')).hexdigest()
+
+        return self.finish(res)
+
+
 def make_app():
     config = {
         'static_path': os.path.join(os.path.dirname(__file__), 'static'),
@@ -99,6 +115,7 @@ def make_app():
         (r"/discount", DiscountHandler),
         (r"/personal", PersonalHandler),
         (r"/upload", UploadHandler),
+        (r"/signature", signatureHandler),
         (r"/(.*)", StaticFileHandler,
          {"path": config['static_path'], "default_filename": "MP_verify_VUv3rv3xeIyo7z8I.txt"})
     ], **config)
