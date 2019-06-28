@@ -96,8 +96,8 @@ def make_app():
     return Application([
         (r"/", IndexHandler),
         (r"/wx", WxHandler),
-        (r"/discount/*", DiscountHandler),
-        (r"/personal/*", PersonalHandler),
+        (r"/discount", DiscountHandler),
+        (r"/personal", PersonalHandler),
         (r"/upload", UploadHandler),
         (r"/(.*)", StaticFileHandler,
          {"path": config['static_path'], "default_filename": "MP_verify_VUv3rv3xeIyo7z8I.txt"})
