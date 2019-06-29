@@ -104,7 +104,7 @@
         let flagEle = document.getElementById('flag');
         let openid = document.getElementById('openid').value;
         let code = 'openid=' + openid + '&discount_id=' + discount_id;
-        let src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=333333&el=l&w=200&m=10&text=' + code;
+        let src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=333333&el=l&w=200&m=10&text=' + encodeURIComponent(code);
         if (flagEle.value == '0') {
             imgEle.setAttribute('src', src);
             codeEle.style.display = 'block';
