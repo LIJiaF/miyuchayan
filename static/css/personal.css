@@ -184,3 +184,52 @@ body {
     background-image: url(../icon/close.png);
     background-size: 30px;
 }
+
+.scan_shade {
+    display: none;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.scan_box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 85%;
+    transform: translate(-50%, -50%);
+}
+
+.scan_box .discount {
+    display: block;
+    padding: 20px;
+    color: #6495ED;
+    font-size: 30px;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 5px 5px 0 0;
+}
+
+.scan_box .rule {
+    padding: 15px 10px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.scan_btn {
+    display: block;
+    width: 40%;
+    margin: 70px auto;
+    color: #fff;
+    padding: 10px 0;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 25px;
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    background: #6495ED;
+}
