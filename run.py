@@ -114,6 +114,7 @@ def make_app():
         (r"/wx", WxHandler),
         (r"/discount", DiscountHandler),
         (r"/personal", PersonalHandler),
+        (r"/scan", ScanHandler),
         (r"/upload", UploadHandler),
         (r"/signature", signatureHandler),
         (r"/(.*)", StaticFileHandler,

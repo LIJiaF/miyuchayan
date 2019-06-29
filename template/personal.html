@@ -64,8 +64,19 @@
     <img id="img" src=""/>
     <span class="close" onclick="hideCode()"></span>
 </div>
+<div class="scan_shade" id="scan_shade">
+    <div class="scan_box">
+        <p class="discount">奶茶兑换券</p>
+        <p class="rule">{{d['rule']}}</p>
+        <button class="scan_btn">确认使用</button>
+    </div>
+</div>
 <script>
     $(function () {
+        // wxConfig();
+    });
+
+    function wxConfig() {
         $.ajax({
             url: '/signature?fullUrl=' + encodeURIComponent(location.href.split('#')[0]),
             method: 'get',
@@ -84,7 +95,7 @@
                 console.log(err);
             }
         });
-    });
+    }
 
     function showCode(discount_id) {
         let codeEle = document.getElementById('code');
@@ -92,7 +103,7 @@
         let flagEle = document.getElementById('flag');
         let openid = document.getElementById('openid').value;
         let code = 'openid=' + openid + '&discount_id=' + discount_id;
-        let src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=333333&el=l&w=200&m=10&text=' + btoa(code);
+        let src = 'http://qr.liantu.com/api.php?bg=ffffff&fg=333333&el=l&w=200&m=10&text=' + code;
         if (flagEle.value == '0') {
             imgEle.setAttribute('src', src);
             codeEle.style.display = 'block';
@@ -137,12 +148,25 @@
     }
 
     function scan() {
-        wx.scanQRCode({
-            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-            scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+        // wx.scanQRCode({
+        //     needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+        //     scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+        //     success: function (res) {
+        //         let result = res.resultStr;
+        //     }
+        // });
+        let data = atob('b3BlbmlkPW9CTnV5NTdxd2h2ZVRYV0ZJcm4xbjJCNVctazAmZGIzY291bnRfaWQ9Ng==');
+        console.log(data);
+        $.ajax({
+            url: '/scan?' + data,
+            method: 'get',
             success: function (res) {
-                let result = res.resultStr;
-                layer.msg(result, {icon: 6});
+                console.log(res);
+                let scanEle = document.getElementById('scan_shade');
+                scanEle.style.display = 'block';
+            },
+            error: function (err) {
+                console.log(err);
             }
         });
     }
