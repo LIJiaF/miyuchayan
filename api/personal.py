@@ -78,7 +78,7 @@ class PersonalHandler(RequestHandler):
             conn.execute(sql)
 
         # conn = Postgres()
-        # openid = 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
+        # openid = 'oBNuy57qwhveTXWFIrn1n2B5W-k0'
 
         user_sql = """
             select openid, username, image_url, province, city, score, experience, is_admin, date
