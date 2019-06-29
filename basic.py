@@ -36,11 +36,10 @@ class Basic(object):
         return access_token
 
     # 获取jsapi_ticket
-    @classmethod
-    def get_jsapi_ticket(cls):
+    def get_jsapi_ticket(self):
         jsapi_ticket = ''
         if not redis.exists('token:jsapi_ticket'):
-            access_token = cls.get_access_token()
+            access_token = self.get_access_token()
             postUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi" % access_token
             urlResp = request.urlopen(postUrl)
             urlResp = json.loads(urlResp.read().decode('utf-8'))
