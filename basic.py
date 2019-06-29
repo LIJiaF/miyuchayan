@@ -9,36 +9,36 @@ from common.log_print import logger
 
 class Basic(object):
     def __init__(self):
-        self.appid = APPID
-        self.appsecret = APPSECRET
-        self._accessToken = ''
-        self._jsapi_ticket = ''
+        pass
 
     # 获取access_token
     def get_access_token(self):
+        access_token = ''
         if not redis.exists('token:access_token'):
             postUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s" % (
-                self.appid, self.appsecret)
+                APPID, APPSECRET)
             urlResp = request.urlopen(postUrl)
             urlResp = json.loads(urlResp.read().decode('utf-8'))
 
             if not urlResp.get('errcode'):
                 redis.set('token:access_token', urlResp['access_token'])
                 redis.expire('token:access_token', 7000)
-                self._accessToken = urlResp['access_token']
+                access_token = urlResp['access_token']
                 logger.info('access_token获取成功')
             else:
                 logger.error('access_token获取失败')
                 logger.error('errcode: %s' % urlResp['errcode'])
                 logger.error('errmsg: %s' % urlResp['errmsg'])
         else:
-            self._accessToken = redis.get('token:access_token').decode('utf-8')
+            access_token = redis.get('token:access_token').decode('utf-8')
             logger.info('access_token获取成功')
 
-        return self._accessToken
+        return access_token
 
     # 获取jsapi_ticket
+    @classmethod
     def get_jsapi_ticket(self):
+        jsapi_ticket = ''
         if not redis.exists('token:jsapi_ticket'):
             access_token = self.get_access_token()
             postUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi" % access_token
@@ -48,21 +48,21 @@ class Basic(object):
             if not urlResp.get('errcode'):
                 redis.set('token:jsapi_ticket', urlResp['ticket'])
                 redis.expire('token:jsapi_ticket', 7000)
-                self._jsapi_ticket = urlResp['ticket']
+                jsapi_ticket = urlResp['ticket']
                 logger.info('jsapi_ticket获取成功')
             else:
                 logger.error('jsapi_ticket获取失败')
                 logger.error('errcode: %s' % urlResp['errcode'])
                 logger.error('errmsg: %s' % urlResp['errmsg'])
         else:
-            self._jsapi_ticket = redis.get('token:jsapi_ticket').decode('utf-8')
+            jsapi_ticket = redis.get('token:jsapi_ticket').decode('utf-8')
             logger.info('jsapi_ticket获取成功')
 
-        return self._jsapi_ticket
+        return jsapi_ticket
 
     # 上传永久素材
     def upload_permanently_media(self, type='image'):
-        accessToken = Basic().get_access_token()
+        accessToken = self.get_access_token()
         media = os.path.join(os.path.dirname(__file__), 'menu.jpg')
         description = '{"title": "menu", "introduction": "菜单"}'.encode('utf-8')
         cmd = 'curl "https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=%s&type=%s" -F media=@%s -F description=%s' % (
