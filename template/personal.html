@@ -66,9 +66,11 @@
 </div>
 <div class="scan_shade" id="scan_shade">
     <div class="scan_box">
-        <p class="discount">奶茶兑换券</p>
-        <p class="rule">{{d['rule']}}</p>
-        <button class="scan_btn">确认使用</button>
+        <input type="hidden" value="" id="scan_openid">
+        <input type="hidden" value="" id="scan_discount_id">
+        <p class="discount" id="discount"></p>
+        <p class="rule" id="rule"></p>
+        <button class="scan_btn" onclick="confirm_use()">确认使用</button>
     </div>
 </div>
 <script>
@@ -81,7 +83,6 @@
             url: '/signature?fullUrl=' + encodeURIComponent(location.href.split('#')[0]),
             method: 'get',
             success: function (res) {
-                console.log(res);
                 wx.config({
                     debug: true,
                     appId: 'wx832fa4d94a890b92',
@@ -148,22 +149,98 @@
     }
 
     function scan() {
-        // wx.scanQRCode({
-        //     needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-        //     scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+        wx.scanQRCode({
+            needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+            scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+            success: function (res) {
+                let code = res.resultStr;
+                $.ajax({
+                    url: '/scan?' + code,
+                    method: 'get',
+                    success: function (res) {
+                        if (!res.code) {
+                            let scanEle = document.getElementById('scan_shade');
+                            let discountEle = document.getElementById('discount');
+                            let ruleEle = document.getElementById('rule');
+                            let openidEle = document.getElementById('scan_openid');
+                            let discountIdEle = document.getElementById('scan_discount_id');
+                            let data = res.data;
+                            let discount = '';
+                            if (data.type == 'money') {
+                                discount = data.discount + '元' + data.name;
+                            } else if (data.type == 'discount') {
+                                discount = data.discount + '折' + data.name;
+                            } else if (data.type == 'exchange') {
+                                discount = data.discount + data.name;
+                            }
+                            discountEle.textContent = discount;
+                            ruleEle.textContent = data.rule;
+                            openidEle.value = data.openid;
+                            discountIdEle.value = data.discount_id;
+                            scanEle.style.display = 'block';
+                        } else {
+                            layer.msg(res.msg, {icon: 5});
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            }
+        });
+        // let code = 'openid=oBNuy57qwhveTXWFIrn1n2B5W-k0&discount_id=4';
+        // $.ajax({
+        //     url: '/scan?' + code,
+        //     method: 'get',
         //     success: function (res) {
-        //         let result = res.resultStr;
+        //         if (!res.code) {
+        //             let scanEle = document.getElementById('scan_shade');
+        //             let discountEle = document.getElementById('discount');
+        //             let ruleEle = document.getElementById('rule');
+        //             let openidEle = document.getElementById('scan_openid');
+        //             let discountIdEle = document.getElementById('scan_discount_id');
+        //             let data = res.data;
+        //             let discount = '';
+        //             if (data.type == 'money') {
+        //                 discount = data.discount + '元' + data.name;
+        //             } else if (data.type == 'discount') {
+        //                 discount = data.discount + '折' + data.name;
+        //             } else if (data.type == 'exchange') {
+        //                 discount = data.discount + data.name;
+        //             }
+        //             discountEle.textContent = discount;
+        //             ruleEle.textContent = data.rule;
+        //             openidEle.value = data.openid;
+        //             discountIdEle.value = data.discount_id;
+        //             scanEle.style.display = 'block';
+        //         } else {
+        //             layer.msg(res.msg, {icon: 5});
+        //         }
+        //     },
+        //     error: function (err) {
+        //         console.log(err);
         //     }
         // });
-        let data = atob('b3BlbmlkPW9CTnV5NTdxd2h2ZVRYV0ZJcm4xbjJCNVctazAmZGIzY291bnRfaWQ9Ng==');
-        console.log(data);
+    }
+
+    function confirm_use() {
+        let scanEle = document.getElementById('scan_shade');
+        let openidEle = document.getElementById('scan_openid');
+        let discountIdEle = document.getElementById('scan_discount_id');
         $.ajax({
-            url: '/scan?' + data,
-            method: 'get',
+            url: '/scan',
+            method: 'post',
+            data: {
+                openid: openidEle.value,
+                discount_id: discountIdEle.value
+            },
             success: function (res) {
-                console.log(res);
-                let scanEle = document.getElementById('scan_shade');
-                scanEle.style.display = 'block';
+                if (!res.code) {
+                    scanEle.style.display = 'none';
+                    layer.msg(res.msg, {icon: 6});
+                } else {
+                    layer.msg(res.msg, {icon: 5});
+                }
             },
             error: function (err) {
                 console.log(err);
