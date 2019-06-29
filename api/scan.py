@@ -3,12 +3,15 @@ from datetime import datetime
 from tornado.web import RequestHandler
 
 from common.postgresqlConn import Postgres
+from common.log_print import logger
 
 
 class ScanHandler(RequestHandler):
     def get(self):
         openid = self.get_argument('openid', None)
-        discount_id = self.get_argument('discount_id', '-1')
+        discount_id = self.get_argument('discount_id', '0')
+        logger.info('openid: %s' % openid)
+        logger.info('discount_id: %s' % discount_id)
 
         sql = """
             select openid, discount_id, discount, name, type, rule
