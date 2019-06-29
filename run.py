@@ -1,7 +1,5 @@
 import hashlib
 import os
-import time
-from urllib.parse import urlencode
 
 from tornado.web import RequestHandler, Application, StaticFileHandler
 from tornado.ioloop import IOLoop
@@ -10,6 +8,7 @@ from tornado.options import define, options, parse_command_line
 from wx import receive, reply
 from api import *
 from basic import Basic
+from sign import Sign
 from common.log_print import logger
 
 define("host", default="8888", help="端口")
@@ -92,23 +91,14 @@ class WxHandler(RequestHandler):
 
 class signatureHandler(RequestHandler):
     def get(self):
-        jsapi_ticket = Basic().get_jsapi_ticket()
-        noncestr = 'Wm3WZYTPz0wzccnW'
-        timestamp = str(int(time.time()))
-        url = self.request.protocol + '://' + self.request.host + self.request.path
-        logger.info('jsapi_ticket：%s' % jsapi_ticket)
-        logger.info('noncestr：%s' % noncestr)
-        logger.info('timestamp：%s' % timestamp)
+        url = self.get_argument('fullUrl', None)
+        jsapi_ticket = Basic.get_jsapi_ticket()
         logger.info('url：%s' % url)
+        logger.info('jsapi_ticket：%s' % jsapi_ticket)
 
-        urlString = 'jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s' % (jsapi_ticket, noncestr, timestamp, url)
-        signature = hashlib.sha1(urlString.encode('utf8')).hexdigest()
-
-        res = {
-            'timestamp': timestamp,
-            'noncestr': noncestr,
-            'signature': signature
-        }
+        sign = Sign(jsapi_ticket, url)
+        res = sign.sign()
+        logger.info('res：%s' % res)
 
         return self.finish(res)
 
