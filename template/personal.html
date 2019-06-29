@@ -154,6 +154,7 @@
             scanType: ["qrCode", "barCode"], // 可以指定扫二维码还是一维码，默认二者都有
             success: function (res) {
                 let code = res.resultStr;
+                alert(code);
                 $.ajax({
                     url: '/scan?' + code,
                     method: 'get',
