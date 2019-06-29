@@ -92,7 +92,7 @@ class WxHandler(RequestHandler):
 class signatureHandler(RequestHandler):
     def get(self):
         url = self.get_argument('fullUrl', None)
-        jsapi_ticket = Basic.get_jsapi_ticket()
+        jsapi_ticket = Basic().get_jsapi_ticket()
         logger.info('url：%s' % url)
         logger.info('jsapi_ticket：%s' % jsapi_ticket)
 

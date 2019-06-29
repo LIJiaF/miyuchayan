@@ -188,39 +188,6 @@
                 });
             }
         });
-        // let code = 'openid=oBNuy57qwhveTXWFIrn1n2B5W-k0&discount_id=4';
-        // $.ajax({
-        //     url: '/scan?' + code,
-        //     method: 'get',
-        //     success: function (res) {
-        //         if (!res.code) {
-        //             let scanEle = document.getElementById('scan_shade');
-        //             let discountEle = document.getElementById('discount');
-        //             let ruleEle = document.getElementById('rule');
-        //             let openidEle = document.getElementById('scan_openid');
-        //             let discountIdEle = document.getElementById('scan_discount_id');
-        //             let data = res.data;
-        //             let discount = '';
-        //             if (data.type == 'money') {
-        //                 discount = data.discount + '元' + data.name;
-        //             } else if (data.type == 'discount') {
-        //                 discount = data.discount + '折' + data.name;
-        //             } else if (data.type == 'exchange') {
-        //                 discount = data.discount + data.name;
-        //             }
-        //             discountEle.textContent = discount;
-        //             ruleEle.textContent = data.rule;
-        //             openidEle.value = data.openid;
-        //             discountIdEle.value = data.discount_id;
-        //             scanEle.style.display = 'block';
-        //         } else {
-        //             layer.msg(res.msg, {icon: 5});
-        //         }
-        //     },
-        //     error: function (err) {
-        //         console.log(err);
-        //     }
-        // });
     }
 
     function confirm_use() {
