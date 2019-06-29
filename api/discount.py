@@ -43,7 +43,7 @@ class DiscountHandler(RequestHandler):
                 logger.info('access_token: %s', access_token)
                 logger.info('openid: %s', openid)
 
-        # openid = 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
+        # openid = 'oBNuy57qwhveTXWFIrn1n2B5W-k0'
 
         conn = Postgres()
         sql = """

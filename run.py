@@ -96,10 +96,10 @@ class signatureHandler(RequestHandler):
         noncestr = 'Wm3WZYTPz0wzccnW'
         timestamp = str(int(time.time()))
         url = self.request.protocol + '://' + self.request.host + self.request.path
-        logger.info('jsapi_ticket：', jsapi_ticket)
-        logger.info('noncestr：', noncestr)
-        logger.info('timestamp：', timestamp)
-        logger.info('url：', url)
+        logger.info('jsapi_ticket：%s' % jsapi_ticket)
+        logger.info('noncestr：%s' % noncestr)
+        logger.info('timestamp：%s' % timestamp)
+        logger.info('url：%s' % url)
 
         urlString = 'jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s' % (jsapi_ticket, noncestr, timestamp, url)
         signature = hashlib.sha1(urlString.encode('utf8')).hexdigest()
