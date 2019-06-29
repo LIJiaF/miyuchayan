@@ -157,7 +157,7 @@
                 alert(code);
                 alert(atob(code));
                 $.ajax({
-                    url: '/scan?' + code,
+                    url: '/scan?' + atob(code),
                     method: 'get',
                     success: function (res) {
                         if (!res.code) {
