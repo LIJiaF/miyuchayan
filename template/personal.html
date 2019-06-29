@@ -67,7 +67,7 @@
 <script>
     $(function () {
         $.ajax({
-            url: '/signature?fullUrl=' + location.href.split('#')[0],
+            url: '/signature?fullUrl=' + encodeURIComponent(location.href.split('#')[0]),
             method: 'get',
             success: function (res) {
                 console.log(res);
