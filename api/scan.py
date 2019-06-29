@@ -53,7 +53,7 @@ class ScanHandler(RequestHandler):
         """ % (use_time, openid, int(discount_id))
         sql += """
             update wx_user
-            set score = score + 20
+            set score = score + 20, experience = experience + 20
             where openid = '%s';
         """ % openid
 
