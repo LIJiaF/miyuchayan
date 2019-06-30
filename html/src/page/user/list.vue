@@ -1,5 +1,19 @@
 <template>
   <div class="main">
+    <div class="banner">
+      <el-row type="flex" justify="center" :gutter="10" align="middle">
+        <el-col :span="8" :offset="12">
+          <el-input
+            placeholder="搜索微信号"
+            prefix-icon="el-icon-search"
+            v-model="search_val">
+          </el-input>
+        </el-col>
+        <el-col :span="2">
+          <el-button @click="handleSearch" size="medium" type="primary">搜索</el-button>
+        </el-col>
+      </el-row>
+    </div>
     <el-table
       :data="table_data"
       style="width: 100%">
@@ -75,22 +89,22 @@
         label="操作">
         <template slot-scope="scope">
           <div v-if="cur_index == scope.row.id">
-            <el-button            
+            <el-button
               @click="handleSave(scope.row)"
               type="text" size="small">保存
             </el-button>
-            <el-button 
-              @click="handleCancel(scope.row)" 
+            <el-button
+              @click="handleCancel(scope.row)"
               type="text" size="small">取消
             </el-button>
           </div>
           <div v-else>
             <el-button
-              @click="handleEdit(scope.row)" 
+              @click="handleEdit(scope.row)"
               type="text">修改
             </el-button>
             <el-button
-              @click="handleDelete(scope.row)" 
+              @click="handleDelete(scope.row)"
               type="text">删除
             </el-button>
           </div>
@@ -104,6 +118,7 @@
   export default {
     data () {
       return {
+        search_val: '',
         cur_index: -1,
         last_score: 0,
         last_experience: 0,
@@ -128,6 +143,9 @@
       }
     },
     methods: {
+      handleSearch () {
+        console.log(this.search_val);
+      },
       handleSave (row) {
         this.cur_index = -1;
         this.$message({
@@ -138,7 +156,7 @@
       },
       handleCancel (row) {
         this.table_data.map((data) => {
-          if(data.id == row.id){
+          if (data.id == row.id) {
             data.score = this.last_score;
             data.experience = this.last_experience;
             data.is_admin = this.last_is_admin;
@@ -153,12 +171,17 @@
         this.cur_index = row.id;
       },
       handleDelete (row) {
+        let self = this;
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'warning',
           center: true
         }).then(() => {
+          let index = self.table_data.indexOf(row);
+          if (index != -1) {
+            self.table_data.splice(index, 1);
+          }
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -177,6 +200,12 @@
 <style scoped>
   .main {
     padding: 12px;
+  }
+
+  .banner {
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #ffffff;
   }
 
   .load_image {

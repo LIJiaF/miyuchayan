@@ -1,5 +1,10 @@
 <template>
   <div class="main">
+    <div class="banner">
+      <router-link to="/discount/add">
+        <el-button size="medium" type="primary">新增</el-button>
+      </router-link>
+    </div>
     <el-table
       :data="tableData"
       style="width: 100%">
@@ -75,12 +80,19 @@
           state: true
         }]
       }
-    }
+    },
+    methods: {}
   }
 </script>
 
 <style scoped>
   .main {
     padding: 12px;
+  }
+
+  .banner {
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #ffffff;
   }
 </style>
