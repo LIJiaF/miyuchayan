@@ -6,7 +6,7 @@ from datetime import datetime
 from tornado.web import RequestHandler
 
 from basic import Basic
-from common.redisConn import redis
+from common.redis_conn import redis
 
 class UploadHandler(RequestHandler):
     def get(self):

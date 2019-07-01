@@ -3,7 +3,7 @@ import os
 from urllib import request
 
 from wxConfig import APPID, APPSECRET
-from common.redisConn import redis
+from common.redis_conn import redis
 from common.log_print import logger
 
 

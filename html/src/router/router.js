@@ -5,6 +5,7 @@ const Login = () => import('@/page/login.vue');
 const Index = () => import('@/page/index.vue');
 const UserList = () => import('@/page/user/list.vue');
 const DiscountList = () => import('@/page/discount/list.vue');
+const DiscountAdd = () => import('@/page/discount/add.vue');
 const DiscountTypeList = () => import('@/page/discount_type/list.vue');
 const UserDiscountRel = () => import('@/page/user_discount_rel/list.vue');
 
@@ -31,7 +32,14 @@ export default new Router({
         {
           path: '/discount',
           name: 'DiscountList',
-          component: DiscountList
+          component: DiscountList,
+          children: [
+            {
+              path: '/add',
+              name: 'DiscountAdd',
+              component: DiscountAdd
+            }
+          ]
         },
         {
           path: '/discount/type',

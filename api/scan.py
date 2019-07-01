@@ -1,9 +1,29 @@
 from datetime import datetime
+from io import BytesIO
 
 from tornado.web import RequestHandler
 
-from common.postgresqlConn import Postgres
+from common.postgresql_conn import Postgres
 from common.log_print import logger
+from common.qrcode_func import QrcodeFunc
+from basic import Basic
+from sign import Sign
+from wxConfig import APPID
+
+
+class signatureHandler(RequestHandler):
+    def get(self):
+        url = self.get_argument('fullUrl', None)
+        jsapi_ticket = Basic().get_jsapi_ticket()
+        logger.info('url：%s' % url)
+        logger.info('jsapi_ticket：%s' % jsapi_ticket)
+
+        sign = Sign(jsapi_ticket, url)
+        res = sign.sign()
+        res['appid'] = APPID
+        logger.info('res：%s' % res)
+
+        return self.finish(res)
 
 
 class ScanHandler(RequestHandler):
@@ -68,3 +88,14 @@ class ScanHandler(RequestHandler):
             res['msg'] = '使用失败，请重新扫码！'
 
         return self.finish(res)
+
+
+class CodeHandler(RequestHandler):
+    def get(self):
+        content = self.get_argument('content')
+        qrcode = QrcodeFunc(content)
+        img = qrcode.show()
+        msstream = BytesIO()
+        img.save(msstream, 'jpeg')
+        self.set_header('Content-Type', 'image/jpg')
+        self.write(msstream.getvalue())
