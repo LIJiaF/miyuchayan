@@ -7,8 +7,6 @@ from tornado.options import define, options, parse_command_line
 
 from wx import receive, reply
 from api import *
-from basic import Basic
-from sign import Sign
 from common.log_print import logger
 
 define("host", default="8888", help="端口")
@@ -87,20 +85,6 @@ class WxHandler(RequestHandler):
                     self.write(reply.Msg().send())
         except Exception as err:
             return err
-
-
-class signatureHandler(RequestHandler):
-    def get(self):
-        url = self.get_argument('fullUrl', None)
-        jsapi_ticket = Basic().get_jsapi_ticket()
-        logger.info('url：%s' % url)
-        logger.info('jsapi_ticket：%s' % jsapi_ticket)
-
-        sign = Sign(jsapi_ticket, url)
-        res = sign.sign()
-        logger.info('res：%s' % res)
-
-        return self.finish(res)
 
 
 def make_app():
