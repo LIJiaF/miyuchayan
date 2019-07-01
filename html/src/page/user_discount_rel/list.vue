@@ -21,7 +21,7 @@
               label="折扣">
             </el-table-column>
             <el-table-column
-              width="250"
+              min-width="250"
               prop="rule"
               label="使用规则">
             </el-table-column>

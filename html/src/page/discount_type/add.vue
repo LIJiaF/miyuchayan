@@ -22,9 +22,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleSave">保存</el-button>
-        <router-link to="/discount">
-          <el-button>取消</el-button>
-        </router-link>
+        <el-button>取消</el-button>
       </el-form-item>
     </el-form>
   </div>

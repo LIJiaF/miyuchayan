@@ -1,19 +1,21 @@
 <template>
   <div class="main">
+    <!--功能区-->
     <div class="banner">
-      <el-row type="flex" justify="center" :gutter="10" align="middle">
-        <el-col :span="8" :offset="12">
+      <el-row type="flex" :gutter="10" align="middle">
+        <el-col :span="8">
           <el-input
             placeholder="搜索微信号"
             prefix-icon="el-icon-search"
             v-model="search_val">
           </el-input>
         </el-col>
-        <el-col :span="2">
+        <el-col :span="4">
           <el-button @click="handleSearch" size="medium" type="primary">搜索</el-button>
         </el-col>
       </el-row>
     </div>
+    <!--数据列表-->
     <el-table
       :data="table_data"
       style="width: 100%">
@@ -172,7 +174,7 @@
       },
       handleDelete (row) {
         let self = this;
-        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'warning',

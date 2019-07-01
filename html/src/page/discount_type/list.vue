@@ -1,7 +1,14 @@
 <template>
   <div class="main">
+    <!--功能区-->
+    <div class="banner">
+      <router-link to="/discount/add">
+        <el-button size="medium" type="primary">新增</el-button>
+      </router-link>
+    </div>
+    <!--数据列表-->
     <el-table
-      :data="tableData"
+      :data="table_data"
       style="width: 100%">
       <el-table-column
         align="center"
@@ -30,7 +37,7 @@
   export default {
     data () {
       return {
-        tableData: [{
+        table_data: [{
           type: 'exchange',
           name: '兑换券'
         }]
@@ -42,5 +49,11 @@
 <style scoped>
   .main {
     padding: 12px;
+  }
+
+  .banner {
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #ffffff;
   }
 </style>
