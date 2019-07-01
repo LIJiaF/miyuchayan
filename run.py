@@ -115,6 +115,7 @@ def make_app():
         (r"/discount", DiscountHandler),
         (r"/personal", PersonalHandler),
         (r"/scan", ScanHandler),
+        (r"/qrcode", CodeHandler),
         (r"/upload", UploadHandler),
         (r"/signature", signatureHandler),
         (r"/(.*)", StaticFileHandler,

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from tornado.web import RequestHandler
 
 from wxConfig import APPID, APPSECRET
-from common.postgresqlConn import Postgres
+from common.postgresql_conn import Postgres
 from common.log_print import logger
 from common.wrapper_func import wrapper_allow_origin_func
 
