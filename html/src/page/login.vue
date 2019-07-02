@@ -18,7 +18,7 @@
         </el-input>
       </p>
       <p class="btn">
-        <el-button type="primary" round @click="onSubmit">登 陆</el-button>
+        <el-button type="primary" round @click="handleLogin">登 陆</el-button>
       </p>
     </div>
   </div>
@@ -32,9 +32,37 @@
         password: ''
       }
     },
+    created () {
+      let _this = this;
+      document.onkeydown = function (e) {
+        let key = window.event.keyCode;
+        if (key == 13) {
+          _this.handleLogin();
+        }
+      };
+    },
     methods: {
-      onSubmit () {
-        alert('11');
+      handleLogin () {
+        if (!this.username || !this.password) {
+          this.$message.error('账号或密码不能为空！');
+          return;
+        }
+
+        let data = new FormData();
+        data.append('username', this.username);
+        data.append('password', this.password);
+        this.$axios.post('/api/admin/login', data)
+          .then((res) => {
+            if (!res.data.code) {
+              sessionStorage.setItem('username', this.username);
+              this.$router.push('/');
+            } else {
+              this.$message.error(res.data.msg);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          })
       }
     }
   }

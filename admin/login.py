@@ -16,9 +16,10 @@ class AdminLoginHandler(RequestHandler):
             'code': 0
         }
 
-        if not username and not password:
+        if not username or not password:
             res['code'] = -1
             res['msg'] = '账号或密码不能为空！'
+            return self.finish(res)
 
         password_md5 = hashlib.md5(password.encode('utf-8')).hexdigest()
         conn = Postgres()
@@ -35,8 +36,7 @@ class AdminLoginHandler(RequestHandler):
             res['msg'] = '账号或密码错误！'
         else:
             res['msg'] = '登录成功！'
-            # self.set_secure_cookie('user', username, expires=time.time() + (30 * 60))
-            self.set_cookie('username', username, expires=time.time() + (30 * 60))
+            self.set_secure_cookie('username', username, expires=time.time() + (30 * 60))
 
         return self.finish(res)
 
@@ -50,7 +50,7 @@ class AdminRegisterHandler(RequestHandler):
             'code': 0
         }
 
-        if not username and not password:
+        if not username or not password:
             res['code'] = -1
             res['msg'] = '账号或密码不能为空！'
             return self.finish(res)

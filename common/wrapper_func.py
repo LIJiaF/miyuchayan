@@ -17,8 +17,7 @@ def cross_domain_func(func):
 def is_login_func(func):
     @wraps(func)
     def __wrapper__(self, *args, **kwargs):
-        # user = self.get_secure_cookie('user')
-        user = self.get_cookie('username')
+        user = self.get_secure_cookie('username')
         if user:
             return func(self, *args, **kwargs)
         else:

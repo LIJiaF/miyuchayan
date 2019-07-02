@@ -125,26 +125,22 @@
         last_score: 0,
         last_experience: 0,
         last_is_admin: false,
-        table_data: [{
-          id: 1,
-          username: '李家富',
-          image_url: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132',
-          city: '广州',
-          score: 20,
-          experience: 20,
-          is_admin: true
-        }, {
-          id: 2,
-          username: '李家富',
-          image_url: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132',
-          city: '广州',
-          score: 20,
-          experience: 20,
-          is_admin: false
-        }]
+        table_data: []
       }
     },
+    created () {
+      this.getData()
+    },
     methods: {
+      getData () {
+        this.$axios.get('/api/admin/user')
+          .then((res) => {
+            this.table_data = res.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      },
       handleSearch () {
         console.log(this.search_val);
       },
