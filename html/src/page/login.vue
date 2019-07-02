@@ -50,6 +50,7 @@
     padding: 40px;
     box-shadow: 0 0 2px #6495ED inset;
     border-radius: 10px;
+    background: #ffffff;
   }
 
   .title {

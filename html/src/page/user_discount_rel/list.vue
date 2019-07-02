@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <el-table
-      :data="tableData"
+      :data="table_data"
       style="width: 100%">
       <el-table-column type="expand">
         <template slot-scope="props">
@@ -26,14 +26,17 @@
               label="使用规则">
             </el-table-column>
             <el-table-column
+              align="center"
+              min-width="95"
               prop="end_time"
               label="截止日期">
             </el-table-column>
             <el-table-column
               align="center"
+              fixed="right"
               label="状态">
               <template slot-scope="scope">
-                <div v-if="cur_user == scope.row.id && cur_index == scope.row.id">
+                <div v-if="cur_user == scope.row.user_id && cur_index == scope.row.id">
                   <el-switch v-model="scope.row.state"></el-switch>
                 </div>
                 <div v-else>
@@ -112,12 +115,14 @@
         cur_user: -1,
         cur_index: -1,
         last_state: false,
-        tableData: [{
+        table_data: [{
           id: 1,
           image_url: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132',
           username: '李家富',
           discount_id: [
             {
+              id: 1,
+              user_id: 1,
               type: '兑换券',
               discount: '奶茶',
               rule: '任意消费，可免费兑换一杯中杯奶茶',
@@ -126,6 +131,8 @@
               state: false
             },
             {
+              id: 2,
+              user_id: 1,
               type: '兑换券',
               discount: '奶茶',
               rule: '任意消费，可免费兑换一杯中杯奶茶',
@@ -140,6 +147,7 @@
     methods: {
       handleSave (row) {
         this.cur_index = -1;
+        this.cur_user = -1;
         this.$message({
           message: '保存成功',
           type: 'success',
@@ -147,32 +155,40 @@
         });
       },
       handleCancel (row) {
-        this.table_data.discount_id.map((data) => {
-          if (data.id == row.id) {
-            data.type = this.last_type;
-            data.name = this.last_name;
+        this.table_data.map((user) => {
+          if (user.id == row.user_id) {
+            user.discount_id.map((discount) => {
+              if (discount.id = row.id) {
+                discount.state = row.state;
+              }
+            });
           }
         });
         this.cur_index = -1;
+        this.cur_user = -1;
       },
       handleEdit (row) {
-        this.last_type = row.type;
-        this.last_name = row.name;
-        this.cur_user = row.id;
-        this.cur_index = row.discount_id.id;
+        this.last_state = row.state;
+        this.cur_user = row.user_id;
+        this.cur_index = row.id;
       },
       handleDelete (row) {
         let self = this;
-        this.$confirm('此操作将永久删除该优惠券类型, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该用户优惠券, 是否继续?', '提示', {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'warning',
           center: true
         }).then(() => {
-          let index = self.table_data.indexOf(row);
-          if (index != -1) {
-            self.table_data.splice(index, 1);
-          }
+          self.table_data.map((user) => {
+            if (user.id == row.user_id) {
+              let index = user.discount_id.indexOf(row);
+              if (index != -1) {
+                user.discount_id.splice(index, 1);
+                return;
+              }
+            }
+          });
           this.$message({
             type: 'success',
             message: '删除成功!'

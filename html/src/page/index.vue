@@ -7,10 +7,18 @@
         <li class="active">首页</li>
       </ul>
       <p class="info">
-        用户名：<span class="user">admin</span>
-        <span class="exit">
-          <router-link to="/exit">退出</router-link>
-        </span>
+        用户名：
+        <el-popover
+          placement="bottom"
+          transition="fade-in-linear"
+          trigger="hover">
+          <ul style="text-align: center">
+            <li>
+              <router-link to="/login">退出</router-link>
+            </li>
+          </ul>
+          <span class="user" slot="reference">admin</span>
+        </el-popover>
       </p>
     </div>
     <div>

@@ -28,4 +28,8 @@
   .el-menu {
     border-right: none;
   }
+
+  .el-popover {
+    min-width: 80px;
+  }
 </style>
