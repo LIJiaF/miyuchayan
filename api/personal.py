@@ -7,7 +7,6 @@ from tornado.web import RequestHandler
 from wxConfig import APPID, APPSECRET
 from common.postgresql_conn import Postgres
 from common.log_print import logger
-from common.wrapper_func import wrapper_allow_origin_func
 
 
 class PersonalHandler(RequestHandler):
@@ -117,7 +116,6 @@ class PersonalHandler(RequestHandler):
 
         return self.render('personal.html', info=info)
 
-    @wrapper_allow_origin_func
     def post(self):
         openid = self.get_argument('openid', None)
         res = {
