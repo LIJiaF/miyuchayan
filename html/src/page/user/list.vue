@@ -18,6 +18,7 @@
     <!--数据列表-->
     <el-table
       :data="table_data"
+      max-height="509"
       style="width: 100%">
       <el-table-column
         align="center"
@@ -39,6 +40,15 @@
         fixed="left"
         prop="username"
         label="微信号">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        prop="sex"
+        label="性别">
+        <template slot-scope="scope">
+          <span v-if="scope.row.sex == 1">男</span>
+          <span v-else-if="scope.row.sex == 2">女</span>
+        </template>
       </el-table-column>
       <el-table-column
         align="center"
@@ -113,6 +123,14 @@
         </template>
       </el-table-column>
     </el-table>
+    <!--分页-->
+    <div class="footer">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="1000">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -209,5 +227,13 @@
   .load_image {
     font-size: 20px;
     line-height: 60px;
+  }
+
+  .footer {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 10px;
+    text-align: center;
+    background: #ffffff;
   }
 </style>

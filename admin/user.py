@@ -10,8 +10,9 @@ class AdminUserHandler(RequestHandler):
     @is_login_func
     def get(self):
         sql = """
-            select id, username, image_url, city, score, experience, is_admin
+            select id, username, sex, image_url, city, score, experience, is_admin
             from wx_user
+            order by id desc
         """
         conn = Postgres()
         data = conn.fetchall(sql)

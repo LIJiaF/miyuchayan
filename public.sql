@@ -12,7 +12,7 @@
  Target Server Version : 100008
  File Encoding         : 65001
 
- Date: 02/07/2019 15:02:20
+ Date: 03/07/2019 22:42:49
 */
 
 
@@ -83,6 +83,11 @@ CREATE TABLE "public"."admin_user" (
 ;
 
 -- ----------------------------
+-- Records of admin_user
+-- ----------------------------
+INSERT INTO "public"."admin_user" VALUES (1, 'root', 'e1639d697b8879db11fbe29e829d4af8');
+
+-- ----------------------------
 -- Table structure for wx_discount
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."wx_discount";
@@ -98,6 +103,16 @@ CREATE TABLE "public"."wx_discount" (
 ;
 
 -- ----------------------------
+-- Records of wx_discount
+-- ----------------------------
+INSERT INTO "public"."wx_discount" VALUES (2, 3, '薯条', 50, 5, '任意消费，可免费兑换一份薯条', 'f');
+INSERT INTO "public"."wx_discount" VALUES (1, 3, '奶茶', 50, 3, '任意消费，可免费兑换一杯中杯奶茶', 't');
+INSERT INTO "public"."wx_discount" VALUES (3, 1, '5', 35, 5, '满15可用', 't');
+INSERT INTO "public"."wx_discount" VALUES (4, 1, '3', 20, 20, '满15可用', 't');
+INSERT INTO "public"."wx_discount" VALUES (5, 1, '5', 20, 19, '满20可用', 't');
+INSERT INTO "public"."wx_discount" VALUES (6, 2, '9', 0, 76, '任意消费可用', 't');
+
+-- ----------------------------
 -- Table structure for wx_discount_type
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."wx_discount_type";
@@ -109,6 +124,13 @@ CREATE TABLE "public"."wx_discount_type" (
 ;
 
 -- ----------------------------
+-- Records of wx_discount_type
+-- ----------------------------
+INSERT INTO "public"."wx_discount_type" VALUES (1, '满减券', 'money');
+INSERT INTO "public"."wx_discount_type" VALUES (2, '折扣券', 'discount');
+INSERT INTO "public"."wx_discount_type" VALUES (3, '兑换券', 'exchange');
+
+-- ----------------------------
 -- Table structure for wx_user
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."wx_user";
@@ -116,6 +138,7 @@ CREATE TABLE "public"."wx_user" (
   "id" int4 NOT NULL DEFAULT nextval('wx_user_id_seq'::regclass),
   "openid" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "username" varchar(80) COLLATE "pg_catalog"."default" NOT NULL,
+  "sex" int2 DEFAULT 0,
   "image_url" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
   "province" varchar(10) COLLATE "pg_catalog"."default",
   "city" varchar(10) COLLATE "pg_catalog"."default",
@@ -125,6 +148,11 @@ CREATE TABLE "public"."wx_user" (
   "date" varchar(20) COLLATE "pg_catalog"."default" DEFAULT 0
 )
 ;
+
+-- ----------------------------
+-- Records of wx_user
+-- ----------------------------
+INSERT INTO "public"."wx_user" VALUES (1, 'oBGCb1GE38DXO03ebeY0MtnfJKmc', '李家富', 1, 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132', '广东', '广州', 65, 65, 't', '2019-07-01');
 
 -- ----------------------------
 -- Table structure for wx_user_discount_rel
@@ -141,13 +169,19 @@ CREATE TABLE "public"."wx_user_discount_rel" (
 ;
 
 -- ----------------------------
+-- Records of wx_user_discount_rel
+-- ----------------------------
+INSERT INTO "public"."wx_user_discount_rel" VALUES (27, 'oBGCb1GE38DXO03ebeY0MtnfJKmc', 6, '2019-07-08', 't', '2019-07-01');
+INSERT INTO "public"."wx_user_discount_rel" VALUES (26, 'oBGCb1GE38DXO03ebeY0MtnfJKmc', 1, '2019-07-06', 't', '2019-07-01');
+
+-- ----------------------------
 -- Alter sequences owned by
 -- ----------------------------
-SELECT setval('"public"."admin_user_id_seq"', 2, false);
-SELECT setval('"public"."wx_discount_id_seq"', 9, true);
-SELECT setval('"public"."wx_discount_type_id_seq"', 7, true);
-SELECT setval('"public"."wx_user_discount_rel_id_seq"', 28, true);
-SELECT setval('"public"."wx_user_id_seq"', 3, true);
+SELECT setval('"public"."admin_user_id_seq"', 3, true);
+SELECT setval('"public"."wx_discount_id_seq"', 10, true);
+SELECT setval('"public"."wx_discount_type_id_seq"', 8, true);
+SELECT setval('"public"."wx_user_discount_rel_id_seq"', 29, true);
+SELECT setval('"public"."wx_user_id_seq"', 4, true);
 
 -- ----------------------------
 -- Primary Key structure for table wx_discount

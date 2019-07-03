@@ -13,6 +13,7 @@
       <p>
         <el-input
           placeholder="密码"
+          type="password"
           v-model="password">
           <i slot="prefix" class="el-input__icon el-icon-s-goods"></i>
         </el-input>
