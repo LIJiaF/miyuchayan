@@ -7,7 +7,6 @@ from tornado.web import RequestHandler
 from wxConfig import APPID, APPSECRET
 from common.postgresql_conn import Postgres
 from common.log_print import logger
-from common.wrapper_func import wrapper_allow_origin_func
 
 
 class PersonalHandler(RequestHandler):
@@ -58,10 +57,10 @@ class PersonalHandler(RequestHandler):
         logger.info('查看数据库是否存在该用户信息: %s' % data)
         if not data:
             sql = """
-                insert into wx_user (openid, username, image_url, province, city)
-                values ('%s', '%s', '%s', '%s', '%s');
-            """ % (openid, info_data.get('nickname'), info_data.get('headimgurl'), info_data.get('province'),
-                   info_data.get('city'))
+                insert into wx_user (openid, username, sex, image_url, province, city)
+                values ('%s', '%s', %d, '%s', '%s', '%s');
+            """ % (openid, info_data.get('nickname'), info_data.get('sex'), info_data.get('headimgurl'),
+                   info_data.get('province'), info_data.get('city'))
             end_time = datetime.strftime(datetime.now() + timedelta(days=7), '%Y-%m-%d')
             sql += """
                 insert into wx_user_discount_rel (openid, discount_id, end_time)
@@ -71,10 +70,11 @@ class PersonalHandler(RequestHandler):
         else:
             sql = """
                 update wx_user
-                set username = '%s', image_url = '%s', province = '%s', city = '%s'
+                set username = '%s', sex = %d, image_url = '%s', province = '%s', city = '%s'
                 where openid = '%s'
-            """ % (info_data.get('nickname'), info_data.get('headimgurl'), info_data.get('province'),
-                   info_data.get('city'), openid)
+            """ % (
+                info_data.get('nickname'), info_data.get('sex'), info_data.get('headimgurl'), info_data.get('province'),
+                info_data.get('city'), openid)
             conn.execute(sql)
 
         # conn = Postgres()
@@ -117,7 +117,6 @@ class PersonalHandler(RequestHandler):
 
         return self.render('personal.html', info=info)
 
-    @wrapper_allow_origin_func
     def post(self):
         openid = self.get_argument('openid', None)
         res = {
