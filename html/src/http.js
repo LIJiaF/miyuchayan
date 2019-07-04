@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from './router/router'
 
 // 超时时间
-axios.defaults.timeout = 5000;
+// axios.defaults.timeout = 5000;
 
 axios.interceptors.response.use(
   response => {

@@ -122,18 +122,30 @@
         last_count: '',
         last_rule: '',
         last_state: false,
-        table_data: [{
-          id: 1,
-          type_id: '满减券',
-          discount: '奶茶',
-          score: 20,
-          count: 20,
-          rule: '任意消费，可免费兑换一杯中杯奶茶',
-          state: true
-        }]
+        table_data: [],
+        cur_page: 1,
+        page_size: 0,
+        total: 0
       }
     },
+    created () {
+      this.getData();
+    },
     methods: {
+      getData (cur_page = 1) {
+        let params = {
+          cur_page: cur_page
+        }
+        this.$axios.get('/api/admin/discount', {params: params})
+          .then((res) => {
+            this.table_data = res.data.data;
+            this.page_size = res.data.page_size;
+            this.total = res.data.total;
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      },
       handleSave (row) {
         this.cur_index = -1;
         this.$message({

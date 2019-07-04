@@ -55,6 +55,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <!--分页-->
+    <div class="footer">
+      <el-pagination
+        background
+        :page-size="page_size"
+        layout="prev, pager, next"
+        :total="total"
+        @current-change="currentChange">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -65,21 +75,55 @@
         cur_index: -1,
         last_type: '',
         last_name: '',
-        table_data: [{
-          id: 1,
-          type: 'exchange',
-          name: '兑换券'
-        }]
+        table_data: [],
+        cur_page: 1,
+        page_size: 0,
+        total: 0
       }
     },
+    created () {
+      this.getData();
+    },
     methods: {
+      getData (cur_page = 1) {
+        let params = {
+          cur_page: cur_page
+        }
+        this.$axios.get('/api/admin/discount/type', {params: params})
+          .then((res) => {
+            this.table_data = res.data.data;
+            this.page_size = res.data.page_size;
+            this.total = res.data.total;
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      },
       handleSave (row) {
-        this.cur_index = -1;
-        this.$message({
-          message: '保存成功',
-          type: 'success',
-          showClose: true
-        });
+        let data = new FormData();
+        data.append('id', row.id);
+        data.append('type', row.type);
+        data.append('name', row.name);
+        this.$axios.put('/api/admin/discount/type', data)
+          .then((res) => {
+            if (!res.data.code) {
+              this.cur_index = -1;
+              this.$message({
+                message: res.data.msg,
+                type: 'success',
+                showClose: true
+              });
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: 'error',
+                showClose: true
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       },
       handleCancel (row) {
         this.table_data.map((data) => {
@@ -89,34 +133,67 @@
           }
         });
         this.cur_index = -1;
+        this.$message({
+          type: 'info',
+          message: '已取消',
+          showClose: true
+        });
       },
       handleEdit (row) {
+        if (this.cur_index != -1) {
+          this.$message({
+            message: '请保存或取消！',
+            type: 'warning',
+            showClose: true
+          });
+          return;
+        }
         this.last_type = row.type;
         this.last_name = row.name;
         this.cur_index = row.id;
       },
       handleDelete (row) {
-        let self = this;
         this.$confirm('此操作将永久删除该优惠券类型, 是否继续?', '提示', {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'warning',
           center: true
         }).then(() => {
-          let index = self.table_data.indexOf(row);
-          if (index != -1) {
-            self.table_data.splice(index, 1);
-          }
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          let data = new FormData();
+          data.append('id', row.id);
+          this.$axios.delete('/api/admin/discount/type', {data: data})
+            .then((res) => {
+              if (!res.data.code) {
+                if (this.cur_page > 1 && this.table_data.length <= ((this.cur_page - 1) * this.page_size) + 1) {
+                  this.cur_page = this.cur_page - 1;
+                }
+                this.getData(this.cur_page);
+                this.$message({
+                  type: 'success',
+                  message: res.data.msg,
+                  showClose: true
+                });
+              } else {
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error',
+                  showClose: true
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
           });
         });
+      },
+      currentChange (cur_page) {
+        this.cur_page = cur_page;
+        this.getData(cur_page);
       }
     }
   }
@@ -130,6 +207,14 @@
   .banner {
     margin-bottom: 12px;
     padding: 10px;
+    background: #ffffff;
+  }
+
+  .footer {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 10px;
+    text-align: center;
     background: #ffffff;
   }
 </style>

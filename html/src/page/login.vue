@@ -45,7 +45,11 @@
     methods: {
       handleLogin () {
         if (!this.username || !this.password) {
-          this.$message.error('账号或密码不能为空！');
+          this.$message({
+            message: '账号或密码不能为空！',
+            type: 'error',
+            showClose: true
+          });
           return;
         }
 
@@ -58,7 +62,11 @@
               sessionStorage.setItem('username', this.username);
               this.$router.push('/');
             } else {
-              this.$message.error(res.data.msg);
+              this.$message({
+                message: res.data.msg,
+                type: 'error',
+                showClose: true
+              });
             }
           })
           .catch((err) => {
