@@ -15,12 +15,20 @@
         min-width="100"
         label="优惠券类型">
         <template slot-scope="scope">
-          <el-select v-if="cur_index == scope.row.id" v-model="scope.row.type_id" placeholder="请选择优惠券类型">
-            <el-option label="满减券" value="满减券"></el-option>
-            <el-option label="折扣券" value="折扣券"></el-option>
-            <el-option label="兑换券" value="兑换券"></el-option>
+          <el-select
+            v-if="cur_index == scope.row.id"
+            prefix="scope.row.name"
+            v-model="scope.row.type_id"
+            @change="selectChange"
+            placeholder="请选择优惠券类型">
+            <el-option
+              v-for="item in options"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
           </el-select>
-          <span v-else>{{ scope.row.type_id }}</span>
+          <span v-else>{{ scope.row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -108,6 +116,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <!--分页-->
+    <div class="footer">
+      <el-pagination
+        background
+        :page-size="page_size"
+        layout="prev, pager, next"
+        :total="total"
+        @current-change="currentChange">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -122,12 +140,14 @@
         last_count: '',
         last_rule: '',
         last_state: false,
+        options: [],
         table_data: [],
         cur_page: 1,
         page_size: 0,
         total: 0
       }
     },
+    computed: {},
     created () {
       this.getData();
     },
@@ -141,18 +161,53 @@
             this.table_data = res.data.data;
             this.page_size = res.data.page_size;
             this.total = res.data.total;
+            this.options = res.data.options;
           })
           .catch((err) => {
             console.log(err);
           })
       },
-      handleSave (row) {
-        this.cur_index = -1;
-        this.$message({
-          message: '保存成功',
-          type: 'success',
-          showClose: true
+      selectChange (value) {
+        let option = this.options.filter((option) => {
+          return option.id == value;
         });
+        console.log(option);
+        let self = this;
+        this.table_data.map((data) => {
+          if (data.id == self.cur_index) {
+            data.name = option[0].name;
+          }
+        });
+      },
+      handleSave (row) {
+        let data = new FormData();
+        data.append('id', row.id);
+        data.append('type_id', row.type_id);
+        data.append('discount', row.discount);
+        data.append('score', row.score);
+        data.append('count', row.count);
+        data.append('rule', row.rule);
+        data.append('state', row.state);
+        this.$axios.put('/api/admin/discount', data)
+          .then((res) => {
+            if (!res.data.code) {
+              this.cur_index = -1;
+              this.$message({
+                message: res.data.msg,
+                type: 'success',
+                showClose: true
+              });
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: 'error',
+                showClose: true
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       },
       handleCancel (row) {
         this.table_data.map((data) => {
@@ -166,8 +221,21 @@
           }
         });
         this.cur_index = -1;
+        this.$message({
+          type: 'info',
+          message: '已取消',
+          showClose: true
+        });
       },
       handleEdit (row) {
+        if (this.cur_index != -1) {
+          this.$message({
+            message: '请保存或取消！',
+            type: 'warning',
+            showClose: true
+          });
+          return;
+        }
         this.last_type_id = row.type_id;
         this.last_discount = row.discount;
         this.last_score = row.score;
@@ -184,20 +252,42 @@
           type: 'warning',
           center: true
         }).then(() => {
-          let index = self.table_data.indexOf(row);
-          if (index != -1) {
-            self.table_data.splice(index, 1);
-          }
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
+          let data = new FormData();
+          data.append('id', row.id);
+          this.$axios.delete('/api/admin/discount', {data: data})
+            .then((res) => {
+              if (!res.data.code) {
+                if (this.cur_page > 1 && this.table_data.length <= ((this.cur_page - 1) * this.page_size) + 1) {
+                  this.cur_page = this.cur_page - 1;
+                }
+                this.getData(this.cur_page);
+                this.$message({
+                  type: 'success',
+                  message: res.data.msg,
+                  showClose: true
+                });
+              } else {
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error',
+                  showClose: true
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消删除',
+            showClose: true
           });
         });
+      },
+      currentChange (cur_page) {
+        this.cur_page = cur_page;
+        this.getData(cur_page);
       }
     }
   }
@@ -211,6 +301,14 @@
   .banner {
     margin-bottom: 12px;
     padding: 10px;
+    background: #ffffff;
+  }
+
+  .footer {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 10px;
+    text-align: center;
     background: #ffffff;
   }
 </style>

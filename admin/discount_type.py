@@ -1,3 +1,5 @@
+import json
+
 from tornado.web import RequestHandler
 
 from common.wrapper_func import is_login_func
@@ -10,28 +12,38 @@ class AdminDiscountTypeHandler(RequestHandler):
     def get(self):
         cur_page = self.get_argument('cur_page', '1')
 
-        page_size = 5
-
-        sql = """
-            select (
-                select count(*) 
+        if cur_page == '0':
+            sql = """
+                select id, name
                 from wx_discount_type
-              ) as total, 
-              id, type, name
-            from wx_discount_type
-            order by id desc
-            limit %d offset %d
-        """ % (page_size, (int(cur_page) - 1) * page_size)
-        conn = Postgres()
-        data = conn.fetchall(sql)
+                order by id
+            """
+            conn = Postgres()
+            data = conn.fetchall(sql)
+            return self.finish(json.dumps(data))
+        else:
+            page_size = 5
 
-        table_data = {
-            'data': data,
-            'page_size': page_size,
-            'total': data[0]['total'] if data else 0
-        }
+            sql = """
+                select (
+                    select count(*) 
+                    from wx_discount_type
+                  ) as total, 
+                  id, type, name
+                from wx_discount_type
+                order by id desc
+                limit %d offset %d
+            """ % (page_size, (int(cur_page) - 1) * page_size)
+            conn = Postgres()
+            data = conn.fetchall(sql)
 
-        return self.finish(table_data)
+            table_data = {
+                'data': data,
+                'page_size': page_size,
+                'total': data[0]['total'] if data else 0
+            }
+
+            return self.finish(table_data)
 
     @is_login_func
     def post(self):
@@ -113,7 +125,7 @@ class AdminDiscountTypeHandler(RequestHandler):
             conn.execute(sql)
             res['msg'] = '删除成功！'
         except Exception as e:
-            logger.error('优惠券类型保存失败：%s' % e)
+            logger.error('优惠券类型删除失败：%s' % e)
             res['code'] = -1
             res['msg'] = '删除失败！'
         finally:
