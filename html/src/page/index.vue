@@ -146,5 +146,6 @@
     left: 250px;
     right: 0;
     bottom: 0;
+    overflow: auto;
   }
 </style>

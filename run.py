@@ -41,6 +41,7 @@ def make_app():
         (r"/admin/user", AdminUserHandler),
         (r"/admin/discount/type", AdminDiscountTypeHandler),
         (r"/admin/discount", AdminDiscountHandler),
+        (r"/admin/user/discount/rel", AdminUserDiscountRelHandler),
     ]
 
     static_url = [

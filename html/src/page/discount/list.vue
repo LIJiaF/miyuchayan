@@ -171,7 +171,6 @@
         let option = this.options.filter((option) => {
           return option.id == value;
         });
-        console.log(option);
         let self = this;
         this.table_data.map((data) => {
           if (data.id == self.cur_index) {
