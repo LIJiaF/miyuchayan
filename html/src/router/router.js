@@ -13,7 +13,7 @@ const UserDiscountRel = () => import('@/page/user_discount_rel/list.vue');
 Vue.use(Router);
 
 const router = new Router({
-  mode: 'history',
+  mode: 'hash',
   routes: [
     {
       path: '/login',
