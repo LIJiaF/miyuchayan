@@ -21,7 +21,7 @@ def is_login_func(func):
         if user:
             return func(self, *args, **kwargs)
         else:
-            # self.set_status(401)
+            self.set_status(401)
             return func(self, *args, **kwargs)
 
     return __wrapper__
