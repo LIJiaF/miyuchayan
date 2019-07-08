@@ -9,6 +9,7 @@ const DiscountAdd = () => import('@/page/discount/add.vue');
 const DiscountTypeList = () => import('@/page/discount_type/list.vue');
 const DiscountTypeAdd = () => import('@/page/discount_type/add.vue');
 const UserDiscountRel = () => import('@/page/user_discount_rel/list.vue');
+const EditPassword = () => import('@/page/edit_password.vue');
 
 Vue.use(Router);
 
@@ -28,6 +29,14 @@ const router = new Router({
       },
       component: Index,
       children: [
+        {
+          path: '/edit/password',
+          name: 'EditPassword',
+          meta: {
+            requireAuth: true
+          },
+          component: EditPassword
+        },
         {
           path: '/user',
           name: 'UserList',
@@ -77,6 +86,10 @@ const router = new Router({
           component: UserDiscountRel
         }
       ]
+    },
+    {
+      path: '*',
+      redirect: '/login'
     }
   ]
 });

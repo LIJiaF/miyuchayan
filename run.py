@@ -38,6 +38,7 @@ def make_app():
     admin_url = [
         (r"/admin/login", AdminLoginHandler),
         (r"/admin/register", AdminRegisterHandler),
+        (r"/admin/edit/password", AdminEditPasswordHandler),
         (r"/admin/user", AdminUserHandler),
         (r"/admin/discount/type", AdminDiscountTypeHandler),
         (r"/admin/discount", AdminDiscountHandler),

@@ -34,6 +34,11 @@
       }
     },
     created () {
+      // 删除sessionStorage
+      sessionStorage.removeItem('username');
+      // 删除cookie
+      this.delCookie('username');
+
       let _this = this;
       document.onkeydown = function (e) {
         let key = window.event.keyCode;
@@ -43,6 +48,20 @@
       };
     },
     methods: {
+      getCookie (name) {
+        let arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+          return unescape(arr[2]);
+        else
+          return null;
+      },
+      delCookie (name) {
+        let exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        let cval = this.getCookie(name);
+        if (cval != null)
+          document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+      },
       handleLogin () {
         if (!this.username || !this.password) {
           this.$message({

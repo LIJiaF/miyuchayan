@@ -4,7 +4,9 @@
     <div class="header">
       <h1 class="title">后台管理系统</h1>
       <ul class="menu">
-        <li class="active">首页</li>
+        <router-link to="/">
+          <li class="active">首页</li>
+        </router-link>
       </ul>
       <p class="info">
         用户名：
@@ -12,10 +14,13 @@
           placement="bottom"
           transition="fade-in-linear"
           trigger="hover">
-          <ul style="text-align: center">
-            <li>
-              <router-link to="/login">退出</router-link>
-            </li>
+          <ul class="popover" style="text-align: center">
+            <router-link to="/edit/password">
+              <li>修改密码</li>
+            </router-link>
+            <router-link to="/login">
+              <li>退出</li>
+            </router-link>
           </ul>
           <span class="user" slot="reference">admin</span>
         </el-popover>
@@ -67,15 +72,6 @@
   </div>
 </template>
 
-<script>
-  export default {
-    data () {
-      return {}
-    },
-    methods: {}
-  }
-</script>
-
 <style scoped>
   body {
     background: aliceblue;
@@ -85,6 +81,14 @@
     min-width: 525px;
     background: #6495ED;
     overflow: hidden;
+  }
+
+  .popover {
+    text-align: center;
+  }
+
+  .popover li {
+    padding: 10px 0;
   }
 
   .title {
@@ -120,7 +124,7 @@
   .info span {
     height: 67px;
     line-height: 67px;
-    padding-right: 20px;
+    padding-right: 15px;
   }
 
   .info a {
