@@ -22,6 +22,6 @@ def is_login_func(func):
             return func(self, *args, **kwargs)
         else:
             self.set_status(401)
-            return func(self, *args, **kwargs)
+            return self.write('对不起，您还没有登录！')
 
     return __wrapper__
