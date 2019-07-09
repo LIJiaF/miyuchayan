@@ -13,12 +13,13 @@
       <p>
         <el-input
           placeholder="密码"
+          type="password"
           v-model="password">
           <i slot="prefix" class="el-input__icon el-icon-s-goods"></i>
         </el-input>
       </p>
       <p class="btn">
-        <el-button type="primary" round @click="onSubmit">登 陆</el-button>
+        <el-button type="primary" round @click="handleLogin">登 陆</el-button>
       </p>
     </div>
   </div>
@@ -32,9 +33,64 @@
         password: ''
       }
     },
+    created () {
+      // 删除sessionStorage
+      sessionStorage.removeItem('username');
+      // 删除cookie
+      this.delCookie('username');
+
+      let _this = this;
+      document.onkeydown = function (e) {
+        let key = window.event.keyCode;
+        if (key == 13) {
+          _this.handleLogin();
+        }
+      };
+    },
     methods: {
-      onSubmit () {
-        alert('11');
+      getCookie (name) {
+        let arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+          return unescape(arr[2]);
+        else
+          return null;
+      },
+      delCookie (name) {
+        let exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        let cval = this.getCookie(name);
+        if (cval != null)
+          document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+      },
+      handleLogin () {
+        if (!this.username || !this.password) {
+          this.$message({
+            message: '账号或密码不能为空！',
+            type: 'error',
+            showClose: true
+          });
+          return;
+        }
+
+        let data = new FormData();
+        data.append('username', this.username);
+        data.append('password', this.password);
+        this.$axios.post('/api/admin/login', data)
+          .then((res) => {
+            if (!res.data.code) {
+              sessionStorage.setItem('username', this.username);
+              this.$router.push('/');
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: 'error',
+                showClose: true
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          })
       }
     }
   }
@@ -50,6 +106,7 @@
     padding: 40px;
     box-shadow: 0 0 2px #6495ED inset;
     border-radius: 10px;
+    background: #ffffff;
   }
 
   .title {

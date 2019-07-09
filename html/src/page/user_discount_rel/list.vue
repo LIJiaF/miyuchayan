@@ -1,84 +1,139 @@
 <template>
   <div class="main">
-    <el-table
-      :data="tableData"
-      style="width: 100%">
-      <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-table
-            :data="props.row.discount_id"
-            label-position="left"
-            style="width: 100%">
-            <el-table-column
-              align="center"
-              prop="type"
-              min-width="100"
-              label="优惠券类型">
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="discount"
-              label="折扣">
-            </el-table-column>
-            <el-table-column
-              width="250"
-              prop="rule"
-              label="使用规则">
-            </el-table-column>
-            <el-table-column
-              prop="end_time"
-              label="截止日期">
-            </el-table-column>
-            <el-table-column
-              align="center"
-              label="状态">
-              <template slot-scope="scope">
-                <el-button
-                  v-if="scope.row.state == true"
-                  type="primary"
-                  icon="el-icon-check"
-                  size="mini"
-                  circle>
-                </el-button>
-                <el-button
-                  v-if="scope.row.state == false"
-                  icon="el-icon-close"
-                  size="mini"
-                  circle>
-                </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column
-              fixed="right"
-              min-width="95"
-              label="操作">
-              <template slot-scope="scope">
-                <el-button @click="handleClick(scope.row)" type="text">修改</el-button>
-                <el-button @click="handleClick(scope.row)" type="text">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="username"
-        label="微信号">
-      </el-table-column>
-      <el-table-column
-        align="center"
-        label="头像">
-        <template slot-scope="scope">
-          <el-image
-            style="width: 60px; height: 60px"
-            :src="scope.row.image_url"
-            fit="contain">
-            <div slot="placeholder" class="load_image">
-              <i class="el-icon-loading"></i>
-            </div>
-          </el-image>
-        </template>
-      </el-table-column>
-    </el-table>
+    <!--功能区-->
+    <div class="banner">
+      <el-row type="flex" :gutter="10" align="middle">
+        <el-col :span="8">
+          <el-input
+            placeholder="搜索微信号"
+            prefix-icon="el-icon-search"
+            v-model="search_val">
+          </el-input>
+        </el-col>
+        <el-col :span="4">
+          <el-button @click="handleSearch" size="medium" type="primary">搜索</el-button>
+        </el-col>
+      </el-row>
+    </div>
+    <!--数据列表-->
+    <div class="data_list">
+      <el-table
+        :data="table_data"
+        @expand-change="expandChange"
+        style="width: 100%">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-table
+              :data="props.row.discount_id"
+              label-position="left"
+              style="width: 100%">
+              <el-table-column
+                align="center"
+                prop="type"
+                min-width="100"
+                label="优惠券类型">
+              </el-table-column>
+              <el-table-column
+                align="center"
+                prop="discount"
+                label="折扣">
+              </el-table-column>
+              <el-table-column
+                min-width="250"
+                prop="rule"
+                label="使用规则">
+              </el-table-column>
+              <el-table-column
+                align="center"
+                min-width="95"
+                prop="end_time"
+                label="截止日期">
+              </el-table-column>
+              <el-table-column
+                align="center"
+                fixed="right"
+                label="状态">
+                <template slot-scope="scope">
+                  <div v-if="cur_user == scope.row.user_id && cur_index == scope.row.id">
+                    <el-switch v-model="scope.row.state"></el-switch>
+                  </div>
+                  <div v-else>
+                    <el-button
+                      v-if="scope.row.state"
+                      type="primary"
+                      icon="el-icon-check"
+                      size="mini"
+                      circle>
+                    </el-button>
+                    <el-button
+                      v-if="!scope.row.state"
+                      icon="el-icon-close"
+                      size="mini"
+                      circle>
+                    </el-button>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                fixed="right"
+                min-width="95"
+                label="操作">
+                <template slot-scope="scope">
+                  <div v-if="cur_user == scope.row.user_id && cur_index == scope.row.id">
+                    <el-button
+                      @click="handleSave(scope.row)"
+                      type="text" size="small">保存
+                    </el-button>
+                    <el-button
+                      @click="handleCancel(scope.row)"
+                      type="text" size="small">取消
+                    </el-button>
+                  </div>
+                  <div v-else>
+                    <el-button
+                      @click="handleEdit(scope.row)"
+                      type="text">修改
+                    </el-button>
+                    <el-button
+                      @click="handleDelete(scope.row)"
+                      type="text">删除
+                    </el-button>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="username"
+          label="微信号">
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="头像">
+          <template slot-scope="scope">
+            <el-image
+              style="width: 60px; height: 60px"
+              :src="scope.row.image_url"
+              fit="contain">
+              <div slot="placeholder" class="load_image">
+                <i class="el-icon-loading"></i>
+              </div>
+            </el-image>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!--分页-->
+    <div class="footer">
+      <el-pagination
+        background
+        :page-size="page_size"
+        layout="prev, pager, next"
+        :total="total"
+        @current-change="currentChange">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -86,49 +141,163 @@
   export default {
     data () {
       return {
-        tableData: [{
-          image_url: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132',
-          username: '李家富',
-          discount_id: [
-            {
-              type: '兑换券',
-              discount: '奶茶',
-              rule: '任意消费，可免费兑换一杯中杯奶茶',
-              end_time: '2019-06-27',
-              'use_time': '2019-06-27',
-              state: false
-            },
-            {
-              type: '兑换券',
-              discount: '奶茶',
-              rule: '任意消费，可免费兑换一杯中杯奶茶',
-              end_time: '2019-06-27',
-              'use_time': '2019-06-27',
-              state: true
+        search_val: '',
+        cur_user: -1,
+        cur_index: -1,
+        last_state: false,
+        table_data: [],
+        cur_page: 1,
+        page_size: 0,
+        total: 0
+      }
+    },
+    created () {
+      this.getData();
+      let self = this;
+      document.onkeydown = function (e) {
+        let key = window.event.keyCode;
+        if (key == 13) {
+          self.handleSearch();
+        }
+      };
+    },
+    methods: {
+      getData (cur_page = 1, search_val = '') {
+        let params = {
+          cur_page: cur_page
+        }
+        if (search_val) {
+          params.search_val = search_val;
+        }
+        this.$axios.get('/api/admin/user/discount/rel', {params: params})
+          .then((res) => {
+            this.table_data = res.data.data;
+            this.page_size = res.data.page_size;
+            this.total = res.data.total;
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      },
+      handleSearch () {
+        this.getData(1, this.search_val);
+      },
+      expandChange (row) {
+        let params = {
+          user_id: row.id
+        }
+        this.$axios.get('/api/admin/user/discount/rel', {params: params})
+          .then((res) => {
+            let user = this.table_data.filter((data) => {
+              return data.id == row.id
+            });
+            this.$set(user[0], 'discount_id', res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      },
+      handleSave (row) {
+        let data = new FormData();
+        data.append('id', row.id);
+        data.append('state', row.state);
+        this.$axios.put('/api/admin/user/discount/rel', data)
+          .then((res) => {
+            if (!res.data.code) {
+              this.cur_index = -1;
+              this.cur_user = -1;
+              this.$message({
+                message: res.data.msg,
+                type: 'success',
+                showClose: true
+              });
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: 'error',
+                showClose: true
+              });
             }
-          ]
-        }, {
-          image_url: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Zp7yzwUUHibdqgVxRpIic6KPA/132',
-          username: '李家富',
-          discount_id: [
-            {
-              type: '兑换券',
-              discount: '奶茶',
-              rule: '任意消费，可免费兑换一杯中杯奶茶',
-              end_time: '2019-06-27',
-              'use_time': '2019-06-27',
-              state: false
-            },
-            {
-              type: '兑换券',
-              discount: '奶茶',
-              rule: '任意消费，可免费兑换一杯中杯奶茶',
-              end_time: '2019-06-27',
-              'use_time': '2019-06-27',
-              state: true
-            }
-          ]
-        }]
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
+      handleCancel (row) {
+        this.table_data.map((user) => {
+          if (user.id == row.user_id) {
+            user.discount_id.map((discount) => {
+              if (discount.id == row.id) {
+                discount.state = this.last_state;
+              }
+            });
+          }
+        });
+        this.cur_user = -1;
+        this.cur_index = -1;
+        this.$message({
+          type: 'info',
+          message: '已取消',
+          showClose: true
+        });
+      },
+      handleEdit (row) {
+        if (this.cur_index != -1) {
+          this.$message({
+            message: '请保存或取消！',
+            type: 'warning',
+            showClose: true
+          });
+          return;
+        }
+        this.last_state = row.state;
+        this.cur_user = row.user_id;
+        this.cur_index = row.id;
+      },
+      handleDelete (row) {
+        this.$confirm('此操作将永久删除该用户优惠券, 是否继续?', '提示', {
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          let data = new FormData();
+          data.append('id', row.id);
+          this.$axios.delete('/api/admin/user/discount/rel', {data: data})
+            .then((res) => {
+              if (!res.data.code) {
+                this.table_data.map((user) => {
+                  if (user.id == row.user_id) {
+                    let index = user.discount_id.indexOf(row);
+                    user.discount_id.splice(index, 1);
+                  }
+                });
+                this.$message({
+                  type: 'success',
+                  message: res.data.msg,
+                  showClose: true
+                });
+              } else {
+                this.$message({
+                  message: res.data.msg,
+                  type: 'error',
+                  showClose: true
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+            showClose: true
+          });
+        });
+      },
+      currentChange (cur_page) {
+        this.getData(cur_page);
       }
     }
   }
@@ -137,5 +306,24 @@
 <style scoped>
   .main {
     padding: 12px;
+  }
+
+  .banner {
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #ffffff;
+  }
+
+  .data_list {
+    height: 508px;
+    overflow: auto;
+  }
+
+  .footer {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    padding: 10px;
+    text-align: center;
+    background: #ffffff;
   }
 </style>

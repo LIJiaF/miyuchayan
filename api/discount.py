@@ -7,7 +7,6 @@ from tornado.web import RequestHandler
 from wxConfig import APPID, APPSECRET
 from common.postgresql_conn import Postgres
 from common.log_print import logger
-from common.wrapper_func import wrapper_allow_origin_func
 
 
 class DiscountHandler(RequestHandler):
@@ -57,7 +56,6 @@ class DiscountHandler(RequestHandler):
 
         return self.render('discount.html', data=data, openid=openid)
 
-    @wrapper_allow_origin_func
     def post(self):
         discount_id = self.get_argument('discount_id', None)
         openid = self.get_argument('openid', None)

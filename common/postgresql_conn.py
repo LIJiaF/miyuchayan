@@ -42,6 +42,7 @@ class Postgres(object):
             conn.commit()
         except Exception:
             logger.error('执行sql语句失败: %s' % sql)
+            raise
         finally:
             self.close(cur, conn)
 
