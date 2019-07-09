@@ -9,7 +9,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="editPassword">修改</el-button>
-        <router-link to="/">
+        <router-link to="/main">
           <el-button>返回</el-button>
         </router-link>
       </el-form-item>

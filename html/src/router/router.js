@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 const Login = () => import('@/page/login.vue');
 const Index = () => import('@/page/index.vue');
+const Main = () => import('@/page/main.vue');
 const UserList = () => import('@/page/user/list.vue');
 const DiscountList = () => import('@/page/discount/list.vue');
 const DiscountAdd = () => import('@/page/discount/add.vue');
@@ -29,6 +30,14 @@ const router = new Router({
       },
       component: Index,
       children: [
+        {
+          path: '/main',
+          name: 'Main',
+          meta: {
+            requireAuth: true
+          },
+          component: Main
+        },
         {
           path: '/edit/password',
           name: 'EditPassword',

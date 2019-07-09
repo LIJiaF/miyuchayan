@@ -4,7 +4,7 @@
     <div class="header">
       <h1 class="title">后台管理系统</h1>
       <ul class="menu">
-        <router-link to="/">
+        <router-link to="/main">
           <li class="active">首页</li>
         </router-link>
       </ul>
@@ -22,7 +22,7 @@
               <router-link to="/login">退出</router-link>
             </li>
           </ul>
-          <span class="user" slot="reference">admin</span>
+          <span class="user" slot="reference">{{ username }}</span>
         </el-popover>
       </p>
     </div>
@@ -71,6 +71,17 @@
     </div>
   </div>
 </template>
+
+<script>
+  export default {
+    name: "Index",
+    computed: {
+      username () {
+        return sessionStorage.getItem('username');
+      }
+    }
+  }
+</script>
 
 <style scoped>
   body {
