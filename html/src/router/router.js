@@ -14,7 +14,7 @@ const EditPassword = () => import('@/page/edit_password.vue');
 Vue.use(Router);
 
 const router = new Router({
-  mode: 'history',
+  mode: 'hash',
   routes: [
     {
       path: '/login',

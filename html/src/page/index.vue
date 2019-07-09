@@ -15,12 +15,12 @@
           transition="fade-in-linear"
           trigger="hover">
           <ul class="popover" style="text-align: center">
-            <router-link to="/edit/password">
-              <li>修改密码</li>
-            </router-link>
-            <router-link to="/login">
-              <li>退出</li>
-            </router-link>
+            <li>
+              <router-link to="/edit/password">修改密码</router-link>
+            </li>
+            <li>
+              <router-link to="/login">退出</router-link>
+            </li>
           </ul>
           <span class="user" slot="reference">admin</span>
         </el-popover>
