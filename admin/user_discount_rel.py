@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from tornado.web import RequestHandler
 
@@ -13,6 +13,8 @@ class AdminUserDiscountRelHandler(RequestHandler):
     def get(self):
         cur_page = self.get_argument('cur_page', '1')
         search_val = self.get_argument('search_val', '')
+        time_filter = self.get_argument('time_filter', None)
+        use_filter = self.get_argument('use_filter', None)
         user_id = self.get_argument('user_id', '')
 
         if user_id:
@@ -37,9 +39,20 @@ class AdminUserDiscountRelHandler(RequestHandler):
             data = conn.fetchall(sql)
             return self.finish(json.dumps(data))
 
-        where = ''
+        where = 'where true'
         if search_val:
-            where += "where username like '%{}%'".format(search_val)
+            where += " and username like '%{}%'".format(search_val)
+
+        cur_time = datetime.strftime(datetime.now(), '%Y-%m-%d')
+        if time_filter and int(time_filter) == 1:
+            where += " and end_time < '%s'" % cur_time
+        elif time_filter and int(time_filter) == 2:
+            where += " and end_time >= '%s'" % cur_time
+
+        if use_filter and int(use_filter) == 1:
+            where += " and state = true"
+        elif use_filter and int(use_filter) == 2:
+            where += " and state = false"
 
         page_size = 5
 
@@ -71,6 +84,35 @@ class AdminUserDiscountRelHandler(RequestHandler):
         }
 
         return self.finish(table_data)
+
+    @is_login_func
+    def post(self):
+        discount_id = self.get_argument('discount_id', None)
+        openid = self.get_argument('openid', None)
+
+        res = {
+            'code': 0
+        }
+
+        if not discount_id or not openid:
+            res['code'] = -1
+            res['msg'] = '赠送失败！'
+            return self.finish(res)
+
+        try:
+            conn = Postgres()
+            end_time = datetime.strftime(datetime.now() + timedelta(days=7), '%Y-%m-%d')
+            sql = """
+                insert into wx_user_discount_rel (openid, discount_id, end_time)
+                values ('%s', %d, '%s');
+            """ % (openid, int(discount_id), end_time)
+            conn.execute(sql)
+            res['msg'] = '赠送成功！'
+            return self.finish(res)
+        except Exception:
+            res['code'] = -1
+            res['msg'] = '赠送失败！'
+            return self.finish(res)
 
     @is_login_func
     def put(self):

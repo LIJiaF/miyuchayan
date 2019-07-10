@@ -2,16 +2,28 @@
   <div class="main">
     <!--功能区-->
     <div class="banner">
-      <el-row type="flex" :gutter="10" align="middle">
-        <el-col :span="8">
+      <el-row type="flex" align="middle">
+        <el-col :md="6">
           <el-input
             placeholder="搜索微信号"
             prefix-icon="el-icon-search"
             v-model="search_val">
           </el-input>
         </el-col>
-        <el-col :span="4">
-          <el-button @click="handleSearch" size="medium" type="primary">搜索</el-button>
+        <el-col :md="4">
+          <el-button @click="handleSearch" size="medium" type="primary" style="margin-left: 10px;">搜索</el-button>
+        </el-col>
+        <el-col :md="3">
+          <el-checkbox v-model="end" label="已过期" border size="medium" @change="handleFilter()"></el-checkbox>
+        </el-col>
+        <el-col :md="3">
+          <el-checkbox v-model="not_end" label="未过期" border size="medium" @change="handleFilter()"></el-checkbox>
+        </el-col>
+        <el-col :md="3">
+          <el-checkbox v-model="use" label="已使用" border size="medium" @change="handleFilter()"></el-checkbox>
+        </el-col>
+        <el-col :md="3">
+          <el-checkbox v-model="not_use" label="未使用" border size="medium" @change="handleFilter()"></el-checkbox>
         </el-col>
       </el-row>
     </div>
@@ -142,6 +154,10 @@
     data () {
       return {
         search_val: '',
+        end: false,
+        not_end: true,
+        use: false,
+        not_use: true,
         cur_user: -1,
         cur_index: -1,
         last_state: false,
@@ -162,12 +178,32 @@
       };
     },
     methods: {
-      getData (cur_page = 1, search_val = '') {
+      getData (cur_page = 1) {
         let params = {
           cur_page: cur_page
         }
-        if (search_val) {
-          params.search_val = search_val;
+        if (this.search_val) {
+          params.search_val = this.search_val;
+        }
+        let time_filter = 0;
+        if (this.end && !this.not_end) {
+          time_filter = 1;
+        }
+        if (this.not_end && !this.end) {
+          time_filter = 2;
+        }
+        if (time_filter) {
+          params.time_filter = time_filter;
+        }
+        let use_filter = 0;
+        if (this.use && !this.not_use) {
+          use_filter = 1;
+        }
+        if (this.not_use && !this.use) {
+          use_filter = 2;
+        }
+        if (use_filter) {
+          params.use_filter = use_filter;
         }
         this.$axios.get('/api/admin/user/discount/rel', {params: params})
           .then((res) => {
@@ -180,7 +216,10 @@
           })
       },
       handleSearch () {
-        this.getData(1, this.search_val);
+        this.getData();
+      },
+      handleFilter () {
+        this.getData();
       },
       expandChange (row) {
         let params = {

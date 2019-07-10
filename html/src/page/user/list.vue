@@ -2,16 +2,22 @@
   <div class="main">
     <!--功能区-->
     <div class="banner">
-      <el-row type="flex" :gutter="10" align="middle">
-        <el-col :span="8">
+      <el-row type="flex" align="middle">
+        <el-col :md="6">
           <el-input
             placeholder="搜索微信号"
             prefix-icon="el-icon-search"
             v-model="search_val">
           </el-input>
         </el-col>
-        <el-col :span="4">
-          <el-button @click="handleSearch" size="medium" type="primary">搜索</el-button>
+        <el-col :md="4">
+          <el-button @click="handleSearch" size="medium" type="primary" style="margin-left: 10px;">搜索</el-button>
+        </el-col>
+        <el-col :md="3">
+          <el-checkbox v-model="is_admin" label="管理员" border size="medium" @change="handleFilter()"></el-checkbox>
+        </el-col>
+        <el-col :md="3">
+          <el-checkbox v-model="not_admin" label="普通用户" border size="medium" @change="handleFilter()"></el-checkbox>
         </el-col>
       </el-row>
     </div>
@@ -96,7 +102,7 @@
       </el-table-column>
       <el-table-column
         fixed="right"
-        min-width="95"
+        min-width="140"
         label="操作">
         <template slot-scope="scope">
           <div v-if="cur_index == scope.row.id">
@@ -110,6 +116,10 @@
             </el-button>
           </div>
           <div v-else>
+            <el-button
+              @click="handleDialog(scope.row)"
+              type="text">赠送
+            </el-button>
             <el-button
               @click="handleEdit(scope.row)"
               type="text">修改
@@ -132,6 +142,71 @@
         @current-change="currentChange">
       </el-pagination>
     </div>
+    <!--隐藏-->
+    <el-dialog title="优惠券列表" :visible.sync="dialogTableVisible" :modal-append-to-body='false' @close="dialogClose">
+      <el-table
+        :data="dialog_data"
+        style="width: 100%">
+        <el-table-column
+          align="center"
+          min-width="100"
+          prop="name"
+          label="优惠券类型">
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="discount"
+          label="折扣">
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="score"
+          label="积分">
+        </el-table-column>
+        <el-table-column
+          align="center"
+          prop="count"
+          label="剩余数量">
+        </el-table-column>
+        <el-table-column
+          min-width="250"
+          prop="rule"
+          label="使用规则">
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="状态">
+          <template slot-scope="scope">
+            <div>
+              <el-button
+                v-if="scope.row.state"
+                type="primary"
+                icon="el-icon-check"
+                size="mini"
+                circle>
+              </el-button>
+              <el-button
+                v-if="!scope.row.state"
+                icon="el-icon-close"
+                size="mini"
+                circle>
+              </el-button>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          min-width="50"
+          label="操作">
+          <template slot-scope="scope">
+            <el-button
+              @click="handleDiscountDialog(scope.row)"
+              type="text">赠送
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -140,18 +215,24 @@
     data () {
       return {
         search_val: '',
+        is_admin: true,
+        not_admin: true,
         cur_index: -1,
+        cur_user: -1,
         last_score: 0,
         last_experience: 0,
         last_is_admin: false,
         table_data: [],
         cur_page: 1,
         page_size: 0,
-        total: 0
+        total: 0,
+        dialogTableVisible: false,
+        dialog_data: []
       }
     },
     created () {
       this.getData();
+      this.getDialogData();
       let self = this;
       document.onkeydown = function (e) {
         let key = window.event.keyCode;
@@ -161,12 +242,23 @@
       };
     },
     methods: {
-      getData (cur_page = 1, search_val = '') {
+      // 获取用户列表数据
+      getData (cur_page = 1) {
         let params = {
           cur_page: cur_page
         }
-        if (search_val) {
-          params.search_val = search_val;
+        if (this.search_val) {
+          params.search_val = this.search_val;
+        }
+        let filter = 0;
+        if (this.is_admin && !this.not_admin) {
+          filter = 1;
+        }
+        if (this.not_admin && !this.is_admin) {
+          filter = 2;
+        }
+        if (filter) {
+          params.filter = filter;
         }
         this.$axios.get('/api/admin/user', {params: params})
           .then((res) => {
@@ -178,8 +270,54 @@
             console.log(err);
           })
       },
+      // 获取优惠券列表数据
+      getDialogData () {
+        this.$axios.get('/api/admin/discount')
+          .then((res) => {
+            this.dialog_data = res.data.data;
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      },
+      // 用户列表赠送按钮
+      handleDialog (row) {
+        this.dialogTableVisible = true;
+        this.cur_user = row.openid;
+      },
+      // 优惠券列表赠送按钮
+      handleDiscountDialog (row) {
+        let data = new FormData();
+        data.append('discount_id', row.id);
+        data.append('openid', this.cur_user);
+        this.$axios.post('/api/admin/user/discount/rel', data)
+          .then((res) => {
+            if (!res.data.code) {
+              this.$message({
+                message: res.data.msg,
+                type: 'success',
+                showClose: true
+              });
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: 'error',
+                showClose: true
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
+      dialogClose () {
+        this.cur_user = -1;
+      },
       handleSearch () {
-        this.getData(1, this.search_val);
+        this.getData();
+      },
+      handleFilter () {
+        this.getData();
       },
       handleSave (row) {
         let data = new FormData();

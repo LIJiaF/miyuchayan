@@ -8,9 +8,13 @@ from common.postgresql_conn import Postgres
 class AdminDiscountHandler(RequestHandler):
     @is_login_func
     def get(self):
-        cur_page = self.get_argument('cur_page', '1')
+        cur_page = self.get_argument('cur_page', None)
 
-        page_size = 5
+        limit = ''
+        page_size = 0
+        if cur_page:
+            page_size = 5
+            limit += 'limit %d offset %d' % (page_size, (abs(int(cur_page)) - 1) * page_size)
 
         sql = """
             select (
@@ -21,8 +25,8 @@ class AdminDiscountHandler(RequestHandler):
             from wx_discount as wd
             left join wx_discount_type as wdt on wdt.id = wd.type_id
             order by id desc
-            limit %d offset %d
-        """ % (page_size, (int(cur_page) - 1) * page_size)
+            """ + limit + """
+        """
         conn = Postgres()
         data = conn.fetchall(sql)
 
@@ -33,10 +37,11 @@ class AdminDiscountHandler(RequestHandler):
         """
         optionData = conn.fetchall(optionSql)
 
+        total = data[0]['total'] if data else 0
         table_data = {
             'data': data,
-            'page_size': page_size,
-            'total': data[0]['total'] if data else 0,
+            'page_size': page_size or total,
+            'total': total,
             'options': optionData
         }
 

@@ -10,10 +10,16 @@ class AdminUserHandler(RequestHandler):
     def get(self):
         cur_page = self.get_argument('cur_page', '1')
         search_val = self.get_argument('search_val', '')
+        filter = self.get_argument('filter', None)
 
-        where = ''
+        where = 'where true'
         if search_val:
-            where += "where username like '%{}%'".format(search_val)
+            where += " and username like '%{}%'".format(search_val)
+
+        if filter and int(filter) == 1:
+            where += " and is_admin = true"
+        elif filter and int(filter) == 2:
+            where += " and is_admin = false"
 
         page_size = 5
 
@@ -23,7 +29,7 @@ class AdminUserHandler(RequestHandler):
                 from wx_user 
                 """ + where + """
               ) as total, 
-              id, username, sex, image_url, city, score, experience, is_admin
+              id, openid, username, sex, image_url, city, score, experience, is_admin
             from wx_user
             """ + where + """
             order by id desc
