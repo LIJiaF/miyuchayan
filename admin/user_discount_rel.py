@@ -39,20 +39,20 @@ class AdminUserDiscountRelHandler(RequestHandler):
             data = conn.fetchall(sql)
             return self.finish(json.dumps(data))
 
-        where = 'where true'
+        where = ''
         if search_val:
-            where += " and username like '%{}%'".format(search_val)
+            where += "where username like '%{}%'".format(search_val)
 
-        cur_time = datetime.strftime(datetime.now(), '%Y-%m-%d')
-        if time_filter and int(time_filter) == 1:
-            where += " and end_time < '%s'" % cur_time
-        elif time_filter and int(time_filter) == 2:
-            where += " and end_time >= '%s'" % cur_time
-
-        if use_filter and int(use_filter) == 1:
-            where += " and state = true"
-        elif use_filter and int(use_filter) == 2:
-            where += " and state = false"
+        # cur_time = datetime.strftime(datetime.now(), '%Y-%m-%d')
+        # if time_filter and int(time_filter) == 1:
+        #     where += " and end_time < '%s'" % cur_time
+        # elif time_filter and int(time_filter) == 2:
+        #     where += " and end_time >= '%s'" % cur_time
+        #
+        # if use_filter and int(use_filter) == 1:
+        #     where += " and state = true"
+        # elif use_filter and int(use_filter) == 2:
+        #     where += " and state = false"
 
         page_size = 5
 
