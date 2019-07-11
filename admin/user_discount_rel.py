@@ -15,10 +15,45 @@ class AdminUserDiscountRelHandler(RequestHandler):
         search_val = self.get_argument('search_val', '')
         time_filter = self.get_argument('time_filter', None)
         use_filter = self.get_argument('use_filter', None)
-        user_id = self.get_argument('user_id', '')
 
-        if user_id:
-            sql = """
+        where = 'where true'
+        if search_val:
+            where += "and username like '%{}%'".format(search_val)
+
+        cur_time = datetime.strftime(datetime.now(), '%Y-%m-%d')
+        filter = "and wudr.end_time >= '%s' and wudr.state = false" % cur_time
+        # cur_time = datetime.strftime(datetime.now(), '%Y-%m-%d')
+        # if time_filter and int(time_filter) == 1:
+        #     where += " and end_time < '%s'" % cur_time
+        # elif time_filter and int(time_filter) == 2:
+        #     where += " and end_time >= '%s'" % cur_time
+        #
+        # if use_filter and int(use_filter) == 1:
+        #     where += " and state = true"
+        # elif use_filter and int(use_filter) == 2:
+        #     where += " and state = false"
+
+        page_size = 5
+
+        # 获取用户信息
+        sql = """
+            select 
+                (select count(*) from wx_user """ + where + """) as total, 
+                wu.id, username, image_url, count(wudr.id) as discount_count
+            from wx_user as wu
+            right join wx_user_discount_rel as wudr on wudr.openid =  wu.openid
+            """ + where + """
+            group by wu.id, username, image_url
+            having count(wudr.id) > 0
+            order by discount_count desc, wu.id desc
+            limit %d offset %d
+        """ % (page_size, (int(cur_page) - 1) * page_size)
+        conn = Postgres()
+        data = conn.fetchall(sql)
+
+        # 获取每个用户对应的优惠券信息
+        for d in data:
+            dSql = """
                 select 
                     wudr.id,
                     wu.id as user_id,
@@ -34,48 +69,9 @@ class AdminUserDiscountRelHandler(RequestHandler):
                 left join wx_discount_type as wdt on wdt.id = wd.type_id
                 where wu.id = %d
                 order by wudr.id desc
-            """ % int(user_id)
-            conn = Postgres()
-            data = conn.fetchall(sql)
-            return self.finish(json.dumps(data))
-
-        where = ''
-        if search_val:
-            where += "where username like '%{}%'".format(search_val)
-
-        # cur_time = datetime.strftime(datetime.now(), '%Y-%m-%d')
-        # if time_filter and int(time_filter) == 1:
-        #     where += " and end_time < '%s'" % cur_time
-        # elif time_filter and int(time_filter) == 2:
-        #     where += " and end_time >= '%s'" % cur_time
-        #
-        # if use_filter and int(use_filter) == 1:
-        #     where += " and state = true"
-        # elif use_filter and int(use_filter) == 2:
-        #     where += " and state = false"
-
-        page_size = 5
-
-        sql = """
-            select (
-                    select count(*) 
-                    from wx_user
-                    """ + where + """
-                ) as total, 
-                wu.id, username, image_url, count(wudr.id) as discount_count
-            from wx_user as wu
-            right join wx_user_discount_rel as wudr on wudr.openid =  wu.openid
-            """ + where + """
-            group by wu.id, username, image_url
-            having count(wudr.id) > 0
-            order by discount_count desc, wu.id desc
-            limit %d offset %d
-        """ % (page_size, (int(cur_page) - 1) * page_size)
-        conn = Postgres()
-        data = conn.fetchall(sql)
-
-        for d in data:
-            d['discount_id'] = []
+            """ % d['id']
+            dData = conn.fetchall(dSql)
+            d['discount_id'] = dData
 
         table_data = {
             'data': data,
