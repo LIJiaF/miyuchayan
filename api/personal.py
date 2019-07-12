@@ -20,7 +20,16 @@ class PersonalHandler(RequestHandler):
         except Exception as e:
             return self.write(str(e))
 
-        # openid = 'oBNuy57qwhveTXWFIrn1n2B5W-k0'
+        # info_data = {
+        #     'openid': 'oBGCb1GE38DXO03ebeY0MtnfJKmc',
+        #     'nickname': '李家富',
+        #     'sex': 1,
+        #     'language': 'zh_CN',
+        #     'city': '广州',
+        #     'province': '广东', 'country': '中国',
+        #     'headimgurl': 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0EBmjmic8Is2ezTGhysF7JcUjSjnNVOYrCVoOJ6hIBNziaQiaFN76OSIpa7OpdibS3Z2qeGfOSV3mibklxGHV3VLCg/132',
+        #     'privilege': []
+        # }
 
         conn = Postgres()
         data = conn.fetchone("select id from wx_user where openid = '%s'" % info_data.get('openid'))
