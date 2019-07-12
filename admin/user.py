@@ -10,16 +10,16 @@ class AdminUserHandler(RequestHandler):
     def get(self):
         cur_page = self.get_argument('cur_page', '1')
         search_val = self.get_argument('search_val', '')
-        filter = self.get_argument('filter', None)
+        is_admin = self.get_argument('is_admin', None)
 
         where = 'where true'
         if search_val:
             where += " and username like '%{}%'".format(search_val)
 
-        if filter and int(filter) == 1:
-            where += " and is_admin = true"
-        elif filter and int(filter) == 2:
+        if is_admin and int(is_admin) == 1:
             where += " and is_admin = false"
+        elif is_admin and int(is_admin) == 2:
+            where += " and is_admin = true"
 
         page_size = 5
 

@@ -14,10 +14,13 @@
           <el-button @click="handleSearch" size="medium" type="primary" style="margin-left: 10px;">搜索</el-button>
         </el-col>
         <el-col :md="3">
-          <el-checkbox v-model="is_admin" label="管理员" border size="medium" @change="handleFilter()"></el-checkbox>
+          <el-radio v-model="is_admin" label="1" border size="medium" @change="handleFilter">普通用户</el-radio>
         </el-col>
         <el-col :md="3">
-          <el-checkbox v-model="not_admin" label="普通用户" border size="medium" @change="handleFilter()"></el-checkbox>
+          <el-radio v-model="is_admin" label="2" border size="medium" @change="handleFilter">管理员</el-radio>
+        </el-col>
+        <el-col :md="3">
+          <el-radio v-model="is_admin" label="3" border size="medium" @change="handleFilter">全部</el-radio>
         </el-col>
       </el-row>
     </div>
@@ -215,8 +218,7 @@
     data () {
       return {
         search_val: '',
-        is_admin: true,
-        not_admin: true,
+        is_admin: '1',
         cur_index: -1,
         cur_user: -1,
         last_score: 0,
@@ -244,22 +246,10 @@
     methods: {
       // 获取用户列表数据
       getData (cur_page = 1) {
-        let params = {
-          cur_page: cur_page
-        }
-        if (this.search_val) {
-          params.search_val = this.search_val;
-        }
-        let filter = 0;
-        if (this.is_admin && !this.not_admin) {
-          filter = 1;
-        }
-        if (this.not_admin && !this.is_admin) {
-          filter = 2;
-        }
-        if (filter) {
-          params.filter = filter;
-        }
+        let params = {};
+        params.cur_page = cur_page;
+        params.search_val = this.search_val;
+        params.is_admin = this.is_admin;
         this.$axios.get('/api/admin/user', {params: params})
           .then((res) => {
             this.table_data = res.data.data;

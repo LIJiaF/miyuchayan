@@ -14,16 +14,22 @@
           <el-button @click="handleSearch" size="medium" type="primary" style="margin-left: 10px;">搜索</el-button>
         </el-col>
         <el-col :md="3">
-          <el-checkbox v-model="end" label="已过期" border size="medium" @change="handleFilter()"></el-checkbox>
+          <el-radio v-model="end_time" label="1" border size="medium" @change="handleFilter">未过期</el-radio>
         </el-col>
         <el-col :md="3">
-          <el-checkbox v-model="not_end" label="未过期" border size="medium" @change="handleFilter()"></el-checkbox>
+          <el-radio v-model="end_time" label="2" border size="medium" @change="handleFilter">已过期</el-radio>
         </el-col>
         <el-col :md="3">
-          <el-checkbox v-model="use" label="已使用" border size="medium" @change="handleFilter()"></el-checkbox>
+          <el-radio v-model="end_time" label="3" border size="medium" @change="handleFilter">全部</el-radio>
         </el-col>
         <el-col :md="3">
-          <el-checkbox v-model="not_use" label="未使用" border size="medium" @change="handleFilter()"></el-checkbox>
+          <el-radio v-model="use_state" label="1" border size="medium" @change="handleFilter">未使用</el-radio>
+        </el-col>
+        <el-col :md="3">
+          <el-radio v-model="use_state" label="2" border size="medium" @change="handleFilter">已使用</el-radio>
+        </el-col>
+        <el-col :md="3">
+          <el-radio v-model="use_state" label="3" border size="medium" @change="handleFilter">全部</el-radio>
         </el-col>
       </el-row>
     </div>
@@ -156,10 +162,8 @@
     data () {
       return {
         search_val: '',
-        end: false,
-        not_end: true,
-        use: false,
-        not_use: true,
+        end_time: '1',
+        use_state: '1',
         cur_user: -1,
         cur_index: -1,
         last_state: false,
@@ -181,32 +185,11 @@
     },
     methods: {
       getData (cur_page = 1) {
-        let params = {
-          cur_page: cur_page
-        }
-        if (this.search_val) {
-          params.search_val = this.search_val;
-        }
-        let time_filter = 0;
-        if (this.end && !this.not_end) {
-          time_filter = 1;
-        }
-        if (this.not_end && !this.end) {
-          time_filter = 2;
-        }
-        if (time_filter) {
-          params.time_filter = time_filter;
-        }
-        let use_filter = 0;
-        if (this.use && !this.not_use) {
-          use_filter = 1;
-        }
-        if (this.not_use && !this.use) {
-          use_filter = 2;
-        }
-        if (use_filter) {
-          params.use_filter = use_filter;
-        }
+        let params = {};
+        params.cur_page = cur_page;
+        params.search_val = this.search_val;
+        params.end_time = this.end_time;
+        params.use_state = this.use_state;
         this.$axios.get('/api/admin/user/discount/rel', {params: params})
           .then((res) => {
             this.table_data = res.data.data;

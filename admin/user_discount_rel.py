@@ -1,4 +1,3 @@
-import json
 from datetime import datetime, timedelta
 
 from tornado.web import RequestHandler
@@ -13,35 +12,52 @@ class AdminUserDiscountRelHandler(RequestHandler):
     def get(self):
         cur_page = self.get_argument('cur_page', '1')
         search_val = self.get_argument('search_val', '')
-        time_filter = self.get_argument('time_filter', None)
-        use_filter = self.get_argument('use_filter', None)
+        time_filter = self.get_argument('end_time', None)
+        use_filter = self.get_argument('use_state', None)
 
-        where = 'where true'
+        where = ''
         if search_val:
-            where += "and username like '%{}%'".format(search_val)
+            where += "where username like '%{}%'".format(search_val)
 
+        filter = ''
         cur_time = datetime.strftime(datetime.now(), '%Y-%m-%d')
-        filter = "and wudr.end_time >= '%s' and wudr.state = false" % cur_time
-        # cur_time = datetime.strftime(datetime.now(), '%Y-%m-%d')
-        # if time_filter and int(time_filter) == 1:
-        #     where += " and end_time < '%s'" % cur_time
-        # elif time_filter and int(time_filter) == 2:
-        #     where += " and end_time >= '%s'" % cur_time
-        #
-        # if use_filter and int(use_filter) == 1:
-        #     where += " and state = true"
-        # elif use_filter and int(use_filter) == 2:
-        #     where += " and state = false"
+        if time_filter and int(time_filter) == 1:
+            filter += " and end_time >= '%s'" % cur_time
+        elif time_filter and int(time_filter) == 2:
+            filter += " and end_time < '%s'" % cur_time
+
+        if use_filter and int(use_filter) == 1:
+            filter += " and wudr.state = false"
+        elif use_filter and int(use_filter) == 2:
+            filter += " and wudr.state = true"
 
         page_size = 5
 
         # 获取用户信息
         sql = """
+            with wudr as (
+                select 
+                    wudr.id,
+                    wu.id as user_id,
+                    wdt.name as type,
+                    wd.discount,
+                    wd.rule, 
+                    wudr.end_time,
+                    wudr.use_time,
+                    wudr.state
+                from wx_user_discount_rel as wudr
+                left join wx_user as wu on wu.openid = wudr.openid
+                left join wx_discount as wd on wd.id = wudr.discount_id
+                left join wx_discount_type as wdt on wdt.id = wd.type_id
+                where true
+                """ + filter + """
+                order by wudr.id desc
+            )
             select 
                 (select count(*) from wx_user """ + where + """) as total, 
                 wu.id, username, image_url, count(wudr.id) as discount_count
             from wx_user as wu
-            right join wx_user_discount_rel as wudr on wudr.openid =  wu.openid
+            right join wudr on wudr.user_id = wu.id
             """ + where + """
             group by wu.id, username, image_url
             having count(wudr.id) > 0
@@ -68,8 +84,10 @@ class AdminUserDiscountRelHandler(RequestHandler):
                 left join wx_discount as wd on wd.id = wudr.discount_id
                 left join wx_discount_type as wdt on wdt.id = wd.type_id
                 where wu.id = %d
+                """ + filter + """
                 order by wudr.id desc
-            """ % d['id']
+            """
+            dSql = dSql % d['id']
             dData = conn.fetchall(dSql)
             d['discount_id'] = dData
 
