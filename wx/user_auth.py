@@ -49,3 +49,17 @@ class UserAuth(object):
                 logger.info('openid: %s', openid)
 
         return access_token, openid
+
+    # 获取用户信息
+    def get_user_info(self):
+        access_token, openid = self.get_access_token()
+        get_info_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN' % (
+            access_token, openid)
+        info_data = json.loads(request.urlopen(url=get_info_url).read())
+        logger.info('info_data: %s', info_data)
+        if info_data.get('errcode'):
+            logger.error('errcode: %s' % info_data['errcode'])
+            logger.error('errmsg: %s' % info_data['errmsg'])
+            raise Exception('获取用户信息失败！')
+
+        return info_data

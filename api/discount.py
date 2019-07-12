@@ -1,5 +1,3 @@
-import json
-from urllib import request
 from datetime import datetime, timedelta
 
 from tornado.web import RequestHandler
@@ -14,34 +12,6 @@ class DiscountHandler(RequestHandler):
     def get(self):
         code = self.get_argument('code', None)
         logger.info('code: %s' % code)
-        # get_token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code' % (
-        #     APPID, APPSECRET, code)
-        # token_data = json.loads(request.urlopen(url=get_token_url).read().decode('utf-8'))
-        # if token_data.get('errcode'):
-        #     logger.error('errcode: %s' % token_data['errcode'])
-        #     logger.error('errmsg: %s' % token_data['errmsg'])
-        #     return self.write('获取网页access_token失败，请在微信端打开')
-        #
-        # access_token = token_data.get('access_token', None)
-        # refresh_token = token_data.get('refresh_token', None)
-        # openid = token_data.get('openid', None)
-        # logger.info('access_token: %s', access_token)
-        # logger.info('refresh_token: %s', refresh_token)
-        # logger.info('openid: %s', openid)
-        #
-        # # 检验access_token是否有效
-        # check_token_url = 'https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s' % (access_token, openid)
-        # chekc_token_data = json.loads(request.urlopen(url=check_token_url).read())
-        # if chekc_token_data.get('errcode'):
-        #     refresh_token_url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s' % (
-        #         APPID, refresh_token)
-        #     refresh_data = json.loads(request.urlopen(url=refresh_token_url).read())
-        #     if not refresh_data.get('errcode'):
-        #         logger.info('重新获取access_token、openid')
-        #         access_token = refresh_data.get('access_token', None)
-        #         openid = refresh_data.get('openid', None)
-        #         logger.info('access_token: %s', access_token)
-        #         logger.info('openid: %s', openid)
 
         try:
             user_auth = UserAuth(APPID, APPSECRET, code)
