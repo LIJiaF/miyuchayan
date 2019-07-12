@@ -79,7 +79,7 @@
           .then((res) => {
             if (!res.data.code) {
               sessionStorage.setItem('username', this.username);
-              this.$router.push('/');
+              this.$router.push('/main');
             } else {
               this.$message({
                 message: res.data.msg,

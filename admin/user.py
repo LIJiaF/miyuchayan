@@ -10,10 +10,16 @@ class AdminUserHandler(RequestHandler):
     def get(self):
         cur_page = self.get_argument('cur_page', '1')
         search_val = self.get_argument('search_val', '')
+        is_admin = self.get_argument('is_admin', None)
 
-        where = ''
+        where = 'where true'
         if search_val:
-            where += "where username like '%{}%'".format(search_val)
+            where += " and username like '%{}%'".format(search_val)
+
+        if is_admin and int(is_admin) == 1:
+            where += " and is_admin = false"
+        elif is_admin and int(is_admin) == 2:
+            where += " and is_admin = true"
 
         page_size = 5
 
@@ -23,7 +29,7 @@ class AdminUserHandler(RequestHandler):
                 from wx_user 
                 """ + where + """
               ) as total, 
-              id, username, sex, image_url, city, score, experience, is_admin
+              id, openid, username, sex, image_url, city, score, experience, is_admin
             from wx_user
             """ + where + """
             order by id desc
@@ -70,12 +76,16 @@ class AdminUserHandler(RequestHandler):
 
     @is_login_func
     def delete(self):
-        id = self.get_argument('id', '0')
+        openid = self.get_argument('openid', None)
 
         sql = """
             delete from wx_user
-            where id = %d
-        """ % int(id)
+            where openid = '%s';
+        """ % openid
+        sql += """
+            delete from wx_user_discount_rel
+            where openid = '%s';
+        """ % openid
 
         res = {
             'code': 0

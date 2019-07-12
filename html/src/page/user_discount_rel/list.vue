@@ -2,128 +2,148 @@
   <div class="main">
     <!--功能区-->
     <div class="banner">
-      <el-row type="flex" :gutter="10" align="middle">
-        <el-col :span="8">
+      <el-row type="flex" align="middle">
+        <el-col :md="6">
           <el-input
             placeholder="搜索微信号"
             prefix-icon="el-icon-search"
             v-model="search_val">
           </el-input>
         </el-col>
-        <el-col :span="4">
-          <el-button @click="handleSearch" size="medium" type="primary">搜索</el-button>
+        <el-col :md="4">
+          <el-button @click="handleSearch" size="medium" type="primary" style="margin-left: 10px;">搜索</el-button>
+        </el-col>
+        <el-col :md="3">
+          <el-radio v-model="end_time" label="1" border size="medium" @change="handleFilter">未过期</el-radio>
+        </el-col>
+        <el-col :md="3">
+          <el-radio v-model="end_time" label="2" border size="medium" @change="handleFilter">已过期</el-radio>
+        </el-col>
+        <el-col :md="3">
+          <el-radio v-model="end_time" label="3" border size="medium" @change="handleFilter">全部</el-radio>
+        </el-col>
+        <el-col :md="3">
+          <el-radio v-model="use_state" label="1" border size="medium" @change="handleFilter">未使用</el-radio>
+        </el-col>
+        <el-col :md="3">
+          <el-radio v-model="use_state" label="2" border size="medium" @change="handleFilter">已使用</el-radio>
+        </el-col>
+        <el-col :md="3">
+          <el-radio v-model="use_state" label="3" border size="medium" @change="handleFilter">全部</el-radio>
         </el-col>
       </el-row>
     </div>
     <!--数据列表-->
-    <div class="data_list">
-      <el-table
-        :data="table_data"
-        @expand-change="expandChange"
-        style="width: 100%">
-        <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-table
-              :data="props.row.discount_id"
-              label-position="left"
-              style="width: 100%">
-              <el-table-column
-                align="center"
-                prop="type"
-                min-width="100"
-                label="优惠券类型">
-              </el-table-column>
-              <el-table-column
-                align="center"
-                prop="discount"
-                label="折扣">
-              </el-table-column>
-              <el-table-column
-                min-width="250"
-                prop="rule"
-                label="使用规则">
-              </el-table-column>
-              <el-table-column
-                align="center"
-                min-width="95"
-                prop="end_time"
-                label="截止日期">
-              </el-table-column>
-              <el-table-column
-                align="center"
-                fixed="right"
-                label="状态">
-                <template slot-scope="scope">
-                  <div v-if="cur_user == scope.row.user_id && cur_index == scope.row.id">
-                    <el-switch v-model="scope.row.state"></el-switch>
-                  </div>
-                  <div v-else>
-                    <el-button
-                      v-if="scope.row.state"
-                      type="primary"
-                      icon="el-icon-check"
-                      size="mini"
-                      circle>
-                    </el-button>
-                    <el-button
-                      v-if="!scope.row.state"
-                      icon="el-icon-close"
-                      size="mini"
-                      circle>
-                    </el-button>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column
-                fixed="right"
-                min-width="95"
-                label="操作">
-                <template slot-scope="scope">
-                  <div v-if="cur_user == scope.row.user_id && cur_index == scope.row.id">
-                    <el-button
-                      @click="handleSave(scope.row)"
-                      type="text" size="small">保存
-                    </el-button>
-                    <el-button
-                      @click="handleCancel(scope.row)"
-                      type="text" size="small">取消
-                    </el-button>
-                  </div>
-                  <div v-else>
-                    <el-button
-                      @click="handleEdit(scope.row)"
-                      type="text">修改
-                    </el-button>
-                    <el-button
-                      @click="handleDelete(scope.row)"
-                      type="text">删除
-                    </el-button>
-                  </div>
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="username"
-          label="微信号">
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="头像">
-          <template slot-scope="scope">
-            <el-image
-              style="width: 60px; height: 60px"
-              :src="scope.row.image_url"
-              fit="contain">
-              <div slot="placeholder" class="load_image">
-                <i class="el-icon-loading"></i>
-              </div>
-            </el-image>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+    <el-table
+      :data="table_data"
+      style="width: 100%">
+      <el-table-column type="expand">
+        <template slot-scope="props">
+          <el-table
+            :data="props.row.discount_id"
+            label-position="left"
+            style="width: 100%">
+            <el-table-column
+              align="center"
+              prop="type"
+              min-width="100"
+              label="优惠券类型">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              prop="discount"
+              label="折扣">
+            </el-table-column>
+            <el-table-column
+              min-width="250"
+              prop="rule"
+              label="使用规则">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              min-width="95"
+              prop="end_time"
+              label="截止日期">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              fixed="right"
+              label="状态">
+              <template slot-scope="scope">
+                <div v-if="cur_user == scope.row.user_id && cur_index == scope.row.id">
+                  <el-switch v-model="scope.row.state"></el-switch>
+                </div>
+                <div v-else>
+                  <el-button
+                    v-if="scope.row.state"
+                    type="primary"
+                    icon="el-icon-check"
+                    size="mini"
+                    circle>
+                  </el-button>
+                  <el-button
+                    v-if="!scope.row.state"
+                    icon="el-icon-close"
+                    size="mini"
+                    circle>
+                  </el-button>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              fixed="right"
+              min-width="95"
+              label="操作">
+              <template slot-scope="scope">
+                <div v-if="cur_user == scope.row.user_id && cur_index == scope.row.id">
+                  <el-button
+                    @click="handleSave(scope.row)"
+                    type="text" size="small">保存
+                  </el-button>
+                  <el-button
+                    @click="handleCancel(scope.row)"
+                    type="text" size="small">取消
+                  </el-button>
+                </div>
+                <div v-else>
+                  <el-button
+                    @click="handleEdit(scope.row)"
+                    type="text">修改
+                  </el-button>
+                  <el-button
+                    @click="handleDelete(scope.row)"
+                    type="text">删除
+                  </el-button>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="username"
+        label="微信号">
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="头像">
+        <template slot-scope="scope">
+          <el-image
+            style="width: 60px; height: 60px"
+            :src="scope.row.image_url"
+            fit="contain">
+            <div slot="placeholder" class="load_image">
+              <i class="el-icon-loading"></i>
+            </div>
+          </el-image>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="discount_count"
+        align="center"
+        label="优惠券数量">
+      </el-table-column>
+    </el-table>
     <!--分页-->
     <div class="footer">
       <el-pagination
@@ -142,6 +162,8 @@
     data () {
       return {
         search_val: '',
+        end_time: '1',
+        use_state: '1',
         cur_user: -1,
         cur_index: -1,
         last_state: false,
@@ -162,13 +184,12 @@
       };
     },
     methods: {
-      getData (cur_page = 1, search_val = '') {
-        let params = {
-          cur_page: cur_page
-        }
-        if (search_val) {
-          params.search_val = search_val;
-        }
+      getData (cur_page = 1) {
+        let params = {};
+        params.cur_page = cur_page;
+        params.search_val = this.search_val;
+        params.end_time = this.end_time;
+        params.use_state = this.use_state;
         this.$axios.get('/api/admin/user/discount/rel', {params: params})
           .then((res) => {
             this.table_data = res.data.data;
@@ -180,22 +201,10 @@
           })
       },
       handleSearch () {
-        this.getData(1, this.search_val);
+        this.getData();
       },
-      expandChange (row) {
-        let params = {
-          user_id: row.id
-        }
-        this.$axios.get('/api/admin/user/discount/rel', {params: params})
-          .then((res) => {
-            let user = this.table_data.filter((data) => {
-              return data.id == row.id
-            });
-            this.$set(user[0], 'discount_id', res.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          })
+      handleFilter () {
+        this.getData();
       },
       handleSave (row) {
         let data = new FormData();
@@ -312,11 +321,6 @@
     margin-bottom: 12px;
     padding: 10px;
     background: #ffffff;
-  }
-
-  .data_list {
-    height: 508px;
-    overflow: auto;
   }
 
   .footer {

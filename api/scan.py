@@ -6,8 +6,8 @@ from tornado.web import RequestHandler
 from common.postgresql_conn import Postgres
 from common.log_print import logger
 from common.qrcode_func import QrcodeFunc
-from basic import Basic
-from sign import Sign
+from wx.basic import Basic
+from wx.sign import Sign
 from wxConfig import APPID
 
 
