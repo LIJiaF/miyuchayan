@@ -149,7 +149,7 @@
       <el-pagination
         background
         :page-size="page_size"
-        layout="prev, pager, next"
+        layout="total, prev, pager, next"
         :total="total"
         @current-change="currentChange">
       </el-pagination>

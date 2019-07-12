@@ -53,9 +53,14 @@ class AdminUserDiscountRelHandler(RequestHandler):
                 """ + filter + """
                 order by wudr.id desc
             )
-            select 
-                (select count(*) from wx_user """ + where + """) as total, 
-                wu.id, username, image_url, count(wudr.id) as discount_count
+            select (
+                select count(distinct wu.id) 
+                from wx_user as wu
+                right join wudr on wudr.user_id = wu.id
+                """ + where + """
+                ) as total, 
+                wu.id, username, image_url, 
+                count(wudr.id) as discount_count
             from wx_user as wu
             right join wudr on wudr.user_id = wu.id
             """ + where + """
