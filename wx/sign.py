@@ -3,7 +3,7 @@ import random
 import string
 import hashlib
 
-from basic import Basic
+from wx.basic import Basic
 
 
 class Sign:
