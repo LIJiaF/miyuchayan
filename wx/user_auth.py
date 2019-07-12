@@ -37,7 +37,7 @@ class UserAuth(object):
         logger.info('openid: %s', openid)
         logger.info('refresh_token: %s', refresh_token)
 
-        if not self.check_access_token():
+        if not self.check_access_token(access_token, openid):
             refresh_token_url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s' % (
                 self.appid, refresh_token)
             refresh_data = json.loads(request.urlopen(url=refresh_token_url).read())
