@@ -373,7 +373,7 @@
           center: true
         }).then(() => {
           let data = new FormData();
-          data.append('id', row.id);
+          data.append('openid', row.openid);
           this.$axios.delete('/api/admin/user', {data: data})
             .then((res) => {
               if (!res.data.code) {

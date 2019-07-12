@@ -76,12 +76,16 @@ class AdminUserHandler(RequestHandler):
 
     @is_login_func
     def delete(self):
-        id = self.get_argument('id', '0')
+        openid = self.get_argument('openid', None)
 
         sql = """
             delete from wx_user
-            where id = %d
-        """ % int(id)
+            where openid = '%s';
+        """ % openid
+        sql += """
+            delete from wx_user_discount_rel
+            where openid = '%s';
+        """ % openid
 
         res = {
             'code': 0
