@@ -36,8 +36,8 @@ class PersonalHandler(RequestHandler):
         logger.info('查看数据库是否存在该用户信息: %s' % data)
         if not data:
             sql = """
-                insert into wx_user (openid, username, sex, image_url, province, city)
-                values ('%s', '%s', %d, '%s', '%s', '%s');
+                insert into wx_user (openid, username, sex, image_url, province, city, score)
+                values ('%s', '%s', %d, '%s', '%s', '%s', 15);
             """ % (
                 info_data.get('openid'), info_data.get('nickname'), info_data.get('sex'), info_data.get('headimgurl'),
                 info_data.get('province'), info_data.get('city')

@@ -24,7 +24,7 @@ class AdminDiscountHandler(RequestHandler):
               wd.id, name, type_id, discount, score, count, rule, state
             from wx_discount as wd
             left join wx_discount_type as wdt on wdt.id = wd.type_id
-            order by id desc
+            order by score desc, id desc
             """ + limit + """
         """
         conn = Postgres()

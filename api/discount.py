@@ -19,7 +19,7 @@ class DiscountHandler(RequestHandler):
         except Exception as e:
             return self.write(str(e))
 
-        # openid = 'oBNuy57qwhveTXWFIrn1n2B5W-k0'
+        # openid = 'oBGCb1GE38DXO03ebeY0MtnfJKmc'
 
         conn = Postgres()
         sql = """
@@ -27,7 +27,7 @@ class DiscountHandler(RequestHandler):
             from wx_discount as wd
             inner join wx_discount_type as wdt on wd.type_id = wdt.id
             where state = true
-            order by id
+            order by score desc, id desc
         """
         data = conn.fetchall(sql)
 

@@ -10,6 +10,26 @@ body {
     background: aliceblue;
 }
 
+.explain{
+    width:85%;
+    margin: 10px auto;
+    padding: 10px;
+    color:#ff0000;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 5px;
+}
+
+.explain h1{
+    font-size: 18px;
+    padding: 5px 0;
+}
+
+.explain p{
+    font-size: 14px;
+    padding: 5px 0;
+}
+
 .discount_list {
     margin: 10px auto;
     width: 80%;
