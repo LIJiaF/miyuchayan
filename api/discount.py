@@ -47,13 +47,15 @@ class DiscountHandler(RequestHandler):
             return self.finish(res)
 
         conn = Postgres()
+        cur_time = datetime.strftime(datetime.now(), '%Y-%m-%d')
         sql = """
             select * 
             from wx_user_discount_rel 
             where discount_id = %d
             and openid = '%s'
+            and end_time >= '%s'
             and state = false
-        """ % (int(discount_id), openid)
+        """ % (int(discount_id), openid, cur_time)
         count = conn.fetchall(sql)
         if len(count):
             res['code'] = -1
