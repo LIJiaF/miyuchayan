@@ -59,8 +59,8 @@
             this.$nextTick(() => {
               this.drawPie(this.$refs.fans, 'fans');
               this.drawPie(this.$refs.discount, 'discount');
-              this.drawChart(this.$refs.experience, '经验排行榜');
-              this.drawChart(this.$refs.score, '积分排行榜');
+              this.drawChart(this.$refs.experience, '经验排行榜', 'experience');
+              this.drawChart(this.$refs.score, '积分排行榜', 'score');
             });
           })
           .catch((err) => {
@@ -114,7 +114,7 @@
           this.experience.map((ex) => {
             yData.push(ex.experience);
           });
-        } else if (type == 'discount') {
+        } else if (type == 'score') {
           this.score.map((ex) => {
             xData.push(ex.username);
           });
