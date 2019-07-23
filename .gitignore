@@ -4,3 +4,4 @@ __pycache__/
 upload/
 config.py
 wxConfig.py
+log/
