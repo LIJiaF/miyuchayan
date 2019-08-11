@@ -5,6 +5,7 @@ from tornado.web import RequestHandler
 from wx import receive, reply
 from common.log_print import logger
 from common.postgresql_conn import Postgres
+from wx.basic import Basic
 
 
 class WxHandler(RequestHandler):
@@ -55,6 +56,9 @@ class WxHandler(RequestHandler):
                     if recMsg.Event == 'subscribe':
                         print(toUser)
                         print(fromUser)
+                        basic = Basic()
+                        info_data = basic.get_user_info(toUser)
+                        print(info_data)
                         # conn = Postgres()
                         # data = conn.fetchone("select id from wx_user where openid = '%s'" % info_data.get('openid'))
                         # logger.info('查看数据库是否存在该用户信息: %s' % data)

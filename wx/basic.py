@@ -105,6 +105,20 @@ class Basic(object):
             logger.error('errcode: %s' % urlResp['errcode'])
             logger.error('errmsg: %s' % urlResp['errmsg'])
 
+    # 根据openid获取用户信息
+    def get_user_info(self, openid):
+        access_token = self.get_access_token()
+        get_info_url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN' % (
+            access_token, openid)
+        info_data = json.loads(request.urlopen(url=get_info_url).read())
+        logger.info('info_data: %s', info_data)
+        if info_data.get('errcode'):
+            logger.error('errcode: %s' % info_data['errcode'])
+            logger.error('errmsg: %s' % info_data['errmsg'])
+            raise Exception('获取用户信息失败！')
+
+        return info_data
+
 
 if __name__ == '__main__':
     basic = Basic()
