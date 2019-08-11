@@ -5,6 +5,8 @@ from tornado.web import RequestHandler
 from common.wrapper_func import is_login_func
 from common.log_print import logger
 from common.postgresql_conn import Postgres
+from wxConfig import PERSONAL_ID
+from wx.basic import Basic
 
 
 class AdminUserDiscountRelHandler(RequestHandler):
@@ -127,6 +129,55 @@ class AdminUserDiscountRelHandler(RequestHandler):
             """ % (openid, int(discount_id), end_time)
             conn.execute(sql)
             res['msg'] = '赠送成功！'
+
+            # 发送模板消息给用户
+            discount_sql = """
+                select discount, name, type, rule
+                from wx_discount as wd
+                inner join wx_discount_type as wdt on wdt.id = wd.type_id
+                where wd.id = %d
+            """ % int(discount_id)
+            discount_data = conn.fetchone(discount_sql)
+
+            discount_name = ''
+            if discount_data['type'] == 'money':
+                discount_name = discount_data['discount'] + '元 ' + discount_data['name']
+            elif discount_data['type'] == 'discount':
+                discount_name = discount_data['discount'] + '折 ' + discount_data['name']
+            elif discount_data['type'] == 'exchange':
+                discount_name = discount_data['discount'] + ' ' + discount_data['name']
+
+            template_id = 'fLJ8HqIswnQ9iBnQZwqSkbjEuxgw3CRqLnhBNeg-syE'
+            postData = {
+                "touser": openid,
+                "template_id": template_id,
+                "url": PERSONAL_ID,
+                "data": {
+                    "first": {
+                        "value": "您好，恭喜您获得优惠券一张",
+                        "color": "#173177"
+                    },
+                    "keyword1": {
+                        "value": discount_name,
+                        "color": "#173177"
+                    },
+                    "keyword2": {
+                        "value": discount_data['rule'],
+                        "color": "#173177"
+                    },
+                    "keyword3": {
+                        "value": end_time,
+                        "color": "#173177"
+                    },
+                    "remark": {
+                        "value": "感谢您对本店的支持",
+                        "color": "#173177"
+                    }
+                }
+            }
+            basic = Basic()
+            basic.send_template_msg(postData)
+
             return self.finish(res)
         except Exception:
             res['code'] = -1

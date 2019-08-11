@@ -119,10 +119,37 @@ class Basic(object):
 
         return info_data
 
+    # 获取模板列表
+    def get_template_list(self):
+        access_token = self.get_access_token()
+        get_template_url = 'https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=%s' % access_token
+        template_data = json.loads(request.urlopen(url=get_template_url).read())
+        logger.info('info_data: %s', template_data)
+
+        return template_data
+
+    # 发送模板信息
+    def send_template_msg(self, postData):
+        access_token = self.get_access_token()
+        postUrl = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s" % access_token
+        headers = {
+            'content-type': 'application/json'
+        }
+        req = request.Request(url=postUrl, headers=headers, data=json.dumps(postData).encode('utf-8'), method='POST')
+        urlResp = json.loads(request.urlopen(req).read().decode('utf-8'))
+        if not urlResp.get('errcode'):
+            logger.info('模板消息发送成功')
+            return urlResp
+        else:
+            logger.error('模板消息发送失败')
+            logger.error('errcode: %s' % urlResp['errcode'])
+            logger.error('errmsg: %s' % urlResp['errmsg'])
+
 
 if __name__ == '__main__':
     basic = Basic()
     # basic.get_access_token()
     # basic.upload_permanently_media()
     # basic.get_media_count()
-    basic.get_media_list()
+    # basic.get_media_list()
+    basic.get_template_list()
