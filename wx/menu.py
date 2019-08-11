@@ -1,7 +1,7 @@
 import json
 from urllib import request
 
-from basic import Basic
+from wx.basic import Basic
 from wxConfig import DISCOUNT_ID, PERSONAL_ID, APPID
 
 
@@ -41,7 +41,6 @@ class Menu(object):
 if __name__ == '__main__':
     basic = Basic()
     accessToken = basic.get_access_token()
-    media = basic.get_media_list()
 
     discount_url = request.quote(DISCOUNT_ID)
     discount_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base&state=123&connect_redirect=1#wechat_redirect" % (
@@ -49,6 +48,8 @@ if __name__ == '__main__':
     personal_url = request.quote(PERSONAL_ID)
     personal_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123&connect_redirect=1#wechat_redirect" % (
         APPID, personal_url)
+
+    media_id = '4UMCmoF8b-7xciCXzcmFgin-JYiNQkyO7P8XGZ9PZlA'
 
     postJson = """
     {
@@ -86,7 +87,7 @@ if __name__ == '__main__':
             }
           ]
     }
-    """ % (media['item'][0]['media_id'], discount_callable_url, personal_callable_url)
+    """ % (media_id, discount_callable_url, personal_callable_url)
 
     myMenu = Menu()
     myMenu.create(postJson, accessToken)

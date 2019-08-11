@@ -4,6 +4,7 @@ from tornado.web import RequestHandler
 
 from wx import receive, reply
 from common.log_print import logger
+from common.postgresql_conn import Postgres
 
 
 class WxHandler(RequestHandler):
@@ -52,6 +53,27 @@ class WxHandler(RequestHandler):
                 elif recMsg.MsgType == 'event':
                     # 关注公众号事件
                     if recMsg.Event == 'subscribe':
+                        print(toUser)
+                        print(fromUser)
+                        # conn = Postgres()
+                        # data = conn.fetchone("select id from wx_user where openid = '%s'" % info_data.get('openid'))
+                        # logger.info('查看数据库是否存在该用户信息: %s' % data)
+                        # if not data:
+                        #     sql = """
+                        #                 insert into wx_user (openid, username, sex, image_url, province, city, score)
+                        #                 values ('%s', '%s', %d, '%s', '%s', '%s', 15);
+                        #             """ % (
+                        #         info_data.get('openid'), info_data.get('nickname'), info_data.get('sex'),
+                        #         info_data.get('headimgurl'),
+                        #         info_data.get('province'), info_data.get('city')
+                        #     )
+                        #     end_time = datetime.strftime(datetime.now() + timedelta(days=7), '%Y-%m-%d')
+                        #     sql += """
+                        #                 insert into wx_user_discount_rel (openid, discount_id, end_time)
+                        #                 values ('%s', %d, '%s');
+                        #             """ % (info_data.get('openid'), 1, end_time)
+                        #     conn.execute(sql)
+
                         content = '您好，欢迎关注密语君^_^\n更多优惠请留意粉丝福利！'
                         replyMsg = reply.TextMsg(toUser, fromUser, content)
                         self.write(replyMsg.send())
