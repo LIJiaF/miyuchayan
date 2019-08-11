@@ -52,9 +52,8 @@ class WxHandler(RequestHandler):
                     mediaId = recMsg.MediaId
                     replyMsg = reply.ImageMsg(toUser, fromUser, mediaId)
                     self.write(replyMsg.send())
+                # 事件处理
                 elif recMsg.MsgType == 'event':
-                    logger.info('推送事件 %s' % recMsg.Event)
-
                     # 关注公众号事件
                     if recMsg.Event == 'subscribe':
                         logger.info('%s 关注公众号' % toUser)
@@ -105,6 +104,7 @@ class WxHandler(RequestHandler):
                             replyMsg = reply.TextMsg(toUser, fromUser, content)
                             self.write(replyMsg.send())
                 else:
+                    logger.info('recMsg不属于receive.Msg')
                     self.write(reply.Msg().send())
         except Exception as err:
             return err
