@@ -1,3 +1,4 @@
+from urllib import request
 from datetime import datetime, timedelta
 
 from tornado.web import RequestHandler
@@ -5,7 +6,7 @@ from tornado.web import RequestHandler
 from common.wrapper_func import is_login_func
 from common.log_print import logger
 from common.postgresql_conn import Postgres
-from wxConfig import PERSONAL_ID
+from wxConfig import APPID, PERSONAL_ID
 from wx.basic import Basic
 
 
@@ -148,10 +149,14 @@ class AdminUserDiscountRelHandler(RequestHandler):
                 discount_name = discount_data['discount'] + ' ' + discount_data['name']
 
             template_id = 'fLJ8HqIswnQ9iBnQZwqSkbjEuxgw3CRqLnhBNeg-syE'
+            personal_url = request.quote(PERSONAL_ID)
+            personal_callable_url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123&connect_redirect=1#wechat_redirect" % (
+                APPID, personal_url)
+
             postData = {
                 "touser": openid,
                 "template_id": template_id,
-                "url": PERSONAL_ID,
+                "url": personal_callable_url,
                 "data": {
                     "first": {
                         "value": "您好，恭喜您获得优惠券一张",
