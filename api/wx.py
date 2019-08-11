@@ -53,6 +53,8 @@ class WxHandler(RequestHandler):
                     replyMsg = reply.ImageMsg(toUser, fromUser, mediaId)
                     self.write(replyMsg.send())
                 elif recMsg.MsgType == 'event':
+                    logger.info('推送事件 %s' % recMsg.Event)
+
                     # 关注公众号事件
                     if recMsg.Event == 'subscribe':
                         logger.info('%s 关注公众号' % toUser)
