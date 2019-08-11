@@ -39,7 +39,8 @@ class PersonalHandler(RequestHandler):
                 insert into wx_user (openid, username, sex, image_url, province, city, score)
                 values ('%s', '%s', %d, '%s', '%s', '%s', 15);
             """ % (
-                info_data.get('openid'), info_data.get('nickname'), info_data.get('sex'), info_data.get('headimgurl'),
+                info_data.get('openid'), info_data.get('nickname'),
+                info_data.get('sex'), info_data.get('headimgurl'),
                 info_data.get('province'), info_data.get('city')
             )
             end_time = datetime.strftime(datetime.now() + timedelta(days=7), '%Y-%m-%d')
@@ -54,7 +55,8 @@ class PersonalHandler(RequestHandler):
                 set username = '%s', sex = %d, image_url = '%s', province = '%s', city = '%s'
                 where openid = '%s'
             """ % (
-                info_data.get('nickname'), info_data.get('sex'), info_data.get('headimgurl'), info_data.get('province'),
+                info_data.get('nickname'), info_data.get('sex'),
+                info_data.get('headimgurl'), info_data.get('province'),
                 info_data.get('city'), info_data.get('openid')
             )
             conn.execute(sql)
